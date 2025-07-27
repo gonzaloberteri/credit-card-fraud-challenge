@@ -1,0 +1,46 @@
+Financial Audit Trail System Design
+Exercise
+Project Overview
+Design and implement a simplified Financial Transaction Audit System that demonstrates your
+approach to tracking and analyzing financial transactions. This exercise evaluates both your
+implementation skills and system design thinking in the context of financial auditing.
+Requirements
+Part 1: Core Application (Choose 2-3 features to implement)
+Build a focused application that demonstrates your approach to financial auditing. Select 2-3
+features from this list to implement:
+● Transaction logging system with basic search/filter functionality
+● Simple dashboard visualizing transaction patterns or anomalies
+● User authentication with basic role separation (auditor vs. regular user)
+● Transaction flagging/annotation system for audit review
+● Basic reporting capability for filtered transactions
+Part 2: System Design Document (Required)
+Write a 1-2 page document explaining:
+● Your architecture and key technical decisions
+● Database design with focus on data integrity considerations
+● Security approach for handling sensitive financial data
+● How your system addresses basic audit requirements
+● What tradeoffs you made given the time constraints
+Part 3: Extension Discussion (Choose 1 question)
+Briefly address one of the following:
+1. How would you enhance this system to ensure regulatory compliance?
+2. What approach would you take to implement basic anomaly detection?
+3. How would you modify your design to ensure tamper-proof audit records?
+Technology Choices
+You're free to use any technologies you're comfortable with. The focus is on your approach
+rather than specific technology implementations.
+Time Constraint
+This exercise is designed to be completed within 24 hours. We understand this is a tight
+timeframe - focus on demonstrating your thinking rather than building a complete solution.
+Evaluation Criteria
+● Functionality: Does your chosen subset of features work effectively?
+● Design Thinking: How well have you considered audit-specific requirements?
+● Code Quality: Is your implementation clear and maintainable?
+● Security Awareness: Have you addressed basic security concerns for financial data?
+● Communication: How clearly can you explain your design decisions?
+Submission Guidelines
+● GitHub repository with your code
+● Loom 2 min demo
+● Loom 10 min explainer
+○ Feature scope chosen
+○ System Design choices
+○ Improvement considerations
