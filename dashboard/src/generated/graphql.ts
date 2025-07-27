@@ -15,10 +15,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  bigint: { input: number; output: number; }
-  date: { input: any; output: any; }
-  json: { input: any; output: any; }
   jsonb: { input: any; output: any; }
+  numeric: { input: any; output: any; }
   timestamptz: { input: Date; output: Date; }
   uuid: { input: any; output: any; }
 };
@@ -47,23 +45,6 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']['input']>;
   _neq?: InputMaybe<Scalars['Int']['input']>;
   _nin?: InputMaybe<Array<Scalars['Int']['input']>>;
-};
-
-/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
-export type String_Array_Comparison_Exp = {
-  /** is the array contained in the given array value */
-  _contained_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  /** does the array contain the given value */
-  _contains?: InputMaybe<Array<Scalars['String']['input']>>;
-  _eq?: InputMaybe<Array<Scalars['String']['input']>>;
-  _gt?: InputMaybe<Array<Scalars['String']['input']>>;
-  _gte?: InputMaybe<Array<Scalars['String']['input']>>;
-  _in?: InputMaybe<Array<Array<Scalars['String']['input']>>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Array<Scalars['String']['input']>>;
-  _lte?: InputMaybe<Array<Scalars['String']['input']>>;
-  _neq?: InputMaybe<Array<Scalars['String']['input']>>;
-  _nin?: InputMaybe<Array<Array<Scalars['String']['input']>>>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -99,325 +80,1097 @@ export type String_Comparison_Exp = {
   _similar?: InputMaybe<Scalars['String']['input']>;
 };
 
-/** columns and relationships of "action_logs" */
-export type Action_Logs = {
-  __typename?: 'action_logs';
-  date: Scalars['timestamptz']['output'];
-  extra_data?: Maybe<Scalars['json']['output']>;
+/** columns and relationships of "audit_flags" */
+export type Audit_Flags = {
+  __typename?: 'audit_flags';
+  /** An object relationship */
+  auditor: Users;
+  auditor_id: Scalars['uuid']['output'];
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  flag_type: Scalars['String']['output'];
   id: Scalars['uuid']['output'];
-  provider: Providers_Enum;
-  type: Action_Type_Enum;
+  notes?: Maybe<Scalars['String']['output']>;
+  severity: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  /** An object relationship */
+  transaction: Transactions;
+  transaction_id: Scalars['uuid']['output'];
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
 };
 
-
-/** columns and relationships of "action_logs" */
-export type Action_LogsExtra_DataArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
+/** aggregated selection of "audit_flags" */
+export type Audit_Flags_Aggregate = {
+  __typename?: 'audit_flags_aggregate';
+  aggregate?: Maybe<Audit_Flags_Aggregate_Fields>;
+  nodes: Array<Audit_Flags>;
 };
 
-/** aggregated selection of "action_logs" */
-export type Action_Logs_Aggregate = {
-  __typename?: 'action_logs_aggregate';
-  aggregate?: Maybe<Action_Logs_Aggregate_Fields>;
-  nodes: Array<Action_Logs>;
+export type Audit_Flags_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Audit_Flags_Aggregate_Bool_Exp_Count>;
 };
 
-/** aggregate fields of "action_logs" */
-export type Action_Logs_Aggregate_Fields = {
-  __typename?: 'action_logs_aggregate_fields';
+export type Audit_Flags_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Audit_Flags_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Audit_Flags_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "audit_flags" */
+export type Audit_Flags_Aggregate_Fields = {
+  __typename?: 'audit_flags_aggregate_fields';
   count: Scalars['Int']['output'];
-  max?: Maybe<Action_Logs_Max_Fields>;
-  min?: Maybe<Action_Logs_Min_Fields>;
+  max?: Maybe<Audit_Flags_Max_Fields>;
+  min?: Maybe<Audit_Flags_Min_Fields>;
 };
 
 
-/** aggregate fields of "action_logs" */
-export type Action_Logs_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Action_Logs_Select_Column>>;
+/** aggregate fields of "audit_flags" */
+export type Audit_Flags_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Audit_Flags_Select_Column>>;
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-/** Boolean expression to filter rows from the table "action_logs". All fields are combined with a logical 'AND'. */
-export type Action_Logs_Bool_Exp = {
-  _and?: InputMaybe<Array<Action_Logs_Bool_Exp>>;
-  _not?: InputMaybe<Action_Logs_Bool_Exp>;
-  _or?: InputMaybe<Array<Action_Logs_Bool_Exp>>;
-  date?: InputMaybe<Timestamptz_Comparison_Exp>;
-  extra_data?: InputMaybe<Json_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  provider?: InputMaybe<Providers_Enum_Comparison_Exp>;
-  type?: InputMaybe<Action_Type_Enum_Comparison_Exp>;
+/** order by aggregate values of table "audit_flags" */
+export type Audit_Flags_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Audit_Flags_Max_Order_By>;
+  min?: InputMaybe<Audit_Flags_Min_Order_By>;
 };
 
-/** unique or primary key constraints on table "action_logs" */
-export enum Action_Logs_Constraint {
+/** input type for inserting array relation for remote table "audit_flags" */
+export type Audit_Flags_Arr_Rel_Insert_Input = {
+  data: Array<Audit_Flags_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Audit_Flags_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "audit_flags". All fields are combined with a logical 'AND'. */
+export type Audit_Flags_Bool_Exp = {
+  _and?: InputMaybe<Array<Audit_Flags_Bool_Exp>>;
+  _not?: InputMaybe<Audit_Flags_Bool_Exp>;
+  _or?: InputMaybe<Array<Audit_Flags_Bool_Exp>>;
+  auditor?: InputMaybe<Users_Bool_Exp>;
+  auditor_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  flag_type?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  notes?: InputMaybe<String_Comparison_Exp>;
+  severity?: InputMaybe<String_Comparison_Exp>;
+  status?: InputMaybe<String_Comparison_Exp>;
+  transaction?: InputMaybe<Transactions_Bool_Exp>;
+  transaction_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "audit_flags" */
+export enum Audit_Flags_Constraint {
   /** unique or primary key constraint on columns "id" */
-  ActionLogsPkey = 'action_logs_pkey'
+  AuditFlagsPkey = 'audit_flags_pkey'
 }
 
-/** input type for inserting data into table "action_logs" */
-export type Action_Logs_Insert_Input = {
-  date?: InputMaybe<Scalars['timestamptz']['input']>;
-  extra_data?: InputMaybe<Scalars['json']['input']>;
+/** input type for inserting data into table "audit_flags" */
+export type Audit_Flags_Insert_Input = {
+  auditor?: InputMaybe<Users_Obj_Rel_Insert_Input>;
+  auditor_id?: InputMaybe<Scalars['uuid']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  flag_type?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
-  provider?: InputMaybe<Providers_Enum>;
-  type?: InputMaybe<Action_Type_Enum>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  severity?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  transaction?: InputMaybe<Transactions_Obj_Rel_Insert_Input>;
+  transaction_id?: InputMaybe<Scalars['uuid']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
 };
 
 /** aggregate max on columns */
-export type Action_Logs_Max_Fields = {
-  __typename?: 'action_logs_max_fields';
-  date?: Maybe<Scalars['timestamptz']['output']>;
+export type Audit_Flags_Max_Fields = {
+  __typename?: 'audit_flags_max_fields';
+  auditor_id?: Maybe<Scalars['uuid']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  flag_type?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
+  notes?: Maybe<Scalars['String']['output']>;
+  severity?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  transaction_id?: Maybe<Scalars['uuid']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** order by max() on columns of table "audit_flags" */
+export type Audit_Flags_Max_Order_By = {
+  auditor_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  flag_type?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  notes?: InputMaybe<Order_By>;
+  severity?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  transaction_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
-export type Action_Logs_Min_Fields = {
-  __typename?: 'action_logs_min_fields';
-  date?: Maybe<Scalars['timestamptz']['output']>;
+export type Audit_Flags_Min_Fields = {
+  __typename?: 'audit_flags_min_fields';
+  auditor_id?: Maybe<Scalars['uuid']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  flag_type?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
+  notes?: Maybe<Scalars['String']['output']>;
+  severity?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  transaction_id?: Maybe<Scalars['uuid']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
 };
 
-/** response of any mutation on the table "action_logs" */
-export type Action_Logs_Mutation_Response = {
-  __typename?: 'action_logs_mutation_response';
+/** order by min() on columns of table "audit_flags" */
+export type Audit_Flags_Min_Order_By = {
+  auditor_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  flag_type?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  notes?: InputMaybe<Order_By>;
+  severity?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  transaction_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "audit_flags" */
+export type Audit_Flags_Mutation_Response = {
+  __typename?: 'audit_flags_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int']['output'];
   /** data from the rows affected by the mutation */
-  returning: Array<Action_Logs>;
+  returning: Array<Audit_Flags>;
 };
 
-/** on_conflict condition type for table "action_logs" */
-export type Action_Logs_On_Conflict = {
-  constraint: Action_Logs_Constraint;
-  update_columns?: Array<Action_Logs_Update_Column>;
-  where?: InputMaybe<Action_Logs_Bool_Exp>;
+/** on_conflict condition type for table "audit_flags" */
+export type Audit_Flags_On_Conflict = {
+  constraint: Audit_Flags_Constraint;
+  update_columns?: Array<Audit_Flags_Update_Column>;
+  where?: InputMaybe<Audit_Flags_Bool_Exp>;
 };
 
-/** Ordering options when selecting data from "action_logs". */
-export type Action_Logs_Order_By = {
-  date?: InputMaybe<Order_By>;
-  extra_data?: InputMaybe<Order_By>;
+/** Ordering options when selecting data from "audit_flags". */
+export type Audit_Flags_Order_By = {
+  auditor?: InputMaybe<Users_Order_By>;
+  auditor_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  flag_type?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  provider?: InputMaybe<Order_By>;
-  type?: InputMaybe<Order_By>;
+  notes?: InputMaybe<Order_By>;
+  severity?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  transaction?: InputMaybe<Transactions_Order_By>;
+  transaction_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
 };
 
-/** primary key columns input for table: action_logs */
-export type Action_Logs_Pk_Columns_Input = {
+/** primary key columns input for table: audit_flags */
+export type Audit_Flags_Pk_Columns_Input = {
   id: Scalars['uuid']['input'];
 };
 
-/** select columns of table "action_logs" */
-export enum Action_Logs_Select_Column {
+/** select columns of table "audit_flags" */
+export enum Audit_Flags_Select_Column {
   /** column name */
-  Date = 'date',
+  AuditorId = 'auditor_id',
   /** column name */
-  ExtraData = 'extra_data',
+  CreatedAt = 'created_at',
+  /** column name */
+  FlagType = 'flag_type',
   /** column name */
   Id = 'id',
   /** column name */
-  Provider = 'provider',
+  Notes = 'notes',
   /** column name */
-  Type = 'type'
+  Severity = 'severity',
+  /** column name */
+  Status = 'status',
+  /** column name */
+  TransactionId = 'transaction_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
 }
 
-/** input type for updating data in table "action_logs" */
-export type Action_Logs_Set_Input = {
-  date?: InputMaybe<Scalars['timestamptz']['input']>;
-  extra_data?: InputMaybe<Scalars['json']['input']>;
+/** input type for updating data in table "audit_flags" */
+export type Audit_Flags_Set_Input = {
+  auditor_id?: InputMaybe<Scalars['uuid']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  flag_type?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
-  provider?: InputMaybe<Providers_Enum>;
-  type?: InputMaybe<Action_Type_Enum>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  severity?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  transaction_id?: InputMaybe<Scalars['uuid']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
 };
 
-/** Streaming cursor of the table "action_logs" */
-export type Action_Logs_Stream_Cursor_Input = {
+/** Streaming cursor of the table "audit_flags" */
+export type Audit_Flags_Stream_Cursor_Input = {
   /** Stream column input with initial value */
-  initial_value: Action_Logs_Stream_Cursor_Value_Input;
+  initial_value: Audit_Flags_Stream_Cursor_Value_Input;
   /** cursor ordering */
   ordering?: InputMaybe<Cursor_Ordering>;
 };
 
 /** Initial value of the column from where the streaming should start */
-export type Action_Logs_Stream_Cursor_Value_Input = {
-  date?: InputMaybe<Scalars['timestamptz']['input']>;
-  extra_data?: InputMaybe<Scalars['json']['input']>;
+export type Audit_Flags_Stream_Cursor_Value_Input = {
+  auditor_id?: InputMaybe<Scalars['uuid']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  flag_type?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
-  provider?: InputMaybe<Providers_Enum>;
-  type?: InputMaybe<Action_Type_Enum>;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  severity?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  transaction_id?: InputMaybe<Scalars['uuid']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
 };
 
-/** update columns of table "action_logs" */
-export enum Action_Logs_Update_Column {
+/** update columns of table "audit_flags" */
+export enum Audit_Flags_Update_Column {
   /** column name */
-  Date = 'date',
+  AuditorId = 'auditor_id',
   /** column name */
-  ExtraData = 'extra_data',
+  CreatedAt = 'created_at',
+  /** column name */
+  FlagType = 'flag_type',
   /** column name */
   Id = 'id',
   /** column name */
-  Provider = 'provider',
+  Notes = 'notes',
   /** column name */
-  Type = 'type'
+  Severity = 'severity',
+  /** column name */
+  Status = 'status',
+  /** column name */
+  TransactionId = 'transaction_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
 }
 
-export type Action_Logs_Updates = {
+export type Audit_Flags_Updates = {
   /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Action_Logs_Set_Input>;
+  _set?: InputMaybe<Audit_Flags_Set_Input>;
   /** filter the rows which have to be updated */
-  where: Action_Logs_Bool_Exp;
+  where: Audit_Flags_Bool_Exp;
 };
 
-/** columns and relationships of "action_type" */
-export type Action_Type = {
-  __typename?: 'action_type';
-  value: Scalars['String']['output'];
+/** columns and relationships of "audit_trail" */
+export type Audit_Trail = {
+  __typename?: 'audit_trail';
+  action: Scalars['String']['output'];
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  entity_id: Scalars['uuid']['output'];
+  entity_type: Scalars['String']['output'];
+  id: Scalars['uuid']['output'];
+  metadata?: Maybe<Scalars['jsonb']['output']>;
+  new_values?: Maybe<Scalars['jsonb']['output']>;
+  old_values?: Maybe<Scalars['jsonb']['output']>;
+  performed_by?: Maybe<Scalars['uuid']['output']>;
+  /** An object relationship */
+  user?: Maybe<Users>;
 };
 
-/** aggregated selection of "action_type" */
-export type Action_Type_Aggregate = {
-  __typename?: 'action_type_aggregate';
-  aggregate?: Maybe<Action_Type_Aggregate_Fields>;
-  nodes: Array<Action_Type>;
+
+/** columns and relationships of "audit_trail" */
+export type Audit_TrailMetadataArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
 };
 
-/** aggregate fields of "action_type" */
-export type Action_Type_Aggregate_Fields = {
-  __typename?: 'action_type_aggregate_fields';
+
+/** columns and relationships of "audit_trail" */
+export type Audit_TrailNew_ValuesArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** columns and relationships of "audit_trail" */
+export type Audit_TrailOld_ValuesArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregated selection of "audit_trail" */
+export type Audit_Trail_Aggregate = {
+  __typename?: 'audit_trail_aggregate';
+  aggregate?: Maybe<Audit_Trail_Aggregate_Fields>;
+  nodes: Array<Audit_Trail>;
+};
+
+export type Audit_Trail_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Audit_Trail_Aggregate_Bool_Exp_Count>;
+};
+
+export type Audit_Trail_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Audit_Trail_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Audit_Trail_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "audit_trail" */
+export type Audit_Trail_Aggregate_Fields = {
+  __typename?: 'audit_trail_aggregate_fields';
   count: Scalars['Int']['output'];
-  max?: Maybe<Action_Type_Max_Fields>;
-  min?: Maybe<Action_Type_Min_Fields>;
+  max?: Maybe<Audit_Trail_Max_Fields>;
+  min?: Maybe<Audit_Trail_Min_Fields>;
 };
 
 
-/** aggregate fields of "action_type" */
-export type Action_Type_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Action_Type_Select_Column>>;
+/** aggregate fields of "audit_trail" */
+export type Audit_Trail_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Audit_Trail_Select_Column>>;
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-/** Boolean expression to filter rows from the table "action_type". All fields are combined with a logical 'AND'. */
-export type Action_Type_Bool_Exp = {
-  _and?: InputMaybe<Array<Action_Type_Bool_Exp>>;
-  _not?: InputMaybe<Action_Type_Bool_Exp>;
-  _or?: InputMaybe<Array<Action_Type_Bool_Exp>>;
-  value?: InputMaybe<String_Comparison_Exp>;
+/** order by aggregate values of table "audit_trail" */
+export type Audit_Trail_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Audit_Trail_Max_Order_By>;
+  min?: InputMaybe<Audit_Trail_Min_Order_By>;
 };
 
-/** unique or primary key constraints on table "action_type" */
-export enum Action_Type_Constraint {
-  /** unique or primary key constraint on columns "value" */
-  ActionTypePkey = 'action_type_pkey'
-}
-
-export enum Action_Type_Enum {
-  UserCreatedFromWebhook = 'USER_CREATED_FROM_WEBHOOK',
-  UserDeletedFromWebhook = 'USER_DELETED_FROM_WEBHOOK',
-  UserFetchedFromApi = 'USER_FETCHED_FROM_API',
-  UserUpdatedFromWebhook = 'USER_UPDATED_FROM_WEBHOOK'
-}
-
-/** Boolean expression to compare columns of type "action_type_enum". All fields are combined with logical 'AND'. */
-export type Action_Type_Enum_Comparison_Exp = {
-  _eq?: InputMaybe<Action_Type_Enum>;
-  _in?: InputMaybe<Array<Action_Type_Enum>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _neq?: InputMaybe<Action_Type_Enum>;
-  _nin?: InputMaybe<Array<Action_Type_Enum>>;
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Audit_Trail_Append_Input = {
+  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+  new_values?: InputMaybe<Scalars['jsonb']['input']>;
+  old_values?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
-/** input type for inserting data into table "action_type" */
-export type Action_Type_Insert_Input = {
-  value?: InputMaybe<Scalars['String']['input']>;
+/** input type for inserting array relation for remote table "audit_trail" */
+export type Audit_Trail_Arr_Rel_Insert_Input = {
+  data: Array<Audit_Trail_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Audit_Trail_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "audit_trail". All fields are combined with a logical 'AND'. */
+export type Audit_Trail_Bool_Exp = {
+  _and?: InputMaybe<Array<Audit_Trail_Bool_Exp>>;
+  _not?: InputMaybe<Audit_Trail_Bool_Exp>;
+  _or?: InputMaybe<Array<Audit_Trail_Bool_Exp>>;
+  action?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  entity_id?: InputMaybe<Uuid_Comparison_Exp>;
+  entity_type?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  metadata?: InputMaybe<Jsonb_Comparison_Exp>;
+  new_values?: InputMaybe<Jsonb_Comparison_Exp>;
+  old_values?: InputMaybe<Jsonb_Comparison_Exp>;
+  performed_by?: InputMaybe<Uuid_Comparison_Exp>;
+  user?: InputMaybe<Users_Bool_Exp>;
+};
+
+/** unique or primary key constraints on table "audit_trail" */
+export enum Audit_Trail_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  AuditTrailPkey = 'audit_trail_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Audit_Trail_Delete_At_Path_Input = {
+  metadata?: InputMaybe<Array<Scalars['String']['input']>>;
+  new_values?: InputMaybe<Array<Scalars['String']['input']>>;
+  old_values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Audit_Trail_Delete_Elem_Input = {
+  metadata?: InputMaybe<Scalars['Int']['input']>;
+  new_values?: InputMaybe<Scalars['Int']['input']>;
+  old_values?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Audit_Trail_Delete_Key_Input = {
+  metadata?: InputMaybe<Scalars['String']['input']>;
+  new_values?: InputMaybe<Scalars['String']['input']>;
+  old_values?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** input type for inserting data into table "audit_trail" */
+export type Audit_Trail_Insert_Input = {
+  action?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  entity_id?: InputMaybe<Scalars['uuid']['input']>;
+  entity_type?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+  new_values?: InputMaybe<Scalars['jsonb']['input']>;
+  old_values?: InputMaybe<Scalars['jsonb']['input']>;
+  performed_by?: InputMaybe<Scalars['uuid']['input']>;
+  user?: InputMaybe<Users_Obj_Rel_Insert_Input>;
 };
 
 /** aggregate max on columns */
-export type Action_Type_Max_Fields = {
-  __typename?: 'action_type_max_fields';
-  value?: Maybe<Scalars['String']['output']>;
+export type Audit_Trail_Max_Fields = {
+  __typename?: 'audit_trail_max_fields';
+  action?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  entity_id?: Maybe<Scalars['uuid']['output']>;
+  entity_type?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  performed_by?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by max() on columns of table "audit_trail" */
+export type Audit_Trail_Max_Order_By = {
+  action?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  entity_id?: InputMaybe<Order_By>;
+  entity_type?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  performed_by?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
-export type Action_Type_Min_Fields = {
-  __typename?: 'action_type_min_fields';
-  value?: Maybe<Scalars['String']['output']>;
+export type Audit_Trail_Min_Fields = {
+  __typename?: 'audit_trail_min_fields';
+  action?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  entity_id?: Maybe<Scalars['uuid']['output']>;
+  entity_type?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  performed_by?: Maybe<Scalars['uuid']['output']>;
 };
 
-/** response of any mutation on the table "action_type" */
-export type Action_Type_Mutation_Response = {
-  __typename?: 'action_type_mutation_response';
+/** order by min() on columns of table "audit_trail" */
+export type Audit_Trail_Min_Order_By = {
+  action?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  entity_id?: InputMaybe<Order_By>;
+  entity_type?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  performed_by?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "audit_trail" */
+export type Audit_Trail_Mutation_Response = {
+  __typename?: 'audit_trail_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int']['output'];
   /** data from the rows affected by the mutation */
-  returning: Array<Action_Type>;
+  returning: Array<Audit_Trail>;
 };
 
-/** on_conflict condition type for table "action_type" */
-export type Action_Type_On_Conflict = {
-  constraint: Action_Type_Constraint;
-  update_columns?: Array<Action_Type_Update_Column>;
-  where?: InputMaybe<Action_Type_Bool_Exp>;
+/** on_conflict condition type for table "audit_trail" */
+export type Audit_Trail_On_Conflict = {
+  constraint: Audit_Trail_Constraint;
+  update_columns?: Array<Audit_Trail_Update_Column>;
+  where?: InputMaybe<Audit_Trail_Bool_Exp>;
 };
 
-/** Ordering options when selecting data from "action_type". */
-export type Action_Type_Order_By = {
-  value?: InputMaybe<Order_By>;
+/** Ordering options when selecting data from "audit_trail". */
+export type Audit_Trail_Order_By = {
+  action?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  entity_id?: InputMaybe<Order_By>;
+  entity_type?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  metadata?: InputMaybe<Order_By>;
+  new_values?: InputMaybe<Order_By>;
+  old_values?: InputMaybe<Order_By>;
+  performed_by?: InputMaybe<Order_By>;
+  user?: InputMaybe<Users_Order_By>;
 };
 
-/** primary key columns input for table: action_type */
-export type Action_Type_Pk_Columns_Input = {
-  value: Scalars['String']['input'];
+/** primary key columns input for table: audit_trail */
+export type Audit_Trail_Pk_Columns_Input = {
+  id: Scalars['uuid']['input'];
 };
 
-/** select columns of table "action_type" */
-export enum Action_Type_Select_Column {
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Audit_Trail_Prepend_Input = {
+  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+  new_values?: InputMaybe<Scalars['jsonb']['input']>;
+  old_values?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
+/** select columns of table "audit_trail" */
+export enum Audit_Trail_Select_Column {
   /** column name */
-  Value = 'value'
+  Action = 'action',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  EntityId = 'entity_id',
+  /** column name */
+  EntityType = 'entity_type',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Metadata = 'metadata',
+  /** column name */
+  NewValues = 'new_values',
+  /** column name */
+  OldValues = 'old_values',
+  /** column name */
+  PerformedBy = 'performed_by'
 }
 
-/** input type for updating data in table "action_type" */
-export type Action_Type_Set_Input = {
-  value?: InputMaybe<Scalars['String']['input']>;
+/** input type for updating data in table "audit_trail" */
+export type Audit_Trail_Set_Input = {
+  action?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  entity_id?: InputMaybe<Scalars['uuid']['input']>;
+  entity_type?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+  new_values?: InputMaybe<Scalars['jsonb']['input']>;
+  old_values?: InputMaybe<Scalars['jsonb']['input']>;
+  performed_by?: InputMaybe<Scalars['uuid']['input']>;
 };
 
-/** Streaming cursor of the table "action_type" */
-export type Action_Type_Stream_Cursor_Input = {
+/** Streaming cursor of the table "audit_trail" */
+export type Audit_Trail_Stream_Cursor_Input = {
   /** Stream column input with initial value */
-  initial_value: Action_Type_Stream_Cursor_Value_Input;
+  initial_value: Audit_Trail_Stream_Cursor_Value_Input;
   /** cursor ordering */
   ordering?: InputMaybe<Cursor_Ordering>;
 };
 
 /** Initial value of the column from where the streaming should start */
-export type Action_Type_Stream_Cursor_Value_Input = {
-  value?: InputMaybe<Scalars['String']['input']>;
+export type Audit_Trail_Stream_Cursor_Value_Input = {
+  action?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  entity_id?: InputMaybe<Scalars['uuid']['input']>;
+  entity_type?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+  new_values?: InputMaybe<Scalars['jsonb']['input']>;
+  old_values?: InputMaybe<Scalars['jsonb']['input']>;
+  performed_by?: InputMaybe<Scalars['uuid']['input']>;
 };
 
-/** update columns of table "action_type" */
-export enum Action_Type_Update_Column {
+/** update columns of table "audit_trail" */
+export enum Audit_Trail_Update_Column {
   /** column name */
-  Value = 'value'
+  Action = 'action',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  EntityId = 'entity_id',
+  /** column name */
+  EntityType = 'entity_type',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Metadata = 'metadata',
+  /** column name */
+  NewValues = 'new_values',
+  /** column name */
+  OldValues = 'old_values',
+  /** column name */
+  PerformedBy = 'performed_by'
 }
 
-export type Action_Type_Updates = {
+export type Audit_Trail_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Audit_Trail_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Audit_Trail_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Audit_Trail_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Audit_Trail_Delete_Key_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Audit_Trail_Prepend_Input>;
   /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Action_Type_Set_Input>;
+  _set?: InputMaybe<Audit_Trail_Set_Input>;
   /** filter the rows which have to be updated */
-  where: Action_Type_Bool_Exp;
+  where: Audit_Trail_Bool_Exp;
 };
 
-/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
-export type Bigint_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['bigint']['input']>;
-  _gt?: InputMaybe<Scalars['bigint']['input']>;
-  _gte?: InputMaybe<Scalars['bigint']['input']>;
-  _in?: InputMaybe<Array<Scalars['bigint']['input']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['bigint']['input']>;
-  _lte?: InputMaybe<Scalars['bigint']['input']>;
-  _neq?: InputMaybe<Scalars['bigint']['input']>;
-  _nin?: InputMaybe<Array<Scalars['bigint']['input']>>;
+/** columns and relationships of "credit_cards" */
+export type Credit_Cards = {
+  __typename?: 'credit_cards';
+  card_brand: Scalars['String']['output'];
+  card_holder_name: Scalars['String']['output'];
+  card_name: Scalars['String']['output'];
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  expiry_month: Scalars['Int']['output'];
+  expiry_year: Scalars['Int']['output'];
+  id: Scalars['uuid']['output'];
+  is_active?: Maybe<Scalars['Boolean']['output']>;
+  last_four_digits: Scalars['String']['output'];
+  /** An array relationship */
+  transactions: Array<Transactions>;
+  /** An aggregate relationship */
+  transactions_aggregate: Transactions_Aggregate;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  /** An object relationship */
+  user: Users;
+  user_id: Scalars['uuid']['output'];
+};
+
+
+/** columns and relationships of "credit_cards" */
+export type Credit_CardsTransactionsArgs = {
+  distinct_on?: InputMaybe<Array<Transactions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Transactions_Order_By>>;
+  where?: InputMaybe<Transactions_Bool_Exp>;
+};
+
+
+/** columns and relationships of "credit_cards" */
+export type Credit_CardsTransactions_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Transactions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Transactions_Order_By>>;
+  where?: InputMaybe<Transactions_Bool_Exp>;
+};
+
+/** aggregated selection of "credit_cards" */
+export type Credit_Cards_Aggregate = {
+  __typename?: 'credit_cards_aggregate';
+  aggregate?: Maybe<Credit_Cards_Aggregate_Fields>;
+  nodes: Array<Credit_Cards>;
+};
+
+export type Credit_Cards_Aggregate_Bool_Exp = {
+  bool_and?: InputMaybe<Credit_Cards_Aggregate_Bool_Exp_Bool_And>;
+  bool_or?: InputMaybe<Credit_Cards_Aggregate_Bool_Exp_Bool_Or>;
+  count?: InputMaybe<Credit_Cards_Aggregate_Bool_Exp_Count>;
+};
+
+export type Credit_Cards_Aggregate_Bool_Exp_Bool_And = {
+  arguments: Credit_Cards_Select_Column_Credit_Cards_Aggregate_Bool_Exp_Bool_And_Arguments_Columns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Credit_Cards_Bool_Exp>;
+  predicate: Boolean_Comparison_Exp;
+};
+
+export type Credit_Cards_Aggregate_Bool_Exp_Bool_Or = {
+  arguments: Credit_Cards_Select_Column_Credit_Cards_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Credit_Cards_Bool_Exp>;
+  predicate: Boolean_Comparison_Exp;
+};
+
+export type Credit_Cards_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Credit_Cards_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Credit_Cards_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "credit_cards" */
+export type Credit_Cards_Aggregate_Fields = {
+  __typename?: 'credit_cards_aggregate_fields';
+  avg?: Maybe<Credit_Cards_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Credit_Cards_Max_Fields>;
+  min?: Maybe<Credit_Cards_Min_Fields>;
+  stddev?: Maybe<Credit_Cards_Stddev_Fields>;
+  stddev_pop?: Maybe<Credit_Cards_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Credit_Cards_Stddev_Samp_Fields>;
+  sum?: Maybe<Credit_Cards_Sum_Fields>;
+  var_pop?: Maybe<Credit_Cards_Var_Pop_Fields>;
+  var_samp?: Maybe<Credit_Cards_Var_Samp_Fields>;
+  variance?: Maybe<Credit_Cards_Variance_Fields>;
+};
+
+
+/** aggregate fields of "credit_cards" */
+export type Credit_Cards_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Credit_Cards_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "credit_cards" */
+export type Credit_Cards_Aggregate_Order_By = {
+  avg?: InputMaybe<Credit_Cards_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Credit_Cards_Max_Order_By>;
+  min?: InputMaybe<Credit_Cards_Min_Order_By>;
+  stddev?: InputMaybe<Credit_Cards_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Credit_Cards_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Credit_Cards_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Credit_Cards_Sum_Order_By>;
+  var_pop?: InputMaybe<Credit_Cards_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Credit_Cards_Var_Samp_Order_By>;
+  variance?: InputMaybe<Credit_Cards_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "credit_cards" */
+export type Credit_Cards_Arr_Rel_Insert_Input = {
+  data: Array<Credit_Cards_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Credit_Cards_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Credit_Cards_Avg_Fields = {
+  __typename?: 'credit_cards_avg_fields';
+  expiry_month?: Maybe<Scalars['Float']['output']>;
+  expiry_year?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "credit_cards" */
+export type Credit_Cards_Avg_Order_By = {
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "credit_cards". All fields are combined with a logical 'AND'. */
+export type Credit_Cards_Bool_Exp = {
+  _and?: InputMaybe<Array<Credit_Cards_Bool_Exp>>;
+  _not?: InputMaybe<Credit_Cards_Bool_Exp>;
+  _or?: InputMaybe<Array<Credit_Cards_Bool_Exp>>;
+  card_brand?: InputMaybe<String_Comparison_Exp>;
+  card_holder_name?: InputMaybe<String_Comparison_Exp>;
+  card_name?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  expiry_month?: InputMaybe<Int_Comparison_Exp>;
+  expiry_year?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  is_active?: InputMaybe<Boolean_Comparison_Exp>;
+  last_four_digits?: InputMaybe<String_Comparison_Exp>;
+  transactions?: InputMaybe<Transactions_Bool_Exp>;
+  transactions_aggregate?: InputMaybe<Transactions_Aggregate_Bool_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  user?: InputMaybe<Users_Bool_Exp>;
+  user_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "credit_cards" */
+export enum Credit_Cards_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  CreditCardsPkey = 'credit_cards_pkey'
+}
+
+/** input type for incrementing numeric columns in table "credit_cards" */
+export type Credit_Cards_Inc_Input = {
+  expiry_month?: InputMaybe<Scalars['Int']['input']>;
+  expiry_year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** input type for inserting data into table "credit_cards" */
+export type Credit_Cards_Insert_Input = {
+  card_brand?: InputMaybe<Scalars['String']['input']>;
+  card_holder_name?: InputMaybe<Scalars['String']['input']>;
+  card_name?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  expiry_month?: InputMaybe<Scalars['Int']['input']>;
+  expiry_year?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  is_active?: InputMaybe<Scalars['Boolean']['input']>;
+  last_four_digits?: InputMaybe<Scalars['String']['input']>;
+  transactions?: InputMaybe<Transactions_Arr_Rel_Insert_Input>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  user?: InputMaybe<Users_Obj_Rel_Insert_Input>;
+  user_id?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate max on columns */
+export type Credit_Cards_Max_Fields = {
+  __typename?: 'credit_cards_max_fields';
+  card_brand?: Maybe<Scalars['String']['output']>;
+  card_holder_name?: Maybe<Scalars['String']['output']>;
+  card_name?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  expiry_month?: Maybe<Scalars['Int']['output']>;
+  expiry_year?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  last_four_digits?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  user_id?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by max() on columns of table "credit_cards" */
+export type Credit_Cards_Max_Order_By = {
+  card_brand?: InputMaybe<Order_By>;
+  card_holder_name?: InputMaybe<Order_By>;
+  card_name?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_four_digits?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  user_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Credit_Cards_Min_Fields = {
+  __typename?: 'credit_cards_min_fields';
+  card_brand?: Maybe<Scalars['String']['output']>;
+  card_holder_name?: Maybe<Scalars['String']['output']>;
+  card_name?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  expiry_month?: Maybe<Scalars['Int']['output']>;
+  expiry_year?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  last_four_digits?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  user_id?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** order by min() on columns of table "credit_cards" */
+export type Credit_Cards_Min_Order_By = {
+  card_brand?: InputMaybe<Order_By>;
+  card_holder_name?: InputMaybe<Order_By>;
+  card_name?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_four_digits?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  user_id?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "credit_cards" */
+export type Credit_Cards_Mutation_Response = {
+  __typename?: 'credit_cards_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Credit_Cards>;
+};
+
+/** input type for inserting object relation for remote table "credit_cards" */
+export type Credit_Cards_Obj_Rel_Insert_Input = {
+  data: Credit_Cards_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Credit_Cards_On_Conflict>;
+};
+
+/** on_conflict condition type for table "credit_cards" */
+export type Credit_Cards_On_Conflict = {
+  constraint: Credit_Cards_Constraint;
+  update_columns?: Array<Credit_Cards_Update_Column>;
+  where?: InputMaybe<Credit_Cards_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "credit_cards". */
+export type Credit_Cards_Order_By = {
+  card_brand?: InputMaybe<Order_By>;
+  card_holder_name?: InputMaybe<Order_By>;
+  card_name?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  is_active?: InputMaybe<Order_By>;
+  last_four_digits?: InputMaybe<Order_By>;
+  transactions_aggregate?: InputMaybe<Transactions_Aggregate_Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  user?: InputMaybe<Users_Order_By>;
+  user_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: credit_cards */
+export type Credit_Cards_Pk_Columns_Input = {
+  id: Scalars['uuid']['input'];
+};
+
+/** select columns of table "credit_cards" */
+export enum Credit_Cards_Select_Column {
+  /** column name */
+  CardBrand = 'card_brand',
+  /** column name */
+  CardHolderName = 'card_holder_name',
+  /** column name */
+  CardName = 'card_name',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiryMonth = 'expiry_month',
+  /** column name */
+  ExpiryYear = 'expiry_year',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsActive = 'is_active',
+  /** column name */
+  LastFourDigits = 'last_four_digits',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  UserId = 'user_id'
+}
+
+/** select "credit_cards_aggregate_bool_exp_bool_and_arguments_columns" columns of table "credit_cards" */
+export enum Credit_Cards_Select_Column_Credit_Cards_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+  /** column name */
+  IsActive = 'is_active'
+}
+
+/** select "credit_cards_aggregate_bool_exp_bool_or_arguments_columns" columns of table "credit_cards" */
+export enum Credit_Cards_Select_Column_Credit_Cards_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+  /** column name */
+  IsActive = 'is_active'
+}
+
+/** input type for updating data in table "credit_cards" */
+export type Credit_Cards_Set_Input = {
+  card_brand?: InputMaybe<Scalars['String']['input']>;
+  card_holder_name?: InputMaybe<Scalars['String']['input']>;
+  card_name?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  expiry_month?: InputMaybe<Scalars['Int']['input']>;
+  expiry_year?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  is_active?: InputMaybe<Scalars['Boolean']['input']>;
+  last_four_digits?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  user_id?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type Credit_Cards_Stddev_Fields = {
+  __typename?: 'credit_cards_stddev_fields';
+  expiry_month?: Maybe<Scalars['Float']['output']>;
+  expiry_year?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "credit_cards" */
+export type Credit_Cards_Stddev_Order_By = {
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Credit_Cards_Stddev_Pop_Fields = {
+  __typename?: 'credit_cards_stddev_pop_fields';
+  expiry_month?: Maybe<Scalars['Float']['output']>;
+  expiry_year?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_pop() on columns of table "credit_cards" */
+export type Credit_Cards_Stddev_Pop_Order_By = {
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Credit_Cards_Stddev_Samp_Fields = {
+  __typename?: 'credit_cards_stddev_samp_fields';
+  expiry_month?: Maybe<Scalars['Float']['output']>;
+  expiry_year?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_samp() on columns of table "credit_cards" */
+export type Credit_Cards_Stddev_Samp_Order_By = {
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "credit_cards" */
+export type Credit_Cards_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Credit_Cards_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Credit_Cards_Stream_Cursor_Value_Input = {
+  card_brand?: InputMaybe<Scalars['String']['input']>;
+  card_holder_name?: InputMaybe<Scalars['String']['input']>;
+  card_name?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  expiry_month?: InputMaybe<Scalars['Int']['input']>;
+  expiry_year?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  is_active?: InputMaybe<Scalars['Boolean']['input']>;
+  last_four_digits?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  user_id?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Credit_Cards_Sum_Fields = {
+  __typename?: 'credit_cards_sum_fields';
+  expiry_month?: Maybe<Scalars['Int']['output']>;
+  expiry_year?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "credit_cards" */
+export type Credit_Cards_Sum_Order_By = {
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
+};
+
+/** update columns of table "credit_cards" */
+export enum Credit_Cards_Update_Column {
+  /** column name */
+  CardBrand = 'card_brand',
+  /** column name */
+  CardHolderName = 'card_holder_name',
+  /** column name */
+  CardName = 'card_name',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpiryMonth = 'expiry_month',
+  /** column name */
+  ExpiryYear = 'expiry_year',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsActive = 'is_active',
+  /** column name */
+  LastFourDigits = 'last_four_digits',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  UserId = 'user_id'
+}
+
+export type Credit_Cards_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Credit_Cards_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Credit_Cards_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Credit_Cards_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Credit_Cards_Var_Pop_Fields = {
+  __typename?: 'credit_cards_var_pop_fields';
+  expiry_month?: Maybe<Scalars['Float']['output']>;
+  expiry_year?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_pop() on columns of table "credit_cards" */
+export type Credit_Cards_Var_Pop_Order_By = {
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Credit_Cards_Var_Samp_Fields = {
+  __typename?: 'credit_cards_var_samp_fields';
+  expiry_month?: Maybe<Scalars['Float']['output']>;
+  expiry_year?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_samp() on columns of table "credit_cards" */
+export type Credit_Cards_Var_Samp_Order_By = {
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Credit_Cards_Variance_Fields = {
+  __typename?: 'credit_cards_variance_fields';
+  expiry_month?: Maybe<Scalars['Float']['output']>;
+  expiry_year?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "credit_cards" */
+export type Credit_Cards_Variance_Order_By = {
+  expiry_month?: InputMaybe<Order_By>;
+  expiry_year?: InputMaybe<Order_By>;
 };
 
 /** ordering argument of a cursor */
@@ -427,2215 +1180,6 @@ export enum Cursor_Ordering {
   /** descending ordering of the cursor */
   Desc = 'DESC'
 }
-
-/** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
-export type Date_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['date']['input']>;
-  _gt?: InputMaybe<Scalars['date']['input']>;
-  _gte?: InputMaybe<Scalars['date']['input']>;
-  _in?: InputMaybe<Array<Scalars['date']['input']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['date']['input']>;
-  _lte?: InputMaybe<Scalars['date']['input']>;
-  _neq?: InputMaybe<Scalars['date']['input']>;
-  _nin?: InputMaybe<Array<Scalars['date']['input']>>;
-};
-
-/** columns and relationships of "elation_patients" */
-export type Elation_Patients = {
-  __typename?: 'elation_patients';
-  actual_name?: Maybe<Scalars['String']['output']>;
-  address?: Maybe<Scalars['jsonb']['output']>;
-  address_line1?: Maybe<Scalars['String']['output']>;
-  address_line2?: Maybe<Scalars['String']['output']>;
-  caregiver_practice: Scalars['bigint']['output'];
-  city?: Maybe<Scalars['String']['output']>;
-  consents?: Maybe<Scalars['jsonb']['output']>;
-  created_date: Scalars['timestamptz']['output'];
-  deleted_date?: Maybe<Scalars['timestamptz']['output']>;
-  deleted_insurances?: Maybe<Scalars['jsonb']['output']>;
-  dob: Scalars['date']['output'];
-  emails?: Maybe<Scalars['jsonb']['output']>;
-  emergency_contact?: Maybe<Scalars['jsonb']['output']>;
-  employer?: Maybe<Scalars['jsonb']['output']>;
-  ethnicity?: Maybe<Scalars['String']['output']>;
-  first_name: Scalars['String']['output'];
-  gender_identity?: Maybe<Scalars['String']['output']>;
-  guarantor?: Maybe<Scalars['jsonb']['output']>;
-  id: Scalars['bigint']['output'];
-  insurances?: Maybe<Scalars['jsonb']['output']>;
-  last_modified?: Maybe<Scalars['timestamptz']['output']>;
-  last_name: Scalars['String']['output'];
-  legal_gender_marker?: Maybe<Scalars['String']['output']>;
-  legal_gender_marker_display?: Maybe<Scalars['String']['output']>;
-  master_patient?: Maybe<Scalars['bigint']['output']>;
-  merged_into_chart?: Maybe<Scalars['bigint']['output']>;
-  metadata?: Maybe<Scalars['jsonb']['output']>;
-  middle_name?: Maybe<Scalars['String']['output']>;
-  mothers_maiden_name?: Maybe<Scalars['String']['output']>;
-  notes?: Maybe<Scalars['String']['output']>;
-  patient_status?: Maybe<Scalars['jsonb']['output']>;
-  phones?: Maybe<Scalars['jsonb']['output']>;
-  preference?: Maybe<Scalars['jsonb']['output']>;
-  preferred_contact?: Maybe<Scalars['String']['output']>;
-  preferred_language?: Maybe<Scalars['String']['output']>;
-  preferred_service_location?: Maybe<Scalars['bigint']['output']>;
-  previous_address?: Maybe<Scalars['jsonb']['output']>;
-  previous_first_name?: Maybe<Scalars['String']['output']>;
-  previous_last_name?: Maybe<Scalars['String']['output']>;
-  previous_name?: Maybe<Scalars['jsonb']['output']>;
-  primary_care_provider?: Maybe<Scalars['bigint']['output']>;
-  primary_care_provider_npi?: Maybe<Scalars['String']['output']>;
-  primary_physician: Scalars['bigint']['output'];
-  pronouns?: Maybe<Scalars['String']['output']>;
-  pronouns_display?: Maybe<Scalars['String']['output']>;
-  race?: Maybe<Scalars['String']['output']>;
-  sex: Scalars['String']['output'];
-  sexual_orientation?: Maybe<Scalars['String']['output']>;
-  sms_opt_in_status?: Maybe<Scalars['Boolean']['output']>;
-  ssn?: Maybe<Scalars['String']['output']>;
-  state?: Maybe<Scalars['String']['output']>;
-  suffix?: Maybe<Scalars['String']['output']>;
-  tags?: Maybe<Scalars['jsonb']['output']>;
-  timezone?: Maybe<Scalars['String']['output']>;
-  vip?: Maybe<Scalars['Boolean']['output']>;
-  zip?: Maybe<Scalars['String']['output']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsAddressArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsConsentsArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsDeleted_InsurancesArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsEmailsArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsEmergency_ContactArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsEmployerArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsGuarantorArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsInsurancesArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsMetadataArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsPatient_StatusArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsPhonesArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsPreferenceArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsPrevious_AddressArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsPrevious_NameArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "elation_patients" */
-export type Elation_PatientsTagsArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregated selection of "elation_patients" */
-export type Elation_Patients_Aggregate = {
-  __typename?: 'elation_patients_aggregate';
-  aggregate?: Maybe<Elation_Patients_Aggregate_Fields>;
-  nodes: Array<Elation_Patients>;
-};
-
-/** aggregate fields of "elation_patients" */
-export type Elation_Patients_Aggregate_Fields = {
-  __typename?: 'elation_patients_aggregate_fields';
-  avg?: Maybe<Elation_Patients_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Elation_Patients_Max_Fields>;
-  min?: Maybe<Elation_Patients_Min_Fields>;
-  stddev?: Maybe<Elation_Patients_Stddev_Fields>;
-  stddev_pop?: Maybe<Elation_Patients_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Elation_Patients_Stddev_Samp_Fields>;
-  sum?: Maybe<Elation_Patients_Sum_Fields>;
-  var_pop?: Maybe<Elation_Patients_Var_Pop_Fields>;
-  var_samp?: Maybe<Elation_Patients_Var_Samp_Fields>;
-  variance?: Maybe<Elation_Patients_Variance_Fields>;
-};
-
-
-/** aggregate fields of "elation_patients" */
-export type Elation_Patients_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Elation_Patients_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Elation_Patients_Append_Input = {
-  address?: InputMaybe<Scalars['jsonb']['input']>;
-  consents?: InputMaybe<Scalars['jsonb']['input']>;
-  deleted_insurances?: InputMaybe<Scalars['jsonb']['input']>;
-  emails?: InputMaybe<Scalars['jsonb']['input']>;
-  emergency_contact?: InputMaybe<Scalars['jsonb']['input']>;
-  employer?: InputMaybe<Scalars['jsonb']['input']>;
-  guarantor?: InputMaybe<Scalars['jsonb']['input']>;
-  insurances?: InputMaybe<Scalars['jsonb']['input']>;
-  metadata?: InputMaybe<Scalars['jsonb']['input']>;
-  patient_status?: InputMaybe<Scalars['jsonb']['input']>;
-  phones?: InputMaybe<Scalars['jsonb']['input']>;
-  preference?: InputMaybe<Scalars['jsonb']['input']>;
-  previous_address?: InputMaybe<Scalars['jsonb']['input']>;
-  previous_name?: InputMaybe<Scalars['jsonb']['input']>;
-  tags?: InputMaybe<Scalars['jsonb']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Elation_Patients_Avg_Fields = {
-  __typename?: 'elation_patients_avg_fields';
-  caregiver_practice?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  master_patient?: Maybe<Scalars['Float']['output']>;
-  merged_into_chart?: Maybe<Scalars['Float']['output']>;
-  preferred_service_location?: Maybe<Scalars['Float']['output']>;
-  primary_care_provider?: Maybe<Scalars['Float']['output']>;
-  primary_physician?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Boolean expression to filter rows from the table "elation_patients". All fields are combined with a logical 'AND'. */
-export type Elation_Patients_Bool_Exp = {
-  _and?: InputMaybe<Array<Elation_Patients_Bool_Exp>>;
-  _not?: InputMaybe<Elation_Patients_Bool_Exp>;
-  _or?: InputMaybe<Array<Elation_Patients_Bool_Exp>>;
-  actual_name?: InputMaybe<String_Comparison_Exp>;
-  address?: InputMaybe<Jsonb_Comparison_Exp>;
-  address_line1?: InputMaybe<String_Comparison_Exp>;
-  address_line2?: InputMaybe<String_Comparison_Exp>;
-  caregiver_practice?: InputMaybe<Bigint_Comparison_Exp>;
-  city?: InputMaybe<String_Comparison_Exp>;
-  consents?: InputMaybe<Jsonb_Comparison_Exp>;
-  created_date?: InputMaybe<Timestamptz_Comparison_Exp>;
-  deleted_date?: InputMaybe<Timestamptz_Comparison_Exp>;
-  deleted_insurances?: InputMaybe<Jsonb_Comparison_Exp>;
-  dob?: InputMaybe<Date_Comparison_Exp>;
-  emails?: InputMaybe<Jsonb_Comparison_Exp>;
-  emergency_contact?: InputMaybe<Jsonb_Comparison_Exp>;
-  employer?: InputMaybe<Jsonb_Comparison_Exp>;
-  ethnicity?: InputMaybe<String_Comparison_Exp>;
-  first_name?: InputMaybe<String_Comparison_Exp>;
-  gender_identity?: InputMaybe<String_Comparison_Exp>;
-  guarantor?: InputMaybe<Jsonb_Comparison_Exp>;
-  id?: InputMaybe<Bigint_Comparison_Exp>;
-  insurances?: InputMaybe<Jsonb_Comparison_Exp>;
-  last_modified?: InputMaybe<Timestamptz_Comparison_Exp>;
-  last_name?: InputMaybe<String_Comparison_Exp>;
-  legal_gender_marker?: InputMaybe<String_Comparison_Exp>;
-  legal_gender_marker_display?: InputMaybe<String_Comparison_Exp>;
-  master_patient?: InputMaybe<Bigint_Comparison_Exp>;
-  merged_into_chart?: InputMaybe<Bigint_Comparison_Exp>;
-  metadata?: InputMaybe<Jsonb_Comparison_Exp>;
-  middle_name?: InputMaybe<String_Comparison_Exp>;
-  mothers_maiden_name?: InputMaybe<String_Comparison_Exp>;
-  notes?: InputMaybe<String_Comparison_Exp>;
-  patient_status?: InputMaybe<Jsonb_Comparison_Exp>;
-  phones?: InputMaybe<Jsonb_Comparison_Exp>;
-  preference?: InputMaybe<Jsonb_Comparison_Exp>;
-  preferred_contact?: InputMaybe<String_Comparison_Exp>;
-  preferred_language?: InputMaybe<String_Comparison_Exp>;
-  preferred_service_location?: InputMaybe<Bigint_Comparison_Exp>;
-  previous_address?: InputMaybe<Jsonb_Comparison_Exp>;
-  previous_first_name?: InputMaybe<String_Comparison_Exp>;
-  previous_last_name?: InputMaybe<String_Comparison_Exp>;
-  previous_name?: InputMaybe<Jsonb_Comparison_Exp>;
-  primary_care_provider?: InputMaybe<Bigint_Comparison_Exp>;
-  primary_care_provider_npi?: InputMaybe<String_Comparison_Exp>;
-  primary_physician?: InputMaybe<Bigint_Comparison_Exp>;
-  pronouns?: InputMaybe<String_Comparison_Exp>;
-  pronouns_display?: InputMaybe<String_Comparison_Exp>;
-  race?: InputMaybe<String_Comparison_Exp>;
-  sex?: InputMaybe<String_Comparison_Exp>;
-  sexual_orientation?: InputMaybe<String_Comparison_Exp>;
-  sms_opt_in_status?: InputMaybe<Boolean_Comparison_Exp>;
-  ssn?: InputMaybe<String_Comparison_Exp>;
-  state?: InputMaybe<String_Comparison_Exp>;
-  suffix?: InputMaybe<String_Comparison_Exp>;
-  tags?: InputMaybe<Jsonb_Comparison_Exp>;
-  timezone?: InputMaybe<String_Comparison_Exp>;
-  vip?: InputMaybe<Boolean_Comparison_Exp>;
-  zip?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "elation_patients" */
-export enum Elation_Patients_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  ElationPatientsPkey = 'elation_patients_pkey'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Elation_Patients_Delete_At_Path_Input = {
-  address?: InputMaybe<Array<Scalars['String']['input']>>;
-  consents?: InputMaybe<Array<Scalars['String']['input']>>;
-  deleted_insurances?: InputMaybe<Array<Scalars['String']['input']>>;
-  emails?: InputMaybe<Array<Scalars['String']['input']>>;
-  emergency_contact?: InputMaybe<Array<Scalars['String']['input']>>;
-  employer?: InputMaybe<Array<Scalars['String']['input']>>;
-  guarantor?: InputMaybe<Array<Scalars['String']['input']>>;
-  insurances?: InputMaybe<Array<Scalars['String']['input']>>;
-  metadata?: InputMaybe<Array<Scalars['String']['input']>>;
-  patient_status?: InputMaybe<Array<Scalars['String']['input']>>;
-  phones?: InputMaybe<Array<Scalars['String']['input']>>;
-  preference?: InputMaybe<Array<Scalars['String']['input']>>;
-  previous_address?: InputMaybe<Array<Scalars['String']['input']>>;
-  previous_name?: InputMaybe<Array<Scalars['String']['input']>>;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Elation_Patients_Delete_Elem_Input = {
-  address?: InputMaybe<Scalars['Int']['input']>;
-  consents?: InputMaybe<Scalars['Int']['input']>;
-  deleted_insurances?: InputMaybe<Scalars['Int']['input']>;
-  emails?: InputMaybe<Scalars['Int']['input']>;
-  emergency_contact?: InputMaybe<Scalars['Int']['input']>;
-  employer?: InputMaybe<Scalars['Int']['input']>;
-  guarantor?: InputMaybe<Scalars['Int']['input']>;
-  insurances?: InputMaybe<Scalars['Int']['input']>;
-  metadata?: InputMaybe<Scalars['Int']['input']>;
-  patient_status?: InputMaybe<Scalars['Int']['input']>;
-  phones?: InputMaybe<Scalars['Int']['input']>;
-  preference?: InputMaybe<Scalars['Int']['input']>;
-  previous_address?: InputMaybe<Scalars['Int']['input']>;
-  previous_name?: InputMaybe<Scalars['Int']['input']>;
-  tags?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Elation_Patients_Delete_Key_Input = {
-  address?: InputMaybe<Scalars['String']['input']>;
-  consents?: InputMaybe<Scalars['String']['input']>;
-  deleted_insurances?: InputMaybe<Scalars['String']['input']>;
-  emails?: InputMaybe<Scalars['String']['input']>;
-  emergency_contact?: InputMaybe<Scalars['String']['input']>;
-  employer?: InputMaybe<Scalars['String']['input']>;
-  guarantor?: InputMaybe<Scalars['String']['input']>;
-  insurances?: InputMaybe<Scalars['String']['input']>;
-  metadata?: InputMaybe<Scalars['String']['input']>;
-  patient_status?: InputMaybe<Scalars['String']['input']>;
-  phones?: InputMaybe<Scalars['String']['input']>;
-  preference?: InputMaybe<Scalars['String']['input']>;
-  previous_address?: InputMaybe<Scalars['String']['input']>;
-  previous_name?: InputMaybe<Scalars['String']['input']>;
-  tags?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** input type for incrementing numeric columns in table "elation_patients" */
-export type Elation_Patients_Inc_Input = {
-  caregiver_practice?: InputMaybe<Scalars['bigint']['input']>;
-  id?: InputMaybe<Scalars['bigint']['input']>;
-  master_patient?: InputMaybe<Scalars['bigint']['input']>;
-  merged_into_chart?: InputMaybe<Scalars['bigint']['input']>;
-  preferred_service_location?: InputMaybe<Scalars['bigint']['input']>;
-  primary_care_provider?: InputMaybe<Scalars['bigint']['input']>;
-  primary_physician?: InputMaybe<Scalars['bigint']['input']>;
-};
-
-/** input type for inserting data into table "elation_patients" */
-export type Elation_Patients_Insert_Input = {
-  actual_name?: InputMaybe<Scalars['String']['input']>;
-  address?: InputMaybe<Scalars['jsonb']['input']>;
-  address_line1?: InputMaybe<Scalars['String']['input']>;
-  address_line2?: InputMaybe<Scalars['String']['input']>;
-  caregiver_practice?: InputMaybe<Scalars['bigint']['input']>;
-  city?: InputMaybe<Scalars['String']['input']>;
-  consents?: InputMaybe<Scalars['jsonb']['input']>;
-  created_date?: InputMaybe<Scalars['timestamptz']['input']>;
-  deleted_date?: InputMaybe<Scalars['timestamptz']['input']>;
-  deleted_insurances?: InputMaybe<Scalars['jsonb']['input']>;
-  dob?: InputMaybe<Scalars['date']['input']>;
-  emails?: InputMaybe<Scalars['jsonb']['input']>;
-  emergency_contact?: InputMaybe<Scalars['jsonb']['input']>;
-  employer?: InputMaybe<Scalars['jsonb']['input']>;
-  ethnicity?: InputMaybe<Scalars['String']['input']>;
-  first_name?: InputMaybe<Scalars['String']['input']>;
-  gender_identity?: InputMaybe<Scalars['String']['input']>;
-  guarantor?: InputMaybe<Scalars['jsonb']['input']>;
-  id?: InputMaybe<Scalars['bigint']['input']>;
-  insurances?: InputMaybe<Scalars['jsonb']['input']>;
-  last_modified?: InputMaybe<Scalars['timestamptz']['input']>;
-  last_name?: InputMaybe<Scalars['String']['input']>;
-  legal_gender_marker?: InputMaybe<Scalars['String']['input']>;
-  legal_gender_marker_display?: InputMaybe<Scalars['String']['input']>;
-  master_patient?: InputMaybe<Scalars['bigint']['input']>;
-  merged_into_chart?: InputMaybe<Scalars['bigint']['input']>;
-  metadata?: InputMaybe<Scalars['jsonb']['input']>;
-  middle_name?: InputMaybe<Scalars['String']['input']>;
-  mothers_maiden_name?: InputMaybe<Scalars['String']['input']>;
-  notes?: InputMaybe<Scalars['String']['input']>;
-  patient_status?: InputMaybe<Scalars['jsonb']['input']>;
-  phones?: InputMaybe<Scalars['jsonb']['input']>;
-  preference?: InputMaybe<Scalars['jsonb']['input']>;
-  preferred_contact?: InputMaybe<Scalars['String']['input']>;
-  preferred_language?: InputMaybe<Scalars['String']['input']>;
-  preferred_service_location?: InputMaybe<Scalars['bigint']['input']>;
-  previous_address?: InputMaybe<Scalars['jsonb']['input']>;
-  previous_first_name?: InputMaybe<Scalars['String']['input']>;
-  previous_last_name?: InputMaybe<Scalars['String']['input']>;
-  previous_name?: InputMaybe<Scalars['jsonb']['input']>;
-  primary_care_provider?: InputMaybe<Scalars['bigint']['input']>;
-  primary_care_provider_npi?: InputMaybe<Scalars['String']['input']>;
-  primary_physician?: InputMaybe<Scalars['bigint']['input']>;
-  pronouns?: InputMaybe<Scalars['String']['input']>;
-  pronouns_display?: InputMaybe<Scalars['String']['input']>;
-  race?: InputMaybe<Scalars['String']['input']>;
-  sex?: InputMaybe<Scalars['String']['input']>;
-  sexual_orientation?: InputMaybe<Scalars['String']['input']>;
-  sms_opt_in_status?: InputMaybe<Scalars['Boolean']['input']>;
-  ssn?: InputMaybe<Scalars['String']['input']>;
-  state?: InputMaybe<Scalars['String']['input']>;
-  suffix?: InputMaybe<Scalars['String']['input']>;
-  tags?: InputMaybe<Scalars['jsonb']['input']>;
-  timezone?: InputMaybe<Scalars['String']['input']>;
-  vip?: InputMaybe<Scalars['Boolean']['input']>;
-  zip?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate max on columns */
-export type Elation_Patients_Max_Fields = {
-  __typename?: 'elation_patients_max_fields';
-  actual_name?: Maybe<Scalars['String']['output']>;
-  address_line1?: Maybe<Scalars['String']['output']>;
-  address_line2?: Maybe<Scalars['String']['output']>;
-  caregiver_practice?: Maybe<Scalars['bigint']['output']>;
-  city?: Maybe<Scalars['String']['output']>;
-  created_date?: Maybe<Scalars['timestamptz']['output']>;
-  deleted_date?: Maybe<Scalars['timestamptz']['output']>;
-  dob?: Maybe<Scalars['date']['output']>;
-  ethnicity?: Maybe<Scalars['String']['output']>;
-  first_name?: Maybe<Scalars['String']['output']>;
-  gender_identity?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['bigint']['output']>;
-  last_modified?: Maybe<Scalars['timestamptz']['output']>;
-  last_name?: Maybe<Scalars['String']['output']>;
-  legal_gender_marker?: Maybe<Scalars['String']['output']>;
-  legal_gender_marker_display?: Maybe<Scalars['String']['output']>;
-  master_patient?: Maybe<Scalars['bigint']['output']>;
-  merged_into_chart?: Maybe<Scalars['bigint']['output']>;
-  middle_name?: Maybe<Scalars['String']['output']>;
-  mothers_maiden_name?: Maybe<Scalars['String']['output']>;
-  notes?: Maybe<Scalars['String']['output']>;
-  preferred_contact?: Maybe<Scalars['String']['output']>;
-  preferred_language?: Maybe<Scalars['String']['output']>;
-  preferred_service_location?: Maybe<Scalars['bigint']['output']>;
-  previous_first_name?: Maybe<Scalars['String']['output']>;
-  previous_last_name?: Maybe<Scalars['String']['output']>;
-  primary_care_provider?: Maybe<Scalars['bigint']['output']>;
-  primary_care_provider_npi?: Maybe<Scalars['String']['output']>;
-  primary_physician?: Maybe<Scalars['bigint']['output']>;
-  pronouns?: Maybe<Scalars['String']['output']>;
-  pronouns_display?: Maybe<Scalars['String']['output']>;
-  race?: Maybe<Scalars['String']['output']>;
-  sex?: Maybe<Scalars['String']['output']>;
-  sexual_orientation?: Maybe<Scalars['String']['output']>;
-  ssn?: Maybe<Scalars['String']['output']>;
-  state?: Maybe<Scalars['String']['output']>;
-  suffix?: Maybe<Scalars['String']['output']>;
-  timezone?: Maybe<Scalars['String']['output']>;
-  zip?: Maybe<Scalars['String']['output']>;
-};
-
-/** aggregate min on columns */
-export type Elation_Patients_Min_Fields = {
-  __typename?: 'elation_patients_min_fields';
-  actual_name?: Maybe<Scalars['String']['output']>;
-  address_line1?: Maybe<Scalars['String']['output']>;
-  address_line2?: Maybe<Scalars['String']['output']>;
-  caregiver_practice?: Maybe<Scalars['bigint']['output']>;
-  city?: Maybe<Scalars['String']['output']>;
-  created_date?: Maybe<Scalars['timestamptz']['output']>;
-  deleted_date?: Maybe<Scalars['timestamptz']['output']>;
-  dob?: Maybe<Scalars['date']['output']>;
-  ethnicity?: Maybe<Scalars['String']['output']>;
-  first_name?: Maybe<Scalars['String']['output']>;
-  gender_identity?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['bigint']['output']>;
-  last_modified?: Maybe<Scalars['timestamptz']['output']>;
-  last_name?: Maybe<Scalars['String']['output']>;
-  legal_gender_marker?: Maybe<Scalars['String']['output']>;
-  legal_gender_marker_display?: Maybe<Scalars['String']['output']>;
-  master_patient?: Maybe<Scalars['bigint']['output']>;
-  merged_into_chart?: Maybe<Scalars['bigint']['output']>;
-  middle_name?: Maybe<Scalars['String']['output']>;
-  mothers_maiden_name?: Maybe<Scalars['String']['output']>;
-  notes?: Maybe<Scalars['String']['output']>;
-  preferred_contact?: Maybe<Scalars['String']['output']>;
-  preferred_language?: Maybe<Scalars['String']['output']>;
-  preferred_service_location?: Maybe<Scalars['bigint']['output']>;
-  previous_first_name?: Maybe<Scalars['String']['output']>;
-  previous_last_name?: Maybe<Scalars['String']['output']>;
-  primary_care_provider?: Maybe<Scalars['bigint']['output']>;
-  primary_care_provider_npi?: Maybe<Scalars['String']['output']>;
-  primary_physician?: Maybe<Scalars['bigint']['output']>;
-  pronouns?: Maybe<Scalars['String']['output']>;
-  pronouns_display?: Maybe<Scalars['String']['output']>;
-  race?: Maybe<Scalars['String']['output']>;
-  sex?: Maybe<Scalars['String']['output']>;
-  sexual_orientation?: Maybe<Scalars['String']['output']>;
-  ssn?: Maybe<Scalars['String']['output']>;
-  state?: Maybe<Scalars['String']['output']>;
-  suffix?: Maybe<Scalars['String']['output']>;
-  timezone?: Maybe<Scalars['String']['output']>;
-  zip?: Maybe<Scalars['String']['output']>;
-};
-
-/** response of any mutation on the table "elation_patients" */
-export type Elation_Patients_Mutation_Response = {
-  __typename?: 'elation_patients_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Elation_Patients>;
-};
-
-/** on_conflict condition type for table "elation_patients" */
-export type Elation_Patients_On_Conflict = {
-  constraint: Elation_Patients_Constraint;
-  update_columns?: Array<Elation_Patients_Update_Column>;
-  where?: InputMaybe<Elation_Patients_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "elation_patients". */
-export type Elation_Patients_Order_By = {
-  actual_name?: InputMaybe<Order_By>;
-  address?: InputMaybe<Order_By>;
-  address_line1?: InputMaybe<Order_By>;
-  address_line2?: InputMaybe<Order_By>;
-  caregiver_practice?: InputMaybe<Order_By>;
-  city?: InputMaybe<Order_By>;
-  consents?: InputMaybe<Order_By>;
-  created_date?: InputMaybe<Order_By>;
-  deleted_date?: InputMaybe<Order_By>;
-  deleted_insurances?: InputMaybe<Order_By>;
-  dob?: InputMaybe<Order_By>;
-  emails?: InputMaybe<Order_By>;
-  emergency_contact?: InputMaybe<Order_By>;
-  employer?: InputMaybe<Order_By>;
-  ethnicity?: InputMaybe<Order_By>;
-  first_name?: InputMaybe<Order_By>;
-  gender_identity?: InputMaybe<Order_By>;
-  guarantor?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  insurances?: InputMaybe<Order_By>;
-  last_modified?: InputMaybe<Order_By>;
-  last_name?: InputMaybe<Order_By>;
-  legal_gender_marker?: InputMaybe<Order_By>;
-  legal_gender_marker_display?: InputMaybe<Order_By>;
-  master_patient?: InputMaybe<Order_By>;
-  merged_into_chart?: InputMaybe<Order_By>;
-  metadata?: InputMaybe<Order_By>;
-  middle_name?: InputMaybe<Order_By>;
-  mothers_maiden_name?: InputMaybe<Order_By>;
-  notes?: InputMaybe<Order_By>;
-  patient_status?: InputMaybe<Order_By>;
-  phones?: InputMaybe<Order_By>;
-  preference?: InputMaybe<Order_By>;
-  preferred_contact?: InputMaybe<Order_By>;
-  preferred_language?: InputMaybe<Order_By>;
-  preferred_service_location?: InputMaybe<Order_By>;
-  previous_address?: InputMaybe<Order_By>;
-  previous_first_name?: InputMaybe<Order_By>;
-  previous_last_name?: InputMaybe<Order_By>;
-  previous_name?: InputMaybe<Order_By>;
-  primary_care_provider?: InputMaybe<Order_By>;
-  primary_care_provider_npi?: InputMaybe<Order_By>;
-  primary_physician?: InputMaybe<Order_By>;
-  pronouns?: InputMaybe<Order_By>;
-  pronouns_display?: InputMaybe<Order_By>;
-  race?: InputMaybe<Order_By>;
-  sex?: InputMaybe<Order_By>;
-  sexual_orientation?: InputMaybe<Order_By>;
-  sms_opt_in_status?: InputMaybe<Order_By>;
-  ssn?: InputMaybe<Order_By>;
-  state?: InputMaybe<Order_By>;
-  suffix?: InputMaybe<Order_By>;
-  tags?: InputMaybe<Order_By>;
-  timezone?: InputMaybe<Order_By>;
-  vip?: InputMaybe<Order_By>;
-  zip?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: elation_patients */
-export type Elation_Patients_Pk_Columns_Input = {
-  id: Scalars['bigint']['input'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Elation_Patients_Prepend_Input = {
-  address?: InputMaybe<Scalars['jsonb']['input']>;
-  consents?: InputMaybe<Scalars['jsonb']['input']>;
-  deleted_insurances?: InputMaybe<Scalars['jsonb']['input']>;
-  emails?: InputMaybe<Scalars['jsonb']['input']>;
-  emergency_contact?: InputMaybe<Scalars['jsonb']['input']>;
-  employer?: InputMaybe<Scalars['jsonb']['input']>;
-  guarantor?: InputMaybe<Scalars['jsonb']['input']>;
-  insurances?: InputMaybe<Scalars['jsonb']['input']>;
-  metadata?: InputMaybe<Scalars['jsonb']['input']>;
-  patient_status?: InputMaybe<Scalars['jsonb']['input']>;
-  phones?: InputMaybe<Scalars['jsonb']['input']>;
-  preference?: InputMaybe<Scalars['jsonb']['input']>;
-  previous_address?: InputMaybe<Scalars['jsonb']['input']>;
-  previous_name?: InputMaybe<Scalars['jsonb']['input']>;
-  tags?: InputMaybe<Scalars['jsonb']['input']>;
-};
-
-/** select columns of table "elation_patients" */
-export enum Elation_Patients_Select_Column {
-  /** column name */
-  ActualName = 'actual_name',
-  /** column name */
-  Address = 'address',
-  /** column name */
-  AddressLine1 = 'address_line1',
-  /** column name */
-  AddressLine2 = 'address_line2',
-  /** column name */
-  CaregiverPractice = 'caregiver_practice',
-  /** column name */
-  City = 'city',
-  /** column name */
-  Consents = 'consents',
-  /** column name */
-  CreatedDate = 'created_date',
-  /** column name */
-  DeletedDate = 'deleted_date',
-  /** column name */
-  DeletedInsurances = 'deleted_insurances',
-  /** column name */
-  Dob = 'dob',
-  /** column name */
-  Emails = 'emails',
-  /** column name */
-  EmergencyContact = 'emergency_contact',
-  /** column name */
-  Employer = 'employer',
-  /** column name */
-  Ethnicity = 'ethnicity',
-  /** column name */
-  FirstName = 'first_name',
-  /** column name */
-  GenderIdentity = 'gender_identity',
-  /** column name */
-  Guarantor = 'guarantor',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Insurances = 'insurances',
-  /** column name */
-  LastModified = 'last_modified',
-  /** column name */
-  LastName = 'last_name',
-  /** column name */
-  LegalGenderMarker = 'legal_gender_marker',
-  /** column name */
-  LegalGenderMarkerDisplay = 'legal_gender_marker_display',
-  /** column name */
-  MasterPatient = 'master_patient',
-  /** column name */
-  MergedIntoChart = 'merged_into_chart',
-  /** column name */
-  Metadata = 'metadata',
-  /** column name */
-  MiddleName = 'middle_name',
-  /** column name */
-  MothersMaidenName = 'mothers_maiden_name',
-  /** column name */
-  Notes = 'notes',
-  /** column name */
-  PatientStatus = 'patient_status',
-  /** column name */
-  Phones = 'phones',
-  /** column name */
-  Preference = 'preference',
-  /** column name */
-  PreferredContact = 'preferred_contact',
-  /** column name */
-  PreferredLanguage = 'preferred_language',
-  /** column name */
-  PreferredServiceLocation = 'preferred_service_location',
-  /** column name */
-  PreviousAddress = 'previous_address',
-  /** column name */
-  PreviousFirstName = 'previous_first_name',
-  /** column name */
-  PreviousLastName = 'previous_last_name',
-  /** column name */
-  PreviousName = 'previous_name',
-  /** column name */
-  PrimaryCareProvider = 'primary_care_provider',
-  /** column name */
-  PrimaryCareProviderNpi = 'primary_care_provider_npi',
-  /** column name */
-  PrimaryPhysician = 'primary_physician',
-  /** column name */
-  Pronouns = 'pronouns',
-  /** column name */
-  PronounsDisplay = 'pronouns_display',
-  /** column name */
-  Race = 'race',
-  /** column name */
-  Sex = 'sex',
-  /** column name */
-  SexualOrientation = 'sexual_orientation',
-  /** column name */
-  SmsOptInStatus = 'sms_opt_in_status',
-  /** column name */
-  Ssn = 'ssn',
-  /** column name */
-  State = 'state',
-  /** column name */
-  Suffix = 'suffix',
-  /** column name */
-  Tags = 'tags',
-  /** column name */
-  Timezone = 'timezone',
-  /** column name */
-  Vip = 'vip',
-  /** column name */
-  Zip = 'zip'
-}
-
-/** input type for updating data in table "elation_patients" */
-export type Elation_Patients_Set_Input = {
-  actual_name?: InputMaybe<Scalars['String']['input']>;
-  address?: InputMaybe<Scalars['jsonb']['input']>;
-  address_line1?: InputMaybe<Scalars['String']['input']>;
-  address_line2?: InputMaybe<Scalars['String']['input']>;
-  caregiver_practice?: InputMaybe<Scalars['bigint']['input']>;
-  city?: InputMaybe<Scalars['String']['input']>;
-  consents?: InputMaybe<Scalars['jsonb']['input']>;
-  created_date?: InputMaybe<Scalars['timestamptz']['input']>;
-  deleted_date?: InputMaybe<Scalars['timestamptz']['input']>;
-  deleted_insurances?: InputMaybe<Scalars['jsonb']['input']>;
-  dob?: InputMaybe<Scalars['date']['input']>;
-  emails?: InputMaybe<Scalars['jsonb']['input']>;
-  emergency_contact?: InputMaybe<Scalars['jsonb']['input']>;
-  employer?: InputMaybe<Scalars['jsonb']['input']>;
-  ethnicity?: InputMaybe<Scalars['String']['input']>;
-  first_name?: InputMaybe<Scalars['String']['input']>;
-  gender_identity?: InputMaybe<Scalars['String']['input']>;
-  guarantor?: InputMaybe<Scalars['jsonb']['input']>;
-  id?: InputMaybe<Scalars['bigint']['input']>;
-  insurances?: InputMaybe<Scalars['jsonb']['input']>;
-  last_modified?: InputMaybe<Scalars['timestamptz']['input']>;
-  last_name?: InputMaybe<Scalars['String']['input']>;
-  legal_gender_marker?: InputMaybe<Scalars['String']['input']>;
-  legal_gender_marker_display?: InputMaybe<Scalars['String']['input']>;
-  master_patient?: InputMaybe<Scalars['bigint']['input']>;
-  merged_into_chart?: InputMaybe<Scalars['bigint']['input']>;
-  metadata?: InputMaybe<Scalars['jsonb']['input']>;
-  middle_name?: InputMaybe<Scalars['String']['input']>;
-  mothers_maiden_name?: InputMaybe<Scalars['String']['input']>;
-  notes?: InputMaybe<Scalars['String']['input']>;
-  patient_status?: InputMaybe<Scalars['jsonb']['input']>;
-  phones?: InputMaybe<Scalars['jsonb']['input']>;
-  preference?: InputMaybe<Scalars['jsonb']['input']>;
-  preferred_contact?: InputMaybe<Scalars['String']['input']>;
-  preferred_language?: InputMaybe<Scalars['String']['input']>;
-  preferred_service_location?: InputMaybe<Scalars['bigint']['input']>;
-  previous_address?: InputMaybe<Scalars['jsonb']['input']>;
-  previous_first_name?: InputMaybe<Scalars['String']['input']>;
-  previous_last_name?: InputMaybe<Scalars['String']['input']>;
-  previous_name?: InputMaybe<Scalars['jsonb']['input']>;
-  primary_care_provider?: InputMaybe<Scalars['bigint']['input']>;
-  primary_care_provider_npi?: InputMaybe<Scalars['String']['input']>;
-  primary_physician?: InputMaybe<Scalars['bigint']['input']>;
-  pronouns?: InputMaybe<Scalars['String']['input']>;
-  pronouns_display?: InputMaybe<Scalars['String']['input']>;
-  race?: InputMaybe<Scalars['String']['input']>;
-  sex?: InputMaybe<Scalars['String']['input']>;
-  sexual_orientation?: InputMaybe<Scalars['String']['input']>;
-  sms_opt_in_status?: InputMaybe<Scalars['Boolean']['input']>;
-  ssn?: InputMaybe<Scalars['String']['input']>;
-  state?: InputMaybe<Scalars['String']['input']>;
-  suffix?: InputMaybe<Scalars['String']['input']>;
-  tags?: InputMaybe<Scalars['jsonb']['input']>;
-  timezone?: InputMaybe<Scalars['String']['input']>;
-  vip?: InputMaybe<Scalars['Boolean']['input']>;
-  zip?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate stddev on columns */
-export type Elation_Patients_Stddev_Fields = {
-  __typename?: 'elation_patients_stddev_fields';
-  caregiver_practice?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  master_patient?: Maybe<Scalars['Float']['output']>;
-  merged_into_chart?: Maybe<Scalars['Float']['output']>;
-  preferred_service_location?: Maybe<Scalars['Float']['output']>;
-  primary_care_provider?: Maybe<Scalars['Float']['output']>;
-  primary_physician?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Elation_Patients_Stddev_Pop_Fields = {
-  __typename?: 'elation_patients_stddev_pop_fields';
-  caregiver_practice?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  master_patient?: Maybe<Scalars['Float']['output']>;
-  merged_into_chart?: Maybe<Scalars['Float']['output']>;
-  preferred_service_location?: Maybe<Scalars['Float']['output']>;
-  primary_care_provider?: Maybe<Scalars['Float']['output']>;
-  primary_physician?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Elation_Patients_Stddev_Samp_Fields = {
-  __typename?: 'elation_patients_stddev_samp_fields';
-  caregiver_practice?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  master_patient?: Maybe<Scalars['Float']['output']>;
-  merged_into_chart?: Maybe<Scalars['Float']['output']>;
-  preferred_service_location?: Maybe<Scalars['Float']['output']>;
-  primary_care_provider?: Maybe<Scalars['Float']['output']>;
-  primary_physician?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Streaming cursor of the table "elation_patients" */
-export type Elation_Patients_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Elation_Patients_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Elation_Patients_Stream_Cursor_Value_Input = {
-  actual_name?: InputMaybe<Scalars['String']['input']>;
-  address?: InputMaybe<Scalars['jsonb']['input']>;
-  address_line1?: InputMaybe<Scalars['String']['input']>;
-  address_line2?: InputMaybe<Scalars['String']['input']>;
-  caregiver_practice?: InputMaybe<Scalars['bigint']['input']>;
-  city?: InputMaybe<Scalars['String']['input']>;
-  consents?: InputMaybe<Scalars['jsonb']['input']>;
-  created_date?: InputMaybe<Scalars['timestamptz']['input']>;
-  deleted_date?: InputMaybe<Scalars['timestamptz']['input']>;
-  deleted_insurances?: InputMaybe<Scalars['jsonb']['input']>;
-  dob?: InputMaybe<Scalars['date']['input']>;
-  emails?: InputMaybe<Scalars['jsonb']['input']>;
-  emergency_contact?: InputMaybe<Scalars['jsonb']['input']>;
-  employer?: InputMaybe<Scalars['jsonb']['input']>;
-  ethnicity?: InputMaybe<Scalars['String']['input']>;
-  first_name?: InputMaybe<Scalars['String']['input']>;
-  gender_identity?: InputMaybe<Scalars['String']['input']>;
-  guarantor?: InputMaybe<Scalars['jsonb']['input']>;
-  id?: InputMaybe<Scalars['bigint']['input']>;
-  insurances?: InputMaybe<Scalars['jsonb']['input']>;
-  last_modified?: InputMaybe<Scalars['timestamptz']['input']>;
-  last_name?: InputMaybe<Scalars['String']['input']>;
-  legal_gender_marker?: InputMaybe<Scalars['String']['input']>;
-  legal_gender_marker_display?: InputMaybe<Scalars['String']['input']>;
-  master_patient?: InputMaybe<Scalars['bigint']['input']>;
-  merged_into_chart?: InputMaybe<Scalars['bigint']['input']>;
-  metadata?: InputMaybe<Scalars['jsonb']['input']>;
-  middle_name?: InputMaybe<Scalars['String']['input']>;
-  mothers_maiden_name?: InputMaybe<Scalars['String']['input']>;
-  notes?: InputMaybe<Scalars['String']['input']>;
-  patient_status?: InputMaybe<Scalars['jsonb']['input']>;
-  phones?: InputMaybe<Scalars['jsonb']['input']>;
-  preference?: InputMaybe<Scalars['jsonb']['input']>;
-  preferred_contact?: InputMaybe<Scalars['String']['input']>;
-  preferred_language?: InputMaybe<Scalars['String']['input']>;
-  preferred_service_location?: InputMaybe<Scalars['bigint']['input']>;
-  previous_address?: InputMaybe<Scalars['jsonb']['input']>;
-  previous_first_name?: InputMaybe<Scalars['String']['input']>;
-  previous_last_name?: InputMaybe<Scalars['String']['input']>;
-  previous_name?: InputMaybe<Scalars['jsonb']['input']>;
-  primary_care_provider?: InputMaybe<Scalars['bigint']['input']>;
-  primary_care_provider_npi?: InputMaybe<Scalars['String']['input']>;
-  primary_physician?: InputMaybe<Scalars['bigint']['input']>;
-  pronouns?: InputMaybe<Scalars['String']['input']>;
-  pronouns_display?: InputMaybe<Scalars['String']['input']>;
-  race?: InputMaybe<Scalars['String']['input']>;
-  sex?: InputMaybe<Scalars['String']['input']>;
-  sexual_orientation?: InputMaybe<Scalars['String']['input']>;
-  sms_opt_in_status?: InputMaybe<Scalars['Boolean']['input']>;
-  ssn?: InputMaybe<Scalars['String']['input']>;
-  state?: InputMaybe<Scalars['String']['input']>;
-  suffix?: InputMaybe<Scalars['String']['input']>;
-  tags?: InputMaybe<Scalars['jsonb']['input']>;
-  timezone?: InputMaybe<Scalars['String']['input']>;
-  vip?: InputMaybe<Scalars['Boolean']['input']>;
-  zip?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate sum on columns */
-export type Elation_Patients_Sum_Fields = {
-  __typename?: 'elation_patients_sum_fields';
-  caregiver_practice?: Maybe<Scalars['bigint']['output']>;
-  id?: Maybe<Scalars['bigint']['output']>;
-  master_patient?: Maybe<Scalars['bigint']['output']>;
-  merged_into_chart?: Maybe<Scalars['bigint']['output']>;
-  preferred_service_location?: Maybe<Scalars['bigint']['output']>;
-  primary_care_provider?: Maybe<Scalars['bigint']['output']>;
-  primary_physician?: Maybe<Scalars['bigint']['output']>;
-};
-
-/** update columns of table "elation_patients" */
-export enum Elation_Patients_Update_Column {
-  /** column name */
-  ActualName = 'actual_name',
-  /** column name */
-  Address = 'address',
-  /** column name */
-  AddressLine1 = 'address_line1',
-  /** column name */
-  AddressLine2 = 'address_line2',
-  /** column name */
-  CaregiverPractice = 'caregiver_practice',
-  /** column name */
-  City = 'city',
-  /** column name */
-  Consents = 'consents',
-  /** column name */
-  CreatedDate = 'created_date',
-  /** column name */
-  DeletedDate = 'deleted_date',
-  /** column name */
-  DeletedInsurances = 'deleted_insurances',
-  /** column name */
-  Dob = 'dob',
-  /** column name */
-  Emails = 'emails',
-  /** column name */
-  EmergencyContact = 'emergency_contact',
-  /** column name */
-  Employer = 'employer',
-  /** column name */
-  Ethnicity = 'ethnicity',
-  /** column name */
-  FirstName = 'first_name',
-  /** column name */
-  GenderIdentity = 'gender_identity',
-  /** column name */
-  Guarantor = 'guarantor',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Insurances = 'insurances',
-  /** column name */
-  LastModified = 'last_modified',
-  /** column name */
-  LastName = 'last_name',
-  /** column name */
-  LegalGenderMarker = 'legal_gender_marker',
-  /** column name */
-  LegalGenderMarkerDisplay = 'legal_gender_marker_display',
-  /** column name */
-  MasterPatient = 'master_patient',
-  /** column name */
-  MergedIntoChart = 'merged_into_chart',
-  /** column name */
-  Metadata = 'metadata',
-  /** column name */
-  MiddleName = 'middle_name',
-  /** column name */
-  MothersMaidenName = 'mothers_maiden_name',
-  /** column name */
-  Notes = 'notes',
-  /** column name */
-  PatientStatus = 'patient_status',
-  /** column name */
-  Phones = 'phones',
-  /** column name */
-  Preference = 'preference',
-  /** column name */
-  PreferredContact = 'preferred_contact',
-  /** column name */
-  PreferredLanguage = 'preferred_language',
-  /** column name */
-  PreferredServiceLocation = 'preferred_service_location',
-  /** column name */
-  PreviousAddress = 'previous_address',
-  /** column name */
-  PreviousFirstName = 'previous_first_name',
-  /** column name */
-  PreviousLastName = 'previous_last_name',
-  /** column name */
-  PreviousName = 'previous_name',
-  /** column name */
-  PrimaryCareProvider = 'primary_care_provider',
-  /** column name */
-  PrimaryCareProviderNpi = 'primary_care_provider_npi',
-  /** column name */
-  PrimaryPhysician = 'primary_physician',
-  /** column name */
-  Pronouns = 'pronouns',
-  /** column name */
-  PronounsDisplay = 'pronouns_display',
-  /** column name */
-  Race = 'race',
-  /** column name */
-  Sex = 'sex',
-  /** column name */
-  SexualOrientation = 'sexual_orientation',
-  /** column name */
-  SmsOptInStatus = 'sms_opt_in_status',
-  /** column name */
-  Ssn = 'ssn',
-  /** column name */
-  State = 'state',
-  /** column name */
-  Suffix = 'suffix',
-  /** column name */
-  Tags = 'tags',
-  /** column name */
-  Timezone = 'timezone',
-  /** column name */
-  Vip = 'vip',
-  /** column name */
-  Zip = 'zip'
-}
-
-export type Elation_Patients_Updates = {
-  /** append existing jsonb value of filtered columns with new jsonb value */
-  _append?: InputMaybe<Elation_Patients_Append_Input>;
-  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-  _delete_at_path?: InputMaybe<Elation_Patients_Delete_At_Path_Input>;
-  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-  _delete_elem?: InputMaybe<Elation_Patients_Delete_Elem_Input>;
-  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
-  _delete_key?: InputMaybe<Elation_Patients_Delete_Key_Input>;
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Elation_Patients_Inc_Input>;
-  /** prepend existing jsonb value of filtered columns with new jsonb value */
-  _prepend?: InputMaybe<Elation_Patients_Prepend_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Elation_Patients_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Elation_Patients_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type Elation_Patients_Var_Pop_Fields = {
-  __typename?: 'elation_patients_var_pop_fields';
-  caregiver_practice?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  master_patient?: Maybe<Scalars['Float']['output']>;
-  merged_into_chart?: Maybe<Scalars['Float']['output']>;
-  preferred_service_location?: Maybe<Scalars['Float']['output']>;
-  primary_care_provider?: Maybe<Scalars['Float']['output']>;
-  primary_physician?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Elation_Patients_Var_Samp_Fields = {
-  __typename?: 'elation_patients_var_samp_fields';
-  caregiver_practice?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  master_patient?: Maybe<Scalars['Float']['output']>;
-  merged_into_chart?: Maybe<Scalars['Float']['output']>;
-  preferred_service_location?: Maybe<Scalars['Float']['output']>;
-  primary_care_provider?: Maybe<Scalars['Float']['output']>;
-  primary_physician?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Elation_Patients_Variance_Fields = {
-  __typename?: 'elation_patients_variance_fields';
-  caregiver_practice?: Maybe<Scalars['Float']['output']>;
-  id?: Maybe<Scalars['Float']['output']>;
-  master_patient?: Maybe<Scalars['Float']['output']>;
-  merged_into_chart?: Maybe<Scalars['Float']['output']>;
-  preferred_service_location?: Maybe<Scalars['Float']['output']>;
-  primary_care_provider?: Maybe<Scalars['Float']['output']>;
-  primary_physician?: Maybe<Scalars['Float']['output']>;
-};
-
-/** columns and relationships of "hint_patients" */
-export type Hint_Patients = {
-  __typename?: 'hint_patients';
-  account?: Maybe<Scalars['jsonb']['output']>;
-  address_city?: Maybe<Scalars['String']['output']>;
-  address_country?: Maybe<Scalars['String']['output']>;
-  address_line1?: Maybe<Scalars['String']['output']>;
-  address_line2?: Maybe<Scalars['String']['output']>;
-  address_state?: Maybe<Scalars['String']['output']>;
-  address_zip?: Maybe<Scalars['String']['output']>;
-  age?: Maybe<Scalars['Int']['output']>;
-  chosen_first_name?: Maybe<Scalars['String']['output']>;
-  chosen_last_name?: Maybe<Scalars['String']['output']>;
-  chosen_middle_name?: Maybe<Scalars['String']['output']>;
-  chosen_suffix?: Maybe<Scalars['String']['output']>;
-  chosen_title?: Maybe<Scalars['String']['output']>;
-  company?: Maybe<Scalars['jsonb']['output']>;
-  created_at: Scalars['timestamptz']['output'];
-  dob?: Maybe<Scalars['date']['output']>;
-  electronic_communication_consent_accepted?: Maybe<Scalars['Boolean']['output']>;
-  electronic_communication_consent_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  email?: Maybe<Scalars['String']['output']>;
-  external_link_id?: Maybe<Scalars['String']['output']>;
-  external_records?: Maybe<Scalars['jsonb']['output']>;
-  first_name?: Maybe<Scalars['String']['output']>;
-  gender?: Maybe<Scalars['String']['output']>;
-  gender_identity?: Maybe<Scalars['String']['output']>;
-  gender_other?: Maybe<Scalars['String']['output']>;
-  health_insurance_group_id?: Maybe<Scalars['String']['output']>;
-  health_insurance_member_id?: Maybe<Scalars['String']['output']>;
-  health_insurance_payer_id?: Maybe<Scalars['String']['output']>;
-  health_insurance_payer_name?: Maybe<Scalars['String']['output']>;
-  hipaa_authorization_accepted?: Maybe<Scalars['Boolean']['output']>;
-  hipaa_authorization_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  id: Scalars['String']['output'];
-  import_id?: Maybe<Scalars['String']['output']>;
-  import_source?: Maybe<Scalars['String']['output']>;
-  integration_error_message?: Maybe<Scalars['String']['output']>;
-  integration_last_synced_at?: Maybe<Scalars['timestamptz']['output']>;
-  integration_record_id?: Maybe<Scalars['String']['output']>;
-  integration_sync_status?: Maybe<Scalars['String']['output']>;
-  integration_web_link?: Maybe<Scalars['String']['output']>;
-  joined_practice_date?: Maybe<Scalars['date']['output']>;
-  known_practice?: Maybe<Scalars['jsonb']['output']>;
-  last_name?: Maybe<Scalars['String']['output']>;
-  lead_source?: Maybe<Scalars['jsonb']['output']>;
-  lead_source_other?: Maybe<Scalars['String']['output']>;
-  location?: Maybe<Scalars['jsonb']['output']>;
-  location_group?: Maybe<Scalars['jsonb']['output']>;
-  membership_status?: Maybe<Scalars['String']['output']>;
-  memberships?: Maybe<Scalars['jsonb']['output']>;
-  merged_into?: Maybe<Scalars['jsonb']['output']>;
-  middle_name?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  patient_agreement_accepted?: Maybe<Scalars['Boolean']['output']>;
-  patient_agreement_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  phones?: Maybe<Scalars['jsonb']['output']>;
-  practitioner?: Maybe<Scalars['jsonb']['output']>;
-  practitioner_group?: Maybe<Scalars['jsonb']['output']>;
-  preferred_language?: Maybe<Scalars['String']['output']>;
-  pronouns?: Maybe<Scalars['String']['output']>;
-  provider_web_link?: Maybe<Scalars['String']['output']>;
-  sex?: Maybe<Scalars['String']['output']>;
-  sponsorships?: Maybe<Scalars['jsonb']['output']>;
-  ssn?: Maybe<Scalars['jsonb']['output']>;
-  suffix?: Maybe<Scalars['String']['output']>;
-  terms_accepted?: Maybe<Scalars['Boolean']['output']>;
-  terms_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  updated_at: Scalars['timestamptz']['output'];
-  uses_tobacco?: Maybe<Scalars['Boolean']['output']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsAccountArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsCompanyArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsExternal_RecordsArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsKnown_PracticeArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsLead_SourceArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsLocationArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsLocation_GroupArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsMembershipsArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsMerged_IntoArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsPhonesArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsPractitionerArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsPractitioner_GroupArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsSponsorshipsArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** columns and relationships of "hint_patients" */
-export type Hint_PatientsSsnArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregated selection of "hint_patients" */
-export type Hint_Patients_Aggregate = {
-  __typename?: 'hint_patients_aggregate';
-  aggregate?: Maybe<Hint_Patients_Aggregate_Fields>;
-  nodes: Array<Hint_Patients>;
-};
-
-/** aggregate fields of "hint_patients" */
-export type Hint_Patients_Aggregate_Fields = {
-  __typename?: 'hint_patients_aggregate_fields';
-  avg?: Maybe<Hint_Patients_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Hint_Patients_Max_Fields>;
-  min?: Maybe<Hint_Patients_Min_Fields>;
-  stddev?: Maybe<Hint_Patients_Stddev_Fields>;
-  stddev_pop?: Maybe<Hint_Patients_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Hint_Patients_Stddev_Samp_Fields>;
-  sum?: Maybe<Hint_Patients_Sum_Fields>;
-  var_pop?: Maybe<Hint_Patients_Var_Pop_Fields>;
-  var_samp?: Maybe<Hint_Patients_Var_Samp_Fields>;
-  variance?: Maybe<Hint_Patients_Variance_Fields>;
-};
-
-
-/** aggregate fields of "hint_patients" */
-export type Hint_Patients_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Hint_Patients_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Hint_Patients_Append_Input = {
-  account?: InputMaybe<Scalars['jsonb']['input']>;
-  company?: InputMaybe<Scalars['jsonb']['input']>;
-  external_records?: InputMaybe<Scalars['jsonb']['input']>;
-  known_practice?: InputMaybe<Scalars['jsonb']['input']>;
-  lead_source?: InputMaybe<Scalars['jsonb']['input']>;
-  location?: InputMaybe<Scalars['jsonb']['input']>;
-  location_group?: InputMaybe<Scalars['jsonb']['input']>;
-  memberships?: InputMaybe<Scalars['jsonb']['input']>;
-  merged_into?: InputMaybe<Scalars['jsonb']['input']>;
-  phones?: InputMaybe<Scalars['jsonb']['input']>;
-  practitioner?: InputMaybe<Scalars['jsonb']['input']>;
-  practitioner_group?: InputMaybe<Scalars['jsonb']['input']>;
-  sponsorships?: InputMaybe<Scalars['jsonb']['input']>;
-  ssn?: InputMaybe<Scalars['jsonb']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Hint_Patients_Avg_Fields = {
-  __typename?: 'hint_patients_avg_fields';
-  age?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Boolean expression to filter rows from the table "hint_patients". All fields are combined with a logical 'AND'. */
-export type Hint_Patients_Bool_Exp = {
-  _and?: InputMaybe<Array<Hint_Patients_Bool_Exp>>;
-  _not?: InputMaybe<Hint_Patients_Bool_Exp>;
-  _or?: InputMaybe<Array<Hint_Patients_Bool_Exp>>;
-  account?: InputMaybe<Jsonb_Comparison_Exp>;
-  address_city?: InputMaybe<String_Comparison_Exp>;
-  address_country?: InputMaybe<String_Comparison_Exp>;
-  address_line1?: InputMaybe<String_Comparison_Exp>;
-  address_line2?: InputMaybe<String_Comparison_Exp>;
-  address_state?: InputMaybe<String_Comparison_Exp>;
-  address_zip?: InputMaybe<String_Comparison_Exp>;
-  age?: InputMaybe<Int_Comparison_Exp>;
-  chosen_first_name?: InputMaybe<String_Comparison_Exp>;
-  chosen_last_name?: InputMaybe<String_Comparison_Exp>;
-  chosen_middle_name?: InputMaybe<String_Comparison_Exp>;
-  chosen_suffix?: InputMaybe<String_Comparison_Exp>;
-  chosen_title?: InputMaybe<String_Comparison_Exp>;
-  company?: InputMaybe<Jsonb_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  dob?: InputMaybe<Date_Comparison_Exp>;
-  electronic_communication_consent_accepted?: InputMaybe<Boolean_Comparison_Exp>;
-  electronic_communication_consent_accepted_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  email?: InputMaybe<String_Comparison_Exp>;
-  external_link_id?: InputMaybe<String_Comparison_Exp>;
-  external_records?: InputMaybe<Jsonb_Comparison_Exp>;
-  first_name?: InputMaybe<String_Comparison_Exp>;
-  gender?: InputMaybe<String_Comparison_Exp>;
-  gender_identity?: InputMaybe<String_Comparison_Exp>;
-  gender_other?: InputMaybe<String_Comparison_Exp>;
-  health_insurance_group_id?: InputMaybe<String_Comparison_Exp>;
-  health_insurance_member_id?: InputMaybe<String_Comparison_Exp>;
-  health_insurance_payer_id?: InputMaybe<String_Comparison_Exp>;
-  health_insurance_payer_name?: InputMaybe<String_Comparison_Exp>;
-  hipaa_authorization_accepted?: InputMaybe<Boolean_Comparison_Exp>;
-  hipaa_authorization_accepted_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  import_id?: InputMaybe<String_Comparison_Exp>;
-  import_source?: InputMaybe<String_Comparison_Exp>;
-  integration_error_message?: InputMaybe<String_Comparison_Exp>;
-  integration_last_synced_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  integration_record_id?: InputMaybe<String_Comparison_Exp>;
-  integration_sync_status?: InputMaybe<String_Comparison_Exp>;
-  integration_web_link?: InputMaybe<String_Comparison_Exp>;
-  joined_practice_date?: InputMaybe<Date_Comparison_Exp>;
-  known_practice?: InputMaybe<Jsonb_Comparison_Exp>;
-  last_name?: InputMaybe<String_Comparison_Exp>;
-  lead_source?: InputMaybe<Jsonb_Comparison_Exp>;
-  lead_source_other?: InputMaybe<String_Comparison_Exp>;
-  location?: InputMaybe<Jsonb_Comparison_Exp>;
-  location_group?: InputMaybe<Jsonb_Comparison_Exp>;
-  membership_status?: InputMaybe<String_Comparison_Exp>;
-  memberships?: InputMaybe<Jsonb_Comparison_Exp>;
-  merged_into?: InputMaybe<Jsonb_Comparison_Exp>;
-  middle_name?: InputMaybe<String_Comparison_Exp>;
-  name?: InputMaybe<String_Comparison_Exp>;
-  patient_agreement_accepted?: InputMaybe<Boolean_Comparison_Exp>;
-  patient_agreement_accepted_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  phones?: InputMaybe<Jsonb_Comparison_Exp>;
-  practitioner?: InputMaybe<Jsonb_Comparison_Exp>;
-  practitioner_group?: InputMaybe<Jsonb_Comparison_Exp>;
-  preferred_language?: InputMaybe<String_Comparison_Exp>;
-  pronouns?: InputMaybe<String_Comparison_Exp>;
-  provider_web_link?: InputMaybe<String_Comparison_Exp>;
-  sex?: InputMaybe<String_Comparison_Exp>;
-  sponsorships?: InputMaybe<Jsonb_Comparison_Exp>;
-  ssn?: InputMaybe<Jsonb_Comparison_Exp>;
-  suffix?: InputMaybe<String_Comparison_Exp>;
-  terms_accepted?: InputMaybe<Boolean_Comparison_Exp>;
-  terms_accepted_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  uses_tobacco?: InputMaybe<Boolean_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "hint_patients" */
-export enum Hint_Patients_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  HintPatientsPkey = 'hint_patients_pkey'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Hint_Patients_Delete_At_Path_Input = {
-  account?: InputMaybe<Array<Scalars['String']['input']>>;
-  company?: InputMaybe<Array<Scalars['String']['input']>>;
-  external_records?: InputMaybe<Array<Scalars['String']['input']>>;
-  known_practice?: InputMaybe<Array<Scalars['String']['input']>>;
-  lead_source?: InputMaybe<Array<Scalars['String']['input']>>;
-  location?: InputMaybe<Array<Scalars['String']['input']>>;
-  location_group?: InputMaybe<Array<Scalars['String']['input']>>;
-  memberships?: InputMaybe<Array<Scalars['String']['input']>>;
-  merged_into?: InputMaybe<Array<Scalars['String']['input']>>;
-  phones?: InputMaybe<Array<Scalars['String']['input']>>;
-  practitioner?: InputMaybe<Array<Scalars['String']['input']>>;
-  practitioner_group?: InputMaybe<Array<Scalars['String']['input']>>;
-  sponsorships?: InputMaybe<Array<Scalars['String']['input']>>;
-  ssn?: InputMaybe<Array<Scalars['String']['input']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Hint_Patients_Delete_Elem_Input = {
-  account?: InputMaybe<Scalars['Int']['input']>;
-  company?: InputMaybe<Scalars['Int']['input']>;
-  external_records?: InputMaybe<Scalars['Int']['input']>;
-  known_practice?: InputMaybe<Scalars['Int']['input']>;
-  lead_source?: InputMaybe<Scalars['Int']['input']>;
-  location?: InputMaybe<Scalars['Int']['input']>;
-  location_group?: InputMaybe<Scalars['Int']['input']>;
-  memberships?: InputMaybe<Scalars['Int']['input']>;
-  merged_into?: InputMaybe<Scalars['Int']['input']>;
-  phones?: InputMaybe<Scalars['Int']['input']>;
-  practitioner?: InputMaybe<Scalars['Int']['input']>;
-  practitioner_group?: InputMaybe<Scalars['Int']['input']>;
-  sponsorships?: InputMaybe<Scalars['Int']['input']>;
-  ssn?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Hint_Patients_Delete_Key_Input = {
-  account?: InputMaybe<Scalars['String']['input']>;
-  company?: InputMaybe<Scalars['String']['input']>;
-  external_records?: InputMaybe<Scalars['String']['input']>;
-  known_practice?: InputMaybe<Scalars['String']['input']>;
-  lead_source?: InputMaybe<Scalars['String']['input']>;
-  location?: InputMaybe<Scalars['String']['input']>;
-  location_group?: InputMaybe<Scalars['String']['input']>;
-  memberships?: InputMaybe<Scalars['String']['input']>;
-  merged_into?: InputMaybe<Scalars['String']['input']>;
-  phones?: InputMaybe<Scalars['String']['input']>;
-  practitioner?: InputMaybe<Scalars['String']['input']>;
-  practitioner_group?: InputMaybe<Scalars['String']['input']>;
-  sponsorships?: InputMaybe<Scalars['String']['input']>;
-  ssn?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** input type for incrementing numeric columns in table "hint_patients" */
-export type Hint_Patients_Inc_Input = {
-  age?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "hint_patients" */
-export type Hint_Patients_Insert_Input = {
-  account?: InputMaybe<Scalars['jsonb']['input']>;
-  address_city?: InputMaybe<Scalars['String']['input']>;
-  address_country?: InputMaybe<Scalars['String']['input']>;
-  address_line1?: InputMaybe<Scalars['String']['input']>;
-  address_line2?: InputMaybe<Scalars['String']['input']>;
-  address_state?: InputMaybe<Scalars['String']['input']>;
-  address_zip?: InputMaybe<Scalars['String']['input']>;
-  age?: InputMaybe<Scalars['Int']['input']>;
-  chosen_first_name?: InputMaybe<Scalars['String']['input']>;
-  chosen_last_name?: InputMaybe<Scalars['String']['input']>;
-  chosen_middle_name?: InputMaybe<Scalars['String']['input']>;
-  chosen_suffix?: InputMaybe<Scalars['String']['input']>;
-  chosen_title?: InputMaybe<Scalars['String']['input']>;
-  company?: InputMaybe<Scalars['jsonb']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  dob?: InputMaybe<Scalars['date']['input']>;
-  electronic_communication_consent_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  electronic_communication_consent_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  external_link_id?: InputMaybe<Scalars['String']['input']>;
-  external_records?: InputMaybe<Scalars['jsonb']['input']>;
-  first_name?: InputMaybe<Scalars['String']['input']>;
-  gender?: InputMaybe<Scalars['String']['input']>;
-  gender_identity?: InputMaybe<Scalars['String']['input']>;
-  gender_other?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_group_id?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_member_id?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_payer_id?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_payer_name?: InputMaybe<Scalars['String']['input']>;
-  hipaa_authorization_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  hipaa_authorization_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  import_id?: InputMaybe<Scalars['String']['input']>;
-  import_source?: InputMaybe<Scalars['String']['input']>;
-  integration_error_message?: InputMaybe<Scalars['String']['input']>;
-  integration_last_synced_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  integration_record_id?: InputMaybe<Scalars['String']['input']>;
-  integration_sync_status?: InputMaybe<Scalars['String']['input']>;
-  integration_web_link?: InputMaybe<Scalars['String']['input']>;
-  joined_practice_date?: InputMaybe<Scalars['date']['input']>;
-  known_practice?: InputMaybe<Scalars['jsonb']['input']>;
-  last_name?: InputMaybe<Scalars['String']['input']>;
-  lead_source?: InputMaybe<Scalars['jsonb']['input']>;
-  lead_source_other?: InputMaybe<Scalars['String']['input']>;
-  location?: InputMaybe<Scalars['jsonb']['input']>;
-  location_group?: InputMaybe<Scalars['jsonb']['input']>;
-  membership_status?: InputMaybe<Scalars['String']['input']>;
-  memberships?: InputMaybe<Scalars['jsonb']['input']>;
-  merged_into?: InputMaybe<Scalars['jsonb']['input']>;
-  middle_name?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  patient_agreement_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  patient_agreement_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  phones?: InputMaybe<Scalars['jsonb']['input']>;
-  practitioner?: InputMaybe<Scalars['jsonb']['input']>;
-  practitioner_group?: InputMaybe<Scalars['jsonb']['input']>;
-  preferred_language?: InputMaybe<Scalars['String']['input']>;
-  pronouns?: InputMaybe<Scalars['String']['input']>;
-  provider_web_link?: InputMaybe<Scalars['String']['input']>;
-  sex?: InputMaybe<Scalars['String']['input']>;
-  sponsorships?: InputMaybe<Scalars['jsonb']['input']>;
-  ssn?: InputMaybe<Scalars['jsonb']['input']>;
-  suffix?: InputMaybe<Scalars['String']['input']>;
-  terms_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  terms_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  uses_tobacco?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate max on columns */
-export type Hint_Patients_Max_Fields = {
-  __typename?: 'hint_patients_max_fields';
-  address_city?: Maybe<Scalars['String']['output']>;
-  address_country?: Maybe<Scalars['String']['output']>;
-  address_line1?: Maybe<Scalars['String']['output']>;
-  address_line2?: Maybe<Scalars['String']['output']>;
-  address_state?: Maybe<Scalars['String']['output']>;
-  address_zip?: Maybe<Scalars['String']['output']>;
-  age?: Maybe<Scalars['Int']['output']>;
-  chosen_first_name?: Maybe<Scalars['String']['output']>;
-  chosen_last_name?: Maybe<Scalars['String']['output']>;
-  chosen_middle_name?: Maybe<Scalars['String']['output']>;
-  chosen_suffix?: Maybe<Scalars['String']['output']>;
-  chosen_title?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  dob?: Maybe<Scalars['date']['output']>;
-  electronic_communication_consent_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  email?: Maybe<Scalars['String']['output']>;
-  external_link_id?: Maybe<Scalars['String']['output']>;
-  first_name?: Maybe<Scalars['String']['output']>;
-  gender?: Maybe<Scalars['String']['output']>;
-  gender_identity?: Maybe<Scalars['String']['output']>;
-  gender_other?: Maybe<Scalars['String']['output']>;
-  health_insurance_group_id?: Maybe<Scalars['String']['output']>;
-  health_insurance_member_id?: Maybe<Scalars['String']['output']>;
-  health_insurance_payer_id?: Maybe<Scalars['String']['output']>;
-  health_insurance_payer_name?: Maybe<Scalars['String']['output']>;
-  hipaa_authorization_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  import_id?: Maybe<Scalars['String']['output']>;
-  import_source?: Maybe<Scalars['String']['output']>;
-  integration_error_message?: Maybe<Scalars['String']['output']>;
-  integration_last_synced_at?: Maybe<Scalars['timestamptz']['output']>;
-  integration_record_id?: Maybe<Scalars['String']['output']>;
-  integration_sync_status?: Maybe<Scalars['String']['output']>;
-  integration_web_link?: Maybe<Scalars['String']['output']>;
-  joined_practice_date?: Maybe<Scalars['date']['output']>;
-  last_name?: Maybe<Scalars['String']['output']>;
-  lead_source_other?: Maybe<Scalars['String']['output']>;
-  membership_status?: Maybe<Scalars['String']['output']>;
-  middle_name?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  patient_agreement_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  preferred_language?: Maybe<Scalars['String']['output']>;
-  pronouns?: Maybe<Scalars['String']['output']>;
-  provider_web_link?: Maybe<Scalars['String']['output']>;
-  sex?: Maybe<Scalars['String']['output']>;
-  suffix?: Maybe<Scalars['String']['output']>;
-  terms_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
-};
-
-/** aggregate min on columns */
-export type Hint_Patients_Min_Fields = {
-  __typename?: 'hint_patients_min_fields';
-  address_city?: Maybe<Scalars['String']['output']>;
-  address_country?: Maybe<Scalars['String']['output']>;
-  address_line1?: Maybe<Scalars['String']['output']>;
-  address_line2?: Maybe<Scalars['String']['output']>;
-  address_state?: Maybe<Scalars['String']['output']>;
-  address_zip?: Maybe<Scalars['String']['output']>;
-  age?: Maybe<Scalars['Int']['output']>;
-  chosen_first_name?: Maybe<Scalars['String']['output']>;
-  chosen_last_name?: Maybe<Scalars['String']['output']>;
-  chosen_middle_name?: Maybe<Scalars['String']['output']>;
-  chosen_suffix?: Maybe<Scalars['String']['output']>;
-  chosen_title?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  dob?: Maybe<Scalars['date']['output']>;
-  electronic_communication_consent_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  email?: Maybe<Scalars['String']['output']>;
-  external_link_id?: Maybe<Scalars['String']['output']>;
-  first_name?: Maybe<Scalars['String']['output']>;
-  gender?: Maybe<Scalars['String']['output']>;
-  gender_identity?: Maybe<Scalars['String']['output']>;
-  gender_other?: Maybe<Scalars['String']['output']>;
-  health_insurance_group_id?: Maybe<Scalars['String']['output']>;
-  health_insurance_member_id?: Maybe<Scalars['String']['output']>;
-  health_insurance_payer_id?: Maybe<Scalars['String']['output']>;
-  health_insurance_payer_name?: Maybe<Scalars['String']['output']>;
-  hipaa_authorization_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  import_id?: Maybe<Scalars['String']['output']>;
-  import_source?: Maybe<Scalars['String']['output']>;
-  integration_error_message?: Maybe<Scalars['String']['output']>;
-  integration_last_synced_at?: Maybe<Scalars['timestamptz']['output']>;
-  integration_record_id?: Maybe<Scalars['String']['output']>;
-  integration_sync_status?: Maybe<Scalars['String']['output']>;
-  integration_web_link?: Maybe<Scalars['String']['output']>;
-  joined_practice_date?: Maybe<Scalars['date']['output']>;
-  last_name?: Maybe<Scalars['String']['output']>;
-  lead_source_other?: Maybe<Scalars['String']['output']>;
-  membership_status?: Maybe<Scalars['String']['output']>;
-  middle_name?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  patient_agreement_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  preferred_language?: Maybe<Scalars['String']['output']>;
-  pronouns?: Maybe<Scalars['String']['output']>;
-  provider_web_link?: Maybe<Scalars['String']['output']>;
-  sex?: Maybe<Scalars['String']['output']>;
-  suffix?: Maybe<Scalars['String']['output']>;
-  terms_accepted_at?: Maybe<Scalars['timestamptz']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
-};
-
-/** response of any mutation on the table "hint_patients" */
-export type Hint_Patients_Mutation_Response = {
-  __typename?: 'hint_patients_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Hint_Patients>;
-};
-
-/** on_conflict condition type for table "hint_patients" */
-export type Hint_Patients_On_Conflict = {
-  constraint: Hint_Patients_Constraint;
-  update_columns?: Array<Hint_Patients_Update_Column>;
-  where?: InputMaybe<Hint_Patients_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "hint_patients". */
-export type Hint_Patients_Order_By = {
-  account?: InputMaybe<Order_By>;
-  address_city?: InputMaybe<Order_By>;
-  address_country?: InputMaybe<Order_By>;
-  address_line1?: InputMaybe<Order_By>;
-  address_line2?: InputMaybe<Order_By>;
-  address_state?: InputMaybe<Order_By>;
-  address_zip?: InputMaybe<Order_By>;
-  age?: InputMaybe<Order_By>;
-  chosen_first_name?: InputMaybe<Order_By>;
-  chosen_last_name?: InputMaybe<Order_By>;
-  chosen_middle_name?: InputMaybe<Order_By>;
-  chosen_suffix?: InputMaybe<Order_By>;
-  chosen_title?: InputMaybe<Order_By>;
-  company?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  dob?: InputMaybe<Order_By>;
-  electronic_communication_consent_accepted?: InputMaybe<Order_By>;
-  electronic_communication_consent_accepted_at?: InputMaybe<Order_By>;
-  email?: InputMaybe<Order_By>;
-  external_link_id?: InputMaybe<Order_By>;
-  external_records?: InputMaybe<Order_By>;
-  first_name?: InputMaybe<Order_By>;
-  gender?: InputMaybe<Order_By>;
-  gender_identity?: InputMaybe<Order_By>;
-  gender_other?: InputMaybe<Order_By>;
-  health_insurance_group_id?: InputMaybe<Order_By>;
-  health_insurance_member_id?: InputMaybe<Order_By>;
-  health_insurance_payer_id?: InputMaybe<Order_By>;
-  health_insurance_payer_name?: InputMaybe<Order_By>;
-  hipaa_authorization_accepted?: InputMaybe<Order_By>;
-  hipaa_authorization_accepted_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  import_id?: InputMaybe<Order_By>;
-  import_source?: InputMaybe<Order_By>;
-  integration_error_message?: InputMaybe<Order_By>;
-  integration_last_synced_at?: InputMaybe<Order_By>;
-  integration_record_id?: InputMaybe<Order_By>;
-  integration_sync_status?: InputMaybe<Order_By>;
-  integration_web_link?: InputMaybe<Order_By>;
-  joined_practice_date?: InputMaybe<Order_By>;
-  known_practice?: InputMaybe<Order_By>;
-  last_name?: InputMaybe<Order_By>;
-  lead_source?: InputMaybe<Order_By>;
-  lead_source_other?: InputMaybe<Order_By>;
-  location?: InputMaybe<Order_By>;
-  location_group?: InputMaybe<Order_By>;
-  membership_status?: InputMaybe<Order_By>;
-  memberships?: InputMaybe<Order_By>;
-  merged_into?: InputMaybe<Order_By>;
-  middle_name?: InputMaybe<Order_By>;
-  name?: InputMaybe<Order_By>;
-  patient_agreement_accepted?: InputMaybe<Order_By>;
-  patient_agreement_accepted_at?: InputMaybe<Order_By>;
-  phones?: InputMaybe<Order_By>;
-  practitioner?: InputMaybe<Order_By>;
-  practitioner_group?: InputMaybe<Order_By>;
-  preferred_language?: InputMaybe<Order_By>;
-  pronouns?: InputMaybe<Order_By>;
-  provider_web_link?: InputMaybe<Order_By>;
-  sex?: InputMaybe<Order_By>;
-  sponsorships?: InputMaybe<Order_By>;
-  ssn?: InputMaybe<Order_By>;
-  suffix?: InputMaybe<Order_By>;
-  terms_accepted?: InputMaybe<Order_By>;
-  terms_accepted_at?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-  uses_tobacco?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: hint_patients */
-export type Hint_Patients_Pk_Columns_Input = {
-  id: Scalars['String']['input'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Hint_Patients_Prepend_Input = {
-  account?: InputMaybe<Scalars['jsonb']['input']>;
-  company?: InputMaybe<Scalars['jsonb']['input']>;
-  external_records?: InputMaybe<Scalars['jsonb']['input']>;
-  known_practice?: InputMaybe<Scalars['jsonb']['input']>;
-  lead_source?: InputMaybe<Scalars['jsonb']['input']>;
-  location?: InputMaybe<Scalars['jsonb']['input']>;
-  location_group?: InputMaybe<Scalars['jsonb']['input']>;
-  memberships?: InputMaybe<Scalars['jsonb']['input']>;
-  merged_into?: InputMaybe<Scalars['jsonb']['input']>;
-  phones?: InputMaybe<Scalars['jsonb']['input']>;
-  practitioner?: InputMaybe<Scalars['jsonb']['input']>;
-  practitioner_group?: InputMaybe<Scalars['jsonb']['input']>;
-  sponsorships?: InputMaybe<Scalars['jsonb']['input']>;
-  ssn?: InputMaybe<Scalars['jsonb']['input']>;
-};
-
-/** select columns of table "hint_patients" */
-export enum Hint_Patients_Select_Column {
-  /** column name */
-  Account = 'account',
-  /** column name */
-  AddressCity = 'address_city',
-  /** column name */
-  AddressCountry = 'address_country',
-  /** column name */
-  AddressLine1 = 'address_line1',
-  /** column name */
-  AddressLine2 = 'address_line2',
-  /** column name */
-  AddressState = 'address_state',
-  /** column name */
-  AddressZip = 'address_zip',
-  /** column name */
-  Age = 'age',
-  /** column name */
-  ChosenFirstName = 'chosen_first_name',
-  /** column name */
-  ChosenLastName = 'chosen_last_name',
-  /** column name */
-  ChosenMiddleName = 'chosen_middle_name',
-  /** column name */
-  ChosenSuffix = 'chosen_suffix',
-  /** column name */
-  ChosenTitle = 'chosen_title',
-  /** column name */
-  Company = 'company',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Dob = 'dob',
-  /** column name */
-  ElectronicCommunicationConsentAccepted = 'electronic_communication_consent_accepted',
-  /** column name */
-  ElectronicCommunicationConsentAcceptedAt = 'electronic_communication_consent_accepted_at',
-  /** column name */
-  Email = 'email',
-  /** column name */
-  ExternalLinkId = 'external_link_id',
-  /** column name */
-  ExternalRecords = 'external_records',
-  /** column name */
-  FirstName = 'first_name',
-  /** column name */
-  Gender = 'gender',
-  /** column name */
-  GenderIdentity = 'gender_identity',
-  /** column name */
-  GenderOther = 'gender_other',
-  /** column name */
-  HealthInsuranceGroupId = 'health_insurance_group_id',
-  /** column name */
-  HealthInsuranceMemberId = 'health_insurance_member_id',
-  /** column name */
-  HealthInsurancePayerId = 'health_insurance_payer_id',
-  /** column name */
-  HealthInsurancePayerName = 'health_insurance_payer_name',
-  /** column name */
-  HipaaAuthorizationAccepted = 'hipaa_authorization_accepted',
-  /** column name */
-  HipaaAuthorizationAcceptedAt = 'hipaa_authorization_accepted_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  ImportId = 'import_id',
-  /** column name */
-  ImportSource = 'import_source',
-  /** column name */
-  IntegrationErrorMessage = 'integration_error_message',
-  /** column name */
-  IntegrationLastSyncedAt = 'integration_last_synced_at',
-  /** column name */
-  IntegrationRecordId = 'integration_record_id',
-  /** column name */
-  IntegrationSyncStatus = 'integration_sync_status',
-  /** column name */
-  IntegrationWebLink = 'integration_web_link',
-  /** column name */
-  JoinedPracticeDate = 'joined_practice_date',
-  /** column name */
-  KnownPractice = 'known_practice',
-  /** column name */
-  LastName = 'last_name',
-  /** column name */
-  LeadSource = 'lead_source',
-  /** column name */
-  LeadSourceOther = 'lead_source_other',
-  /** column name */
-  Location = 'location',
-  /** column name */
-  LocationGroup = 'location_group',
-  /** column name */
-  MembershipStatus = 'membership_status',
-  /** column name */
-  Memberships = 'memberships',
-  /** column name */
-  MergedInto = 'merged_into',
-  /** column name */
-  MiddleName = 'middle_name',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  PatientAgreementAccepted = 'patient_agreement_accepted',
-  /** column name */
-  PatientAgreementAcceptedAt = 'patient_agreement_accepted_at',
-  /** column name */
-  Phones = 'phones',
-  /** column name */
-  Practitioner = 'practitioner',
-  /** column name */
-  PractitionerGroup = 'practitioner_group',
-  /** column name */
-  PreferredLanguage = 'preferred_language',
-  /** column name */
-  Pronouns = 'pronouns',
-  /** column name */
-  ProviderWebLink = 'provider_web_link',
-  /** column name */
-  Sex = 'sex',
-  /** column name */
-  Sponsorships = 'sponsorships',
-  /** column name */
-  Ssn = 'ssn',
-  /** column name */
-  Suffix = 'suffix',
-  /** column name */
-  TermsAccepted = 'terms_accepted',
-  /** column name */
-  TermsAcceptedAt = 'terms_accepted_at',
-  /** column name */
-  UpdatedAt = 'updated_at',
-  /** column name */
-  UsesTobacco = 'uses_tobacco'
-}
-
-/** input type for updating data in table "hint_patients" */
-export type Hint_Patients_Set_Input = {
-  account?: InputMaybe<Scalars['jsonb']['input']>;
-  address_city?: InputMaybe<Scalars['String']['input']>;
-  address_country?: InputMaybe<Scalars['String']['input']>;
-  address_line1?: InputMaybe<Scalars['String']['input']>;
-  address_line2?: InputMaybe<Scalars['String']['input']>;
-  address_state?: InputMaybe<Scalars['String']['input']>;
-  address_zip?: InputMaybe<Scalars['String']['input']>;
-  age?: InputMaybe<Scalars['Int']['input']>;
-  chosen_first_name?: InputMaybe<Scalars['String']['input']>;
-  chosen_last_name?: InputMaybe<Scalars['String']['input']>;
-  chosen_middle_name?: InputMaybe<Scalars['String']['input']>;
-  chosen_suffix?: InputMaybe<Scalars['String']['input']>;
-  chosen_title?: InputMaybe<Scalars['String']['input']>;
-  company?: InputMaybe<Scalars['jsonb']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  dob?: InputMaybe<Scalars['date']['input']>;
-  electronic_communication_consent_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  electronic_communication_consent_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  external_link_id?: InputMaybe<Scalars['String']['input']>;
-  external_records?: InputMaybe<Scalars['jsonb']['input']>;
-  first_name?: InputMaybe<Scalars['String']['input']>;
-  gender?: InputMaybe<Scalars['String']['input']>;
-  gender_identity?: InputMaybe<Scalars['String']['input']>;
-  gender_other?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_group_id?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_member_id?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_payer_id?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_payer_name?: InputMaybe<Scalars['String']['input']>;
-  hipaa_authorization_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  hipaa_authorization_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  import_id?: InputMaybe<Scalars['String']['input']>;
-  import_source?: InputMaybe<Scalars['String']['input']>;
-  integration_error_message?: InputMaybe<Scalars['String']['input']>;
-  integration_last_synced_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  integration_record_id?: InputMaybe<Scalars['String']['input']>;
-  integration_sync_status?: InputMaybe<Scalars['String']['input']>;
-  integration_web_link?: InputMaybe<Scalars['String']['input']>;
-  joined_practice_date?: InputMaybe<Scalars['date']['input']>;
-  known_practice?: InputMaybe<Scalars['jsonb']['input']>;
-  last_name?: InputMaybe<Scalars['String']['input']>;
-  lead_source?: InputMaybe<Scalars['jsonb']['input']>;
-  lead_source_other?: InputMaybe<Scalars['String']['input']>;
-  location?: InputMaybe<Scalars['jsonb']['input']>;
-  location_group?: InputMaybe<Scalars['jsonb']['input']>;
-  membership_status?: InputMaybe<Scalars['String']['input']>;
-  memberships?: InputMaybe<Scalars['jsonb']['input']>;
-  merged_into?: InputMaybe<Scalars['jsonb']['input']>;
-  middle_name?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  patient_agreement_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  patient_agreement_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  phones?: InputMaybe<Scalars['jsonb']['input']>;
-  practitioner?: InputMaybe<Scalars['jsonb']['input']>;
-  practitioner_group?: InputMaybe<Scalars['jsonb']['input']>;
-  preferred_language?: InputMaybe<Scalars['String']['input']>;
-  pronouns?: InputMaybe<Scalars['String']['input']>;
-  provider_web_link?: InputMaybe<Scalars['String']['input']>;
-  sex?: InputMaybe<Scalars['String']['input']>;
-  sponsorships?: InputMaybe<Scalars['jsonb']['input']>;
-  ssn?: InputMaybe<Scalars['jsonb']['input']>;
-  suffix?: InputMaybe<Scalars['String']['input']>;
-  terms_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  terms_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  uses_tobacco?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate stddev on columns */
-export type Hint_Patients_Stddev_Fields = {
-  __typename?: 'hint_patients_stddev_fields';
-  age?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Hint_Patients_Stddev_Pop_Fields = {
-  __typename?: 'hint_patients_stddev_pop_fields';
-  age?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Hint_Patients_Stddev_Samp_Fields = {
-  __typename?: 'hint_patients_stddev_samp_fields';
-  age?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Streaming cursor of the table "hint_patients" */
-export type Hint_Patients_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Hint_Patients_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Hint_Patients_Stream_Cursor_Value_Input = {
-  account?: InputMaybe<Scalars['jsonb']['input']>;
-  address_city?: InputMaybe<Scalars['String']['input']>;
-  address_country?: InputMaybe<Scalars['String']['input']>;
-  address_line1?: InputMaybe<Scalars['String']['input']>;
-  address_line2?: InputMaybe<Scalars['String']['input']>;
-  address_state?: InputMaybe<Scalars['String']['input']>;
-  address_zip?: InputMaybe<Scalars['String']['input']>;
-  age?: InputMaybe<Scalars['Int']['input']>;
-  chosen_first_name?: InputMaybe<Scalars['String']['input']>;
-  chosen_last_name?: InputMaybe<Scalars['String']['input']>;
-  chosen_middle_name?: InputMaybe<Scalars['String']['input']>;
-  chosen_suffix?: InputMaybe<Scalars['String']['input']>;
-  chosen_title?: InputMaybe<Scalars['String']['input']>;
-  company?: InputMaybe<Scalars['jsonb']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  dob?: InputMaybe<Scalars['date']['input']>;
-  electronic_communication_consent_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  electronic_communication_consent_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  external_link_id?: InputMaybe<Scalars['String']['input']>;
-  external_records?: InputMaybe<Scalars['jsonb']['input']>;
-  first_name?: InputMaybe<Scalars['String']['input']>;
-  gender?: InputMaybe<Scalars['String']['input']>;
-  gender_identity?: InputMaybe<Scalars['String']['input']>;
-  gender_other?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_group_id?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_member_id?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_payer_id?: InputMaybe<Scalars['String']['input']>;
-  health_insurance_payer_name?: InputMaybe<Scalars['String']['input']>;
-  hipaa_authorization_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  hipaa_authorization_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  import_id?: InputMaybe<Scalars['String']['input']>;
-  import_source?: InputMaybe<Scalars['String']['input']>;
-  integration_error_message?: InputMaybe<Scalars['String']['input']>;
-  integration_last_synced_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  integration_record_id?: InputMaybe<Scalars['String']['input']>;
-  integration_sync_status?: InputMaybe<Scalars['String']['input']>;
-  integration_web_link?: InputMaybe<Scalars['String']['input']>;
-  joined_practice_date?: InputMaybe<Scalars['date']['input']>;
-  known_practice?: InputMaybe<Scalars['jsonb']['input']>;
-  last_name?: InputMaybe<Scalars['String']['input']>;
-  lead_source?: InputMaybe<Scalars['jsonb']['input']>;
-  lead_source_other?: InputMaybe<Scalars['String']['input']>;
-  location?: InputMaybe<Scalars['jsonb']['input']>;
-  location_group?: InputMaybe<Scalars['jsonb']['input']>;
-  membership_status?: InputMaybe<Scalars['String']['input']>;
-  memberships?: InputMaybe<Scalars['jsonb']['input']>;
-  merged_into?: InputMaybe<Scalars['jsonb']['input']>;
-  middle_name?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  patient_agreement_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  patient_agreement_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  phones?: InputMaybe<Scalars['jsonb']['input']>;
-  practitioner?: InputMaybe<Scalars['jsonb']['input']>;
-  practitioner_group?: InputMaybe<Scalars['jsonb']['input']>;
-  preferred_language?: InputMaybe<Scalars['String']['input']>;
-  pronouns?: InputMaybe<Scalars['String']['input']>;
-  provider_web_link?: InputMaybe<Scalars['String']['input']>;
-  sex?: InputMaybe<Scalars['String']['input']>;
-  sponsorships?: InputMaybe<Scalars['jsonb']['input']>;
-  ssn?: InputMaybe<Scalars['jsonb']['input']>;
-  suffix?: InputMaybe<Scalars['String']['input']>;
-  terms_accepted?: InputMaybe<Scalars['Boolean']['input']>;
-  terms_accepted_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  uses_tobacco?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate sum on columns */
-export type Hint_Patients_Sum_Fields = {
-  __typename?: 'hint_patients_sum_fields';
-  age?: Maybe<Scalars['Int']['output']>;
-};
-
-/** update columns of table "hint_patients" */
-export enum Hint_Patients_Update_Column {
-  /** column name */
-  Account = 'account',
-  /** column name */
-  AddressCity = 'address_city',
-  /** column name */
-  AddressCountry = 'address_country',
-  /** column name */
-  AddressLine1 = 'address_line1',
-  /** column name */
-  AddressLine2 = 'address_line2',
-  /** column name */
-  AddressState = 'address_state',
-  /** column name */
-  AddressZip = 'address_zip',
-  /** column name */
-  Age = 'age',
-  /** column name */
-  ChosenFirstName = 'chosen_first_name',
-  /** column name */
-  ChosenLastName = 'chosen_last_name',
-  /** column name */
-  ChosenMiddleName = 'chosen_middle_name',
-  /** column name */
-  ChosenSuffix = 'chosen_suffix',
-  /** column name */
-  ChosenTitle = 'chosen_title',
-  /** column name */
-  Company = 'company',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Dob = 'dob',
-  /** column name */
-  ElectronicCommunicationConsentAccepted = 'electronic_communication_consent_accepted',
-  /** column name */
-  ElectronicCommunicationConsentAcceptedAt = 'electronic_communication_consent_accepted_at',
-  /** column name */
-  Email = 'email',
-  /** column name */
-  ExternalLinkId = 'external_link_id',
-  /** column name */
-  ExternalRecords = 'external_records',
-  /** column name */
-  FirstName = 'first_name',
-  /** column name */
-  Gender = 'gender',
-  /** column name */
-  GenderIdentity = 'gender_identity',
-  /** column name */
-  GenderOther = 'gender_other',
-  /** column name */
-  HealthInsuranceGroupId = 'health_insurance_group_id',
-  /** column name */
-  HealthInsuranceMemberId = 'health_insurance_member_id',
-  /** column name */
-  HealthInsurancePayerId = 'health_insurance_payer_id',
-  /** column name */
-  HealthInsurancePayerName = 'health_insurance_payer_name',
-  /** column name */
-  HipaaAuthorizationAccepted = 'hipaa_authorization_accepted',
-  /** column name */
-  HipaaAuthorizationAcceptedAt = 'hipaa_authorization_accepted_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  ImportId = 'import_id',
-  /** column name */
-  ImportSource = 'import_source',
-  /** column name */
-  IntegrationErrorMessage = 'integration_error_message',
-  /** column name */
-  IntegrationLastSyncedAt = 'integration_last_synced_at',
-  /** column name */
-  IntegrationRecordId = 'integration_record_id',
-  /** column name */
-  IntegrationSyncStatus = 'integration_sync_status',
-  /** column name */
-  IntegrationWebLink = 'integration_web_link',
-  /** column name */
-  JoinedPracticeDate = 'joined_practice_date',
-  /** column name */
-  KnownPractice = 'known_practice',
-  /** column name */
-  LastName = 'last_name',
-  /** column name */
-  LeadSource = 'lead_source',
-  /** column name */
-  LeadSourceOther = 'lead_source_other',
-  /** column name */
-  Location = 'location',
-  /** column name */
-  LocationGroup = 'location_group',
-  /** column name */
-  MembershipStatus = 'membership_status',
-  /** column name */
-  Memberships = 'memberships',
-  /** column name */
-  MergedInto = 'merged_into',
-  /** column name */
-  MiddleName = 'middle_name',
-  /** column name */
-  Name = 'name',
-  /** column name */
-  PatientAgreementAccepted = 'patient_agreement_accepted',
-  /** column name */
-  PatientAgreementAcceptedAt = 'patient_agreement_accepted_at',
-  /** column name */
-  Phones = 'phones',
-  /** column name */
-  Practitioner = 'practitioner',
-  /** column name */
-  PractitionerGroup = 'practitioner_group',
-  /** column name */
-  PreferredLanguage = 'preferred_language',
-  /** column name */
-  Pronouns = 'pronouns',
-  /** column name */
-  ProviderWebLink = 'provider_web_link',
-  /** column name */
-  Sex = 'sex',
-  /** column name */
-  Sponsorships = 'sponsorships',
-  /** column name */
-  Ssn = 'ssn',
-  /** column name */
-  Suffix = 'suffix',
-  /** column name */
-  TermsAccepted = 'terms_accepted',
-  /** column name */
-  TermsAcceptedAt = 'terms_accepted_at',
-  /** column name */
-  UpdatedAt = 'updated_at',
-  /** column name */
-  UsesTobacco = 'uses_tobacco'
-}
-
-export type Hint_Patients_Updates = {
-  /** append existing jsonb value of filtered columns with new jsonb value */
-  _append?: InputMaybe<Hint_Patients_Append_Input>;
-  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-  _delete_at_path?: InputMaybe<Hint_Patients_Delete_At_Path_Input>;
-  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-  _delete_elem?: InputMaybe<Hint_Patients_Delete_Elem_Input>;
-  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
-  _delete_key?: InputMaybe<Hint_Patients_Delete_Key_Input>;
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Hint_Patients_Inc_Input>;
-  /** prepend existing jsonb value of filtered columns with new jsonb value */
-  _prepend?: InputMaybe<Hint_Patients_Prepend_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Hint_Patients_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Hint_Patients_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type Hint_Patients_Var_Pop_Fields = {
-  __typename?: 'hint_patients_var_pop_fields';
-  age?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Hint_Patients_Var_Samp_Fields = {
-  __typename?: 'hint_patients_var_samp_fields';
-  age?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Hint_Patients_Variance_Fields = {
-  __typename?: 'hint_patients_variance_fields';
-  age?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
-export type Json_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['json']['input']>;
-  _gt?: InputMaybe<Scalars['json']['input']>;
-  _gte?: InputMaybe<Scalars['json']['input']>;
-  _in?: InputMaybe<Array<Scalars['json']['input']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['json']['input']>;
-  _lte?: InputMaybe<Scalars['json']['input']>;
-  _neq?: InputMaybe<Scalars['json']['input']>;
-  _nin?: InputMaybe<Array<Scalars['json']['input']>>;
-};
 
 export type Jsonb_Cast_Exp = {
   String?: InputMaybe<String_Comparison_Exp>;
@@ -2668,390 +1212,333 @@ export type Jsonb_Comparison_Exp = {
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
-  /** delete data from the table: "action_logs" */
-  delete_action_logs?: Maybe<Action_Logs_Mutation_Response>;
-  /** delete single row from the table: "action_logs" */
-  delete_action_logs_by_pk?: Maybe<Action_Logs>;
-  /** delete data from the table: "action_type" */
-  delete_action_type?: Maybe<Action_Type_Mutation_Response>;
-  /** delete single row from the table: "action_type" */
-  delete_action_type_by_pk?: Maybe<Action_Type>;
-  /** delete data from the table: "elation_patients" */
-  delete_elation_patients?: Maybe<Elation_Patients_Mutation_Response>;
-  /** delete single row from the table: "elation_patients" */
-  delete_elation_patients_by_pk?: Maybe<Elation_Patients>;
-  /** delete data from the table: "hint_patients" */
-  delete_hint_patients?: Maybe<Hint_Patients_Mutation_Response>;
-  /** delete single row from the table: "hint_patients" */
-  delete_hint_patients_by_pk?: Maybe<Hint_Patients>;
-  /** delete data from the table: "profiles" */
-  delete_profiles?: Maybe<Profiles_Mutation_Response>;
-  /** delete single row from the table: "profiles" */
-  delete_profiles_by_pk?: Maybe<Profiles>;
-  /** delete data from the table: "providers" */
-  delete_providers?: Maybe<Providers_Mutation_Response>;
-  /** delete single row from the table: "providers" */
-  delete_providers_by_pk?: Maybe<Providers>;
-  /** insert data into the table: "action_logs" */
-  insert_action_logs?: Maybe<Action_Logs_Mutation_Response>;
-  /** insert a single row into the table: "action_logs" */
-  insert_action_logs_one?: Maybe<Action_Logs>;
-  /** insert data into the table: "action_type" */
-  insert_action_type?: Maybe<Action_Type_Mutation_Response>;
-  /** insert a single row into the table: "action_type" */
-  insert_action_type_one?: Maybe<Action_Type>;
-  /** insert data into the table: "elation_patients" */
-  insert_elation_patients?: Maybe<Elation_Patients_Mutation_Response>;
-  /** insert a single row into the table: "elation_patients" */
-  insert_elation_patients_one?: Maybe<Elation_Patients>;
-  /** insert data into the table: "hint_patients" */
-  insert_hint_patients?: Maybe<Hint_Patients_Mutation_Response>;
-  /** insert a single row into the table: "hint_patients" */
-  insert_hint_patients_one?: Maybe<Hint_Patients>;
-  /** insert data into the table: "profiles" */
-  insert_profiles?: Maybe<Profiles_Mutation_Response>;
-  /** insert a single row into the table: "profiles" */
-  insert_profiles_one?: Maybe<Profiles>;
-  /** insert data into the table: "providers" */
-  insert_providers?: Maybe<Providers_Mutation_Response>;
-  /** insert a single row into the table: "providers" */
-  insert_providers_one?: Maybe<Providers>;
-  /** update data of the table: "action_logs" */
-  update_action_logs?: Maybe<Action_Logs_Mutation_Response>;
-  /** update single row of the table: "action_logs" */
-  update_action_logs_by_pk?: Maybe<Action_Logs>;
-  /** update multiples rows of table: "action_logs" */
-  update_action_logs_many?: Maybe<Array<Maybe<Action_Logs_Mutation_Response>>>;
-  /** update data of the table: "action_type" */
-  update_action_type?: Maybe<Action_Type_Mutation_Response>;
-  /** update single row of the table: "action_type" */
-  update_action_type_by_pk?: Maybe<Action_Type>;
-  /** update multiples rows of table: "action_type" */
-  update_action_type_many?: Maybe<Array<Maybe<Action_Type_Mutation_Response>>>;
-  /** update data of the table: "elation_patients" */
-  update_elation_patients?: Maybe<Elation_Patients_Mutation_Response>;
-  /** update single row of the table: "elation_patients" */
-  update_elation_patients_by_pk?: Maybe<Elation_Patients>;
-  /** update multiples rows of table: "elation_patients" */
-  update_elation_patients_many?: Maybe<Array<Maybe<Elation_Patients_Mutation_Response>>>;
-  /** update data of the table: "hint_patients" */
-  update_hint_patients?: Maybe<Hint_Patients_Mutation_Response>;
-  /** update single row of the table: "hint_patients" */
-  update_hint_patients_by_pk?: Maybe<Hint_Patients>;
-  /** update multiples rows of table: "hint_patients" */
-  update_hint_patients_many?: Maybe<Array<Maybe<Hint_Patients_Mutation_Response>>>;
-  /** update data of the table: "profiles" */
-  update_profiles?: Maybe<Profiles_Mutation_Response>;
-  /** update single row of the table: "profiles" */
-  update_profiles_by_pk?: Maybe<Profiles>;
-  /** update multiples rows of table: "profiles" */
-  update_profiles_many?: Maybe<Array<Maybe<Profiles_Mutation_Response>>>;
-  /** update data of the table: "providers" */
-  update_providers?: Maybe<Providers_Mutation_Response>;
-  /** update single row of the table: "providers" */
-  update_providers_by_pk?: Maybe<Providers>;
-  /** update multiples rows of table: "providers" */
-  update_providers_many?: Maybe<Array<Maybe<Providers_Mutation_Response>>>;
+  /** delete data from the table: "audit_flags" */
+  delete_audit_flags?: Maybe<Audit_Flags_Mutation_Response>;
+  /** delete single row from the table: "audit_flags" */
+  delete_audit_flags_by_pk?: Maybe<Audit_Flags>;
+  /** delete data from the table: "audit_trail" */
+  delete_audit_trail?: Maybe<Audit_Trail_Mutation_Response>;
+  /** delete single row from the table: "audit_trail" */
+  delete_audit_trail_by_pk?: Maybe<Audit_Trail>;
+  /** delete data from the table: "credit_cards" */
+  delete_credit_cards?: Maybe<Credit_Cards_Mutation_Response>;
+  /** delete single row from the table: "credit_cards" */
+  delete_credit_cards_by_pk?: Maybe<Credit_Cards>;
+  /** delete data from the table: "transactions" */
+  delete_transactions?: Maybe<Transactions_Mutation_Response>;
+  /** delete single row from the table: "transactions" */
+  delete_transactions_by_pk?: Maybe<Transactions>;
+  /** delete data from the table: "users" */
+  delete_users?: Maybe<Users_Mutation_Response>;
+  /** delete single row from the table: "users" */
+  delete_users_by_pk?: Maybe<Users>;
+  /** insert data into the table: "audit_flags" */
+  insert_audit_flags?: Maybe<Audit_Flags_Mutation_Response>;
+  /** insert a single row into the table: "audit_flags" */
+  insert_audit_flags_one?: Maybe<Audit_Flags>;
+  /** insert data into the table: "audit_trail" */
+  insert_audit_trail?: Maybe<Audit_Trail_Mutation_Response>;
+  /** insert a single row into the table: "audit_trail" */
+  insert_audit_trail_one?: Maybe<Audit_Trail>;
+  /** insert data into the table: "credit_cards" */
+  insert_credit_cards?: Maybe<Credit_Cards_Mutation_Response>;
+  /** insert a single row into the table: "credit_cards" */
+  insert_credit_cards_one?: Maybe<Credit_Cards>;
+  /** insert data into the table: "transactions" */
+  insert_transactions?: Maybe<Transactions_Mutation_Response>;
+  /** insert a single row into the table: "transactions" */
+  insert_transactions_one?: Maybe<Transactions>;
+  /** insert data into the table: "users" */
+  insert_users?: Maybe<Users_Mutation_Response>;
+  /** insert a single row into the table: "users" */
+  insert_users_one?: Maybe<Users>;
+  /** update data of the table: "audit_flags" */
+  update_audit_flags?: Maybe<Audit_Flags_Mutation_Response>;
+  /** update single row of the table: "audit_flags" */
+  update_audit_flags_by_pk?: Maybe<Audit_Flags>;
+  /** update multiples rows of table: "audit_flags" */
+  update_audit_flags_many?: Maybe<Array<Maybe<Audit_Flags_Mutation_Response>>>;
+  /** update data of the table: "audit_trail" */
+  update_audit_trail?: Maybe<Audit_Trail_Mutation_Response>;
+  /** update single row of the table: "audit_trail" */
+  update_audit_trail_by_pk?: Maybe<Audit_Trail>;
+  /** update multiples rows of table: "audit_trail" */
+  update_audit_trail_many?: Maybe<Array<Maybe<Audit_Trail_Mutation_Response>>>;
+  /** update data of the table: "credit_cards" */
+  update_credit_cards?: Maybe<Credit_Cards_Mutation_Response>;
+  /** update single row of the table: "credit_cards" */
+  update_credit_cards_by_pk?: Maybe<Credit_Cards>;
+  /** update multiples rows of table: "credit_cards" */
+  update_credit_cards_many?: Maybe<Array<Maybe<Credit_Cards_Mutation_Response>>>;
+  /** update data of the table: "transactions" */
+  update_transactions?: Maybe<Transactions_Mutation_Response>;
+  /** update single row of the table: "transactions" */
+  update_transactions_by_pk?: Maybe<Transactions>;
+  /** update multiples rows of table: "transactions" */
+  update_transactions_many?: Maybe<Array<Maybe<Transactions_Mutation_Response>>>;
+  /** update data of the table: "users" */
+  update_users?: Maybe<Users_Mutation_Response>;
+  /** update single row of the table: "users" */
+  update_users_by_pk?: Maybe<Users>;
+  /** update multiples rows of table: "users" */
+  update_users_many?: Maybe<Array<Maybe<Users_Mutation_Response>>>;
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_Action_LogsArgs = {
-  where: Action_Logs_Bool_Exp;
+export type Mutation_RootDelete_Audit_FlagsArgs = {
+  where: Audit_Flags_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_Action_Logs_By_PkArgs = {
+export type Mutation_RootDelete_Audit_Flags_By_PkArgs = {
   id: Scalars['uuid']['input'];
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_Action_TypeArgs = {
-  where: Action_Type_Bool_Exp;
+export type Mutation_RootDelete_Audit_TrailArgs = {
+  where: Audit_Trail_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_Action_Type_By_PkArgs = {
-  value: Scalars['String']['input'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Elation_PatientsArgs = {
-  where: Elation_Patients_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Elation_Patients_By_PkArgs = {
-  id: Scalars['bigint']['input'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Hint_PatientsArgs = {
-  where: Hint_Patients_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Hint_Patients_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_ProfilesArgs = {
-  where: Profiles_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Profiles_By_PkArgs = {
+export type Mutation_RootDelete_Audit_Trail_By_PkArgs = {
   id: Scalars['uuid']['input'];
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_ProvidersArgs = {
-  where: Providers_Bool_Exp;
+export type Mutation_RootDelete_Credit_CardsArgs = {
+  where: Credit_Cards_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_Providers_By_PkArgs = {
-  value: Scalars['String']['input'];
+export type Mutation_RootDelete_Credit_Cards_By_PkArgs = {
+  id: Scalars['uuid']['input'];
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Action_LogsArgs = {
-  objects: Array<Action_Logs_Insert_Input>;
-  on_conflict?: InputMaybe<Action_Logs_On_Conflict>;
+export type Mutation_RootDelete_TransactionsArgs = {
+  where: Transactions_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Action_Logs_OneArgs = {
-  object: Action_Logs_Insert_Input;
-  on_conflict?: InputMaybe<Action_Logs_On_Conflict>;
+export type Mutation_RootDelete_Transactions_By_PkArgs = {
+  id: Scalars['uuid']['input'];
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Action_TypeArgs = {
-  objects: Array<Action_Type_Insert_Input>;
-  on_conflict?: InputMaybe<Action_Type_On_Conflict>;
+export type Mutation_RootDelete_UsersArgs = {
+  where: Users_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Action_Type_OneArgs = {
-  object: Action_Type_Insert_Input;
-  on_conflict?: InputMaybe<Action_Type_On_Conflict>;
+export type Mutation_RootDelete_Users_By_PkArgs = {
+  id: Scalars['uuid']['input'];
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Elation_PatientsArgs = {
-  objects: Array<Elation_Patients_Insert_Input>;
-  on_conflict?: InputMaybe<Elation_Patients_On_Conflict>;
+export type Mutation_RootInsert_Audit_FlagsArgs = {
+  objects: Array<Audit_Flags_Insert_Input>;
+  on_conflict?: InputMaybe<Audit_Flags_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Elation_Patients_OneArgs = {
-  object: Elation_Patients_Insert_Input;
-  on_conflict?: InputMaybe<Elation_Patients_On_Conflict>;
+export type Mutation_RootInsert_Audit_Flags_OneArgs = {
+  object: Audit_Flags_Insert_Input;
+  on_conflict?: InputMaybe<Audit_Flags_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Hint_PatientsArgs = {
-  objects: Array<Hint_Patients_Insert_Input>;
-  on_conflict?: InputMaybe<Hint_Patients_On_Conflict>;
+export type Mutation_RootInsert_Audit_TrailArgs = {
+  objects: Array<Audit_Trail_Insert_Input>;
+  on_conflict?: InputMaybe<Audit_Trail_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Hint_Patients_OneArgs = {
-  object: Hint_Patients_Insert_Input;
-  on_conflict?: InputMaybe<Hint_Patients_On_Conflict>;
+export type Mutation_RootInsert_Audit_Trail_OneArgs = {
+  object: Audit_Trail_Insert_Input;
+  on_conflict?: InputMaybe<Audit_Trail_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_ProfilesArgs = {
-  objects: Array<Profiles_Insert_Input>;
-  on_conflict?: InputMaybe<Profiles_On_Conflict>;
+export type Mutation_RootInsert_Credit_CardsArgs = {
+  objects: Array<Credit_Cards_Insert_Input>;
+  on_conflict?: InputMaybe<Credit_Cards_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Profiles_OneArgs = {
-  object: Profiles_Insert_Input;
-  on_conflict?: InputMaybe<Profiles_On_Conflict>;
+export type Mutation_RootInsert_Credit_Cards_OneArgs = {
+  object: Credit_Cards_Insert_Input;
+  on_conflict?: InputMaybe<Credit_Cards_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_ProvidersArgs = {
-  objects: Array<Providers_Insert_Input>;
-  on_conflict?: InputMaybe<Providers_On_Conflict>;
+export type Mutation_RootInsert_TransactionsArgs = {
+  objects: Array<Transactions_Insert_Input>;
+  on_conflict?: InputMaybe<Transactions_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Providers_OneArgs = {
-  object: Providers_Insert_Input;
-  on_conflict?: InputMaybe<Providers_On_Conflict>;
+export type Mutation_RootInsert_Transactions_OneArgs = {
+  object: Transactions_Insert_Input;
+  on_conflict?: InputMaybe<Transactions_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Action_LogsArgs = {
-  _set?: InputMaybe<Action_Logs_Set_Input>;
-  where: Action_Logs_Bool_Exp;
+export type Mutation_RootInsert_UsersArgs = {
+  objects: Array<Users_Insert_Input>;
+  on_conflict?: InputMaybe<Users_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Action_Logs_By_PkArgs = {
-  _set?: InputMaybe<Action_Logs_Set_Input>;
-  pk_columns: Action_Logs_Pk_Columns_Input;
+export type Mutation_RootInsert_Users_OneArgs = {
+  object: Users_Insert_Input;
+  on_conflict?: InputMaybe<Users_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Action_Logs_ManyArgs = {
-  updates: Array<Action_Logs_Updates>;
+export type Mutation_RootUpdate_Audit_FlagsArgs = {
+  _set?: InputMaybe<Audit_Flags_Set_Input>;
+  where: Audit_Flags_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Action_TypeArgs = {
-  _set?: InputMaybe<Action_Type_Set_Input>;
-  where: Action_Type_Bool_Exp;
+export type Mutation_RootUpdate_Audit_Flags_By_PkArgs = {
+  _set?: InputMaybe<Audit_Flags_Set_Input>;
+  pk_columns: Audit_Flags_Pk_Columns_Input;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Action_Type_By_PkArgs = {
-  _set?: InputMaybe<Action_Type_Set_Input>;
-  pk_columns: Action_Type_Pk_Columns_Input;
+export type Mutation_RootUpdate_Audit_Flags_ManyArgs = {
+  updates: Array<Audit_Flags_Updates>;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Action_Type_ManyArgs = {
-  updates: Array<Action_Type_Updates>;
+export type Mutation_RootUpdate_Audit_TrailArgs = {
+  _append?: InputMaybe<Audit_Trail_Append_Input>;
+  _delete_at_path?: InputMaybe<Audit_Trail_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Audit_Trail_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Audit_Trail_Delete_Key_Input>;
+  _prepend?: InputMaybe<Audit_Trail_Prepend_Input>;
+  _set?: InputMaybe<Audit_Trail_Set_Input>;
+  where: Audit_Trail_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Elation_PatientsArgs = {
-  _append?: InputMaybe<Elation_Patients_Append_Input>;
-  _delete_at_path?: InputMaybe<Elation_Patients_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Elation_Patients_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Elation_Patients_Delete_Key_Input>;
-  _inc?: InputMaybe<Elation_Patients_Inc_Input>;
-  _prepend?: InputMaybe<Elation_Patients_Prepend_Input>;
-  _set?: InputMaybe<Elation_Patients_Set_Input>;
-  where: Elation_Patients_Bool_Exp;
+export type Mutation_RootUpdate_Audit_Trail_By_PkArgs = {
+  _append?: InputMaybe<Audit_Trail_Append_Input>;
+  _delete_at_path?: InputMaybe<Audit_Trail_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Audit_Trail_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Audit_Trail_Delete_Key_Input>;
+  _prepend?: InputMaybe<Audit_Trail_Prepend_Input>;
+  _set?: InputMaybe<Audit_Trail_Set_Input>;
+  pk_columns: Audit_Trail_Pk_Columns_Input;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Elation_Patients_By_PkArgs = {
-  _append?: InputMaybe<Elation_Patients_Append_Input>;
-  _delete_at_path?: InputMaybe<Elation_Patients_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Elation_Patients_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Elation_Patients_Delete_Key_Input>;
-  _inc?: InputMaybe<Elation_Patients_Inc_Input>;
-  _prepend?: InputMaybe<Elation_Patients_Prepend_Input>;
-  _set?: InputMaybe<Elation_Patients_Set_Input>;
-  pk_columns: Elation_Patients_Pk_Columns_Input;
+export type Mutation_RootUpdate_Audit_Trail_ManyArgs = {
+  updates: Array<Audit_Trail_Updates>;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Elation_Patients_ManyArgs = {
-  updates: Array<Elation_Patients_Updates>;
+export type Mutation_RootUpdate_Credit_CardsArgs = {
+  _inc?: InputMaybe<Credit_Cards_Inc_Input>;
+  _set?: InputMaybe<Credit_Cards_Set_Input>;
+  where: Credit_Cards_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Hint_PatientsArgs = {
-  _append?: InputMaybe<Hint_Patients_Append_Input>;
-  _delete_at_path?: InputMaybe<Hint_Patients_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Hint_Patients_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Hint_Patients_Delete_Key_Input>;
-  _inc?: InputMaybe<Hint_Patients_Inc_Input>;
-  _prepend?: InputMaybe<Hint_Patients_Prepend_Input>;
-  _set?: InputMaybe<Hint_Patients_Set_Input>;
-  where: Hint_Patients_Bool_Exp;
+export type Mutation_RootUpdate_Credit_Cards_By_PkArgs = {
+  _inc?: InputMaybe<Credit_Cards_Inc_Input>;
+  _set?: InputMaybe<Credit_Cards_Set_Input>;
+  pk_columns: Credit_Cards_Pk_Columns_Input;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Hint_Patients_By_PkArgs = {
-  _append?: InputMaybe<Hint_Patients_Append_Input>;
-  _delete_at_path?: InputMaybe<Hint_Patients_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Hint_Patients_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Hint_Patients_Delete_Key_Input>;
-  _inc?: InputMaybe<Hint_Patients_Inc_Input>;
-  _prepend?: InputMaybe<Hint_Patients_Prepend_Input>;
-  _set?: InputMaybe<Hint_Patients_Set_Input>;
-  pk_columns: Hint_Patients_Pk_Columns_Input;
+export type Mutation_RootUpdate_Credit_Cards_ManyArgs = {
+  updates: Array<Credit_Cards_Updates>;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Hint_Patients_ManyArgs = {
-  updates: Array<Hint_Patients_Updates>;
+export type Mutation_RootUpdate_TransactionsArgs = {
+  _inc?: InputMaybe<Transactions_Inc_Input>;
+  _set?: InputMaybe<Transactions_Set_Input>;
+  where: Transactions_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_ProfilesArgs = {
-  _set?: InputMaybe<Profiles_Set_Input>;
-  where: Profiles_Bool_Exp;
+export type Mutation_RootUpdate_Transactions_By_PkArgs = {
+  _inc?: InputMaybe<Transactions_Inc_Input>;
+  _set?: InputMaybe<Transactions_Set_Input>;
+  pk_columns: Transactions_Pk_Columns_Input;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Profiles_By_PkArgs = {
-  _set?: InputMaybe<Profiles_Set_Input>;
-  pk_columns: Profiles_Pk_Columns_Input;
+export type Mutation_RootUpdate_Transactions_ManyArgs = {
+  updates: Array<Transactions_Updates>;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Profiles_ManyArgs = {
-  updates: Array<Profiles_Updates>;
+export type Mutation_RootUpdate_UsersArgs = {
+  _set?: InputMaybe<Users_Set_Input>;
+  where: Users_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_ProvidersArgs = {
-  _set?: InputMaybe<Providers_Set_Input>;
-  where: Providers_Bool_Exp;
+export type Mutation_RootUpdate_Users_By_PkArgs = {
+  _set?: InputMaybe<Users_Set_Input>;
+  pk_columns: Users_Pk_Columns_Input;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Providers_By_PkArgs = {
-  _set?: InputMaybe<Providers_Set_Input>;
-  pk_columns: Providers_Pk_Columns_Input;
+export type Mutation_RootUpdate_Users_ManyArgs = {
+  updates: Array<Users_Updates>;
 };
 
-
-/** mutation root */
-export type Mutation_RootUpdate_Providers_ManyArgs = {
-  updates: Array<Providers_Updates>;
+/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
+export type Numeric_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['numeric']['input']>;
+  _gt?: InputMaybe<Scalars['numeric']['input']>;
+  _gte?: InputMaybe<Scalars['numeric']['input']>;
+  _in?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['numeric']['input']>;
+  _lte?: InputMaybe<Scalars['numeric']['input']>;
+  _neq?: InputMaybe<Scalars['numeric']['input']>;
+  _nin?: InputMaybe<Array<Scalars['numeric']['input']>>;
 };
 
 /** column ordering options */
@@ -3070,849 +1557,347 @@ export enum Order_By {
   DescNullsLast = 'desc_nulls_last'
 }
 
-/** columns and relationships of "profiles" */
-export type Profiles = {
-  __typename?: 'profiles';
-  address_line_1?: Maybe<Scalars['String']['output']>;
-  address_line_2?: Maybe<Scalars['String']['output']>;
-  city?: Maybe<Scalars['String']['output']>;
-  deleted?: Maybe<Scalars['Boolean']['output']>;
-  elation_patient_id?: Maybe<Scalars['String']['output']>;
-  emails?: Maybe<Array<Scalars['String']['output']>>;
-  first_name: Scalars['String']['output'];
-  gender?: Maybe<Scalars['String']['output']>;
-  hint_patient_id?: Maybe<Scalars['String']['output']>;
-  id: Scalars['uuid']['output'];
-  last_name: Scalars['String']['output'];
-  last_updated_from?: Maybe<Providers_Enum>;
-  middle_name?: Maybe<Scalars['String']['output']>;
-  phone_numbers?: Maybe<Array<Scalars['String']['output']>>;
-  state?: Maybe<Scalars['String']['output']>;
-  zip_code?: Maybe<Scalars['String']['output']>;
-};
-
-/** aggregated selection of "profiles" */
-export type Profiles_Aggregate = {
-  __typename?: 'profiles_aggregate';
-  aggregate?: Maybe<Profiles_Aggregate_Fields>;
-  nodes: Array<Profiles>;
-};
-
-/** aggregate fields of "profiles" */
-export type Profiles_Aggregate_Fields = {
-  __typename?: 'profiles_aggregate_fields';
-  count: Scalars['Int']['output'];
-  max?: Maybe<Profiles_Max_Fields>;
-  min?: Maybe<Profiles_Min_Fields>;
-};
-
-
-/** aggregate fields of "profiles" */
-export type Profiles_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Profiles_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** Boolean expression to filter rows from the table "profiles". All fields are combined with a logical 'AND'. */
-export type Profiles_Bool_Exp = {
-  _and?: InputMaybe<Array<Profiles_Bool_Exp>>;
-  _not?: InputMaybe<Profiles_Bool_Exp>;
-  _or?: InputMaybe<Array<Profiles_Bool_Exp>>;
-  address_line_1?: InputMaybe<String_Comparison_Exp>;
-  address_line_2?: InputMaybe<String_Comparison_Exp>;
-  city?: InputMaybe<String_Comparison_Exp>;
-  deleted?: InputMaybe<Boolean_Comparison_Exp>;
-  elation_patient_id?: InputMaybe<String_Comparison_Exp>;
-  emails?: InputMaybe<String_Array_Comparison_Exp>;
-  first_name?: InputMaybe<String_Comparison_Exp>;
-  gender?: InputMaybe<String_Comparison_Exp>;
-  hint_patient_id?: InputMaybe<String_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  last_name?: InputMaybe<String_Comparison_Exp>;
-  last_updated_from?: InputMaybe<Providers_Enum_Comparison_Exp>;
-  middle_name?: InputMaybe<String_Comparison_Exp>;
-  phone_numbers?: InputMaybe<String_Array_Comparison_Exp>;
-  state?: InputMaybe<String_Comparison_Exp>;
-  zip_code?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "profiles" */
-export enum Profiles_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  ProfilesPkey = 'profiles_pkey'
-}
-
-/** input type for inserting data into table "profiles" */
-export type Profiles_Insert_Input = {
-  address_line_1?: InputMaybe<Scalars['String']['input']>;
-  address_line_2?: InputMaybe<Scalars['String']['input']>;
-  city?: InputMaybe<Scalars['String']['input']>;
-  deleted?: InputMaybe<Scalars['Boolean']['input']>;
-  elation_patient_id?: InputMaybe<Scalars['String']['input']>;
-  emails?: InputMaybe<Array<Scalars['String']['input']>>;
-  first_name?: InputMaybe<Scalars['String']['input']>;
-  gender?: InputMaybe<Scalars['String']['input']>;
-  hint_patient_id?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  last_name?: InputMaybe<Scalars['String']['input']>;
-  last_updated_from?: InputMaybe<Providers_Enum>;
-  middle_name?: InputMaybe<Scalars['String']['input']>;
-  phone_numbers?: InputMaybe<Array<Scalars['String']['input']>>;
-  state?: InputMaybe<Scalars['String']['input']>;
-  zip_code?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate max on columns */
-export type Profiles_Max_Fields = {
-  __typename?: 'profiles_max_fields';
-  address_line_1?: Maybe<Scalars['String']['output']>;
-  address_line_2?: Maybe<Scalars['String']['output']>;
-  city?: Maybe<Scalars['String']['output']>;
-  elation_patient_id?: Maybe<Scalars['String']['output']>;
-  emails?: Maybe<Array<Scalars['String']['output']>>;
-  first_name?: Maybe<Scalars['String']['output']>;
-  gender?: Maybe<Scalars['String']['output']>;
-  hint_patient_id?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  last_name?: Maybe<Scalars['String']['output']>;
-  middle_name?: Maybe<Scalars['String']['output']>;
-  phone_numbers?: Maybe<Array<Scalars['String']['output']>>;
-  state?: Maybe<Scalars['String']['output']>;
-  zip_code?: Maybe<Scalars['String']['output']>;
-};
-
-/** aggregate min on columns */
-export type Profiles_Min_Fields = {
-  __typename?: 'profiles_min_fields';
-  address_line_1?: Maybe<Scalars['String']['output']>;
-  address_line_2?: Maybe<Scalars['String']['output']>;
-  city?: Maybe<Scalars['String']['output']>;
-  elation_patient_id?: Maybe<Scalars['String']['output']>;
-  emails?: Maybe<Array<Scalars['String']['output']>>;
-  first_name?: Maybe<Scalars['String']['output']>;
-  gender?: Maybe<Scalars['String']['output']>;
-  hint_patient_id?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  last_name?: Maybe<Scalars['String']['output']>;
-  middle_name?: Maybe<Scalars['String']['output']>;
-  phone_numbers?: Maybe<Array<Scalars['String']['output']>>;
-  state?: Maybe<Scalars['String']['output']>;
-  zip_code?: Maybe<Scalars['String']['output']>;
-};
-
-/** response of any mutation on the table "profiles" */
-export type Profiles_Mutation_Response = {
-  __typename?: 'profiles_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Profiles>;
-};
-
-/** on_conflict condition type for table "profiles" */
-export type Profiles_On_Conflict = {
-  constraint: Profiles_Constraint;
-  update_columns?: Array<Profiles_Update_Column>;
-  where?: InputMaybe<Profiles_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "profiles". */
-export type Profiles_Order_By = {
-  address_line_1?: InputMaybe<Order_By>;
-  address_line_2?: InputMaybe<Order_By>;
-  city?: InputMaybe<Order_By>;
-  deleted?: InputMaybe<Order_By>;
-  elation_patient_id?: InputMaybe<Order_By>;
-  emails?: InputMaybe<Order_By>;
-  first_name?: InputMaybe<Order_By>;
-  gender?: InputMaybe<Order_By>;
-  hint_patient_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  last_name?: InputMaybe<Order_By>;
-  last_updated_from?: InputMaybe<Order_By>;
-  middle_name?: InputMaybe<Order_By>;
-  phone_numbers?: InputMaybe<Order_By>;
-  state?: InputMaybe<Order_By>;
-  zip_code?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: profiles */
-export type Profiles_Pk_Columns_Input = {
-  id: Scalars['uuid']['input'];
-};
-
-/** select columns of table "profiles" */
-export enum Profiles_Select_Column {
-  /** column name */
-  AddressLine_1 = 'address_line_1',
-  /** column name */
-  AddressLine_2 = 'address_line_2',
-  /** column name */
-  City = 'city',
-  /** column name */
-  Deleted = 'deleted',
-  /** column name */
-  ElationPatientId = 'elation_patient_id',
-  /** column name */
-  Emails = 'emails',
-  /** column name */
-  FirstName = 'first_name',
-  /** column name */
-  Gender = 'gender',
-  /** column name */
-  HintPatientId = 'hint_patient_id',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  LastName = 'last_name',
-  /** column name */
-  LastUpdatedFrom = 'last_updated_from',
-  /** column name */
-  MiddleName = 'middle_name',
-  /** column name */
-  PhoneNumbers = 'phone_numbers',
-  /** column name */
-  State = 'state',
-  /** column name */
-  ZipCode = 'zip_code'
-}
-
-/** input type for updating data in table "profiles" */
-export type Profiles_Set_Input = {
-  address_line_1?: InputMaybe<Scalars['String']['input']>;
-  address_line_2?: InputMaybe<Scalars['String']['input']>;
-  city?: InputMaybe<Scalars['String']['input']>;
-  deleted?: InputMaybe<Scalars['Boolean']['input']>;
-  elation_patient_id?: InputMaybe<Scalars['String']['input']>;
-  emails?: InputMaybe<Array<Scalars['String']['input']>>;
-  first_name?: InputMaybe<Scalars['String']['input']>;
-  gender?: InputMaybe<Scalars['String']['input']>;
-  hint_patient_id?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  last_name?: InputMaybe<Scalars['String']['input']>;
-  last_updated_from?: InputMaybe<Providers_Enum>;
-  middle_name?: InputMaybe<Scalars['String']['input']>;
-  phone_numbers?: InputMaybe<Array<Scalars['String']['input']>>;
-  state?: InputMaybe<Scalars['String']['input']>;
-  zip_code?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** Streaming cursor of the table "profiles" */
-export type Profiles_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Profiles_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Profiles_Stream_Cursor_Value_Input = {
-  address_line_1?: InputMaybe<Scalars['String']['input']>;
-  address_line_2?: InputMaybe<Scalars['String']['input']>;
-  city?: InputMaybe<Scalars['String']['input']>;
-  deleted?: InputMaybe<Scalars['Boolean']['input']>;
-  elation_patient_id?: InputMaybe<Scalars['String']['input']>;
-  emails?: InputMaybe<Array<Scalars['String']['input']>>;
-  first_name?: InputMaybe<Scalars['String']['input']>;
-  gender?: InputMaybe<Scalars['String']['input']>;
-  hint_patient_id?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  last_name?: InputMaybe<Scalars['String']['input']>;
-  last_updated_from?: InputMaybe<Providers_Enum>;
-  middle_name?: InputMaybe<Scalars['String']['input']>;
-  phone_numbers?: InputMaybe<Array<Scalars['String']['input']>>;
-  state?: InputMaybe<Scalars['String']['input']>;
-  zip_code?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** update columns of table "profiles" */
-export enum Profiles_Update_Column {
-  /** column name */
-  AddressLine_1 = 'address_line_1',
-  /** column name */
-  AddressLine_2 = 'address_line_2',
-  /** column name */
-  City = 'city',
-  /** column name */
-  Deleted = 'deleted',
-  /** column name */
-  ElationPatientId = 'elation_patient_id',
-  /** column name */
-  Emails = 'emails',
-  /** column name */
-  FirstName = 'first_name',
-  /** column name */
-  Gender = 'gender',
-  /** column name */
-  HintPatientId = 'hint_patient_id',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  LastName = 'last_name',
-  /** column name */
-  LastUpdatedFrom = 'last_updated_from',
-  /** column name */
-  MiddleName = 'middle_name',
-  /** column name */
-  PhoneNumbers = 'phone_numbers',
-  /** column name */
-  State = 'state',
-  /** column name */
-  ZipCode = 'zip_code'
-}
-
-export type Profiles_Updates = {
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Profiles_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Profiles_Bool_Exp;
-};
-
-/** columns and relationships of "providers" */
-export type Providers = {
-  __typename?: 'providers';
-  value: Scalars['String']['output'];
-};
-
-/** aggregated selection of "providers" */
-export type Providers_Aggregate = {
-  __typename?: 'providers_aggregate';
-  aggregate?: Maybe<Providers_Aggregate_Fields>;
-  nodes: Array<Providers>;
-};
-
-/** aggregate fields of "providers" */
-export type Providers_Aggregate_Fields = {
-  __typename?: 'providers_aggregate_fields';
-  count: Scalars['Int']['output'];
-  max?: Maybe<Providers_Max_Fields>;
-  min?: Maybe<Providers_Min_Fields>;
-};
-
-
-/** aggregate fields of "providers" */
-export type Providers_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Providers_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** Boolean expression to filter rows from the table "providers". All fields are combined with a logical 'AND'. */
-export type Providers_Bool_Exp = {
-  _and?: InputMaybe<Array<Providers_Bool_Exp>>;
-  _not?: InputMaybe<Providers_Bool_Exp>;
-  _or?: InputMaybe<Array<Providers_Bool_Exp>>;
-  value?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "providers" */
-export enum Providers_Constraint {
-  /** unique or primary key constraint on columns "value" */
-  ProvidersPkey = 'providers_pkey'
-}
-
-export enum Providers_Enum {
-  Dialpad = 'DIALPAD',
-  Elation = 'ELATION',
-  Hint = 'HINT'
-}
-
-/** Boolean expression to compare columns of type "providers_enum". All fields are combined with logical 'AND'. */
-export type Providers_Enum_Comparison_Exp = {
-  _eq?: InputMaybe<Providers_Enum>;
-  _in?: InputMaybe<Array<Providers_Enum>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _neq?: InputMaybe<Providers_Enum>;
-  _nin?: InputMaybe<Array<Providers_Enum>>;
-};
-
-/** input type for inserting data into table "providers" */
-export type Providers_Insert_Input = {
-  value?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate max on columns */
-export type Providers_Max_Fields = {
-  __typename?: 'providers_max_fields';
-  value?: Maybe<Scalars['String']['output']>;
-};
-
-/** aggregate min on columns */
-export type Providers_Min_Fields = {
-  __typename?: 'providers_min_fields';
-  value?: Maybe<Scalars['String']['output']>;
-};
-
-/** response of any mutation on the table "providers" */
-export type Providers_Mutation_Response = {
-  __typename?: 'providers_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Providers>;
-};
-
-/** on_conflict condition type for table "providers" */
-export type Providers_On_Conflict = {
-  constraint: Providers_Constraint;
-  update_columns?: Array<Providers_Update_Column>;
-  where?: InputMaybe<Providers_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "providers". */
-export type Providers_Order_By = {
-  value?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: providers */
-export type Providers_Pk_Columns_Input = {
-  value: Scalars['String']['input'];
-};
-
-/** select columns of table "providers" */
-export enum Providers_Select_Column {
-  /** column name */
-  Value = 'value'
-}
-
-/** input type for updating data in table "providers" */
-export type Providers_Set_Input = {
-  value?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** Streaming cursor of the table "providers" */
-export type Providers_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Providers_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Providers_Stream_Cursor_Value_Input = {
-  value?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** update columns of table "providers" */
-export enum Providers_Update_Column {
-  /** column name */
-  Value = 'value'
-}
-
-export type Providers_Updates = {
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Providers_Set_Input>;
-  /** filter the rows which have to be updated */
-  where: Providers_Bool_Exp;
-};
-
 export type Query_Root = {
   __typename?: 'query_root';
-  /** fetch data from the table: "action_logs" */
-  action_logs: Array<Action_Logs>;
-  /** fetch aggregated fields from the table: "action_logs" */
-  action_logs_aggregate: Action_Logs_Aggregate;
-  /** fetch data from the table: "action_logs" using primary key columns */
-  action_logs_by_pk?: Maybe<Action_Logs>;
-  /** fetch data from the table: "action_type" */
-  action_type: Array<Action_Type>;
-  /** fetch aggregated fields from the table: "action_type" */
-  action_type_aggregate: Action_Type_Aggregate;
-  /** fetch data from the table: "action_type" using primary key columns */
-  action_type_by_pk?: Maybe<Action_Type>;
-  /** fetch data from the table: "elation_patients" */
-  elation_patients: Array<Elation_Patients>;
-  /** fetch aggregated fields from the table: "elation_patients" */
-  elation_patients_aggregate: Elation_Patients_Aggregate;
-  /** fetch data from the table: "elation_patients" using primary key columns */
-  elation_patients_by_pk?: Maybe<Elation_Patients>;
-  /** fetch data from the table: "hint_patients" */
-  hint_patients: Array<Hint_Patients>;
-  /** fetch aggregated fields from the table: "hint_patients" */
-  hint_patients_aggregate: Hint_Patients_Aggregate;
-  /** fetch data from the table: "hint_patients" using primary key columns */
-  hint_patients_by_pk?: Maybe<Hint_Patients>;
-  /** fetch data from the table: "profiles" */
-  profiles: Array<Profiles>;
-  /** fetch aggregated fields from the table: "profiles" */
-  profiles_aggregate: Profiles_Aggregate;
-  /** fetch data from the table: "profiles" using primary key columns */
-  profiles_by_pk?: Maybe<Profiles>;
-  /** fetch data from the table: "providers" */
-  providers: Array<Providers>;
-  /** fetch aggregated fields from the table: "providers" */
-  providers_aggregate: Providers_Aggregate;
-  /** fetch data from the table: "providers" using primary key columns */
-  providers_by_pk?: Maybe<Providers>;
+  /** An array relationship */
+  audit_flags: Array<Audit_Flags>;
+  /** An aggregate relationship */
+  audit_flags_aggregate: Audit_Flags_Aggregate;
+  /** fetch data from the table: "audit_flags" using primary key columns */
+  audit_flags_by_pk?: Maybe<Audit_Flags>;
+  /** fetch data from the table: "audit_trail" */
+  audit_trail: Array<Audit_Trail>;
+  /** fetch aggregated fields from the table: "audit_trail" */
+  audit_trail_aggregate: Audit_Trail_Aggregate;
+  /** fetch data from the table: "audit_trail" using primary key columns */
+  audit_trail_by_pk?: Maybe<Audit_Trail>;
+  /** An array relationship */
+  credit_cards: Array<Credit_Cards>;
+  /** An aggregate relationship */
+  credit_cards_aggregate: Credit_Cards_Aggregate;
+  /** fetch data from the table: "credit_cards" using primary key columns */
+  credit_cards_by_pk?: Maybe<Credit_Cards>;
+  /** An array relationship */
+  transactions: Array<Transactions>;
+  /** An aggregate relationship */
+  transactions_aggregate: Transactions_Aggregate;
+  /** fetch data from the table: "transactions" using primary key columns */
+  transactions_by_pk?: Maybe<Transactions>;
+  /** fetch data from the table: "users" */
+  users: Array<Users>;
+  /** fetch aggregated fields from the table: "users" */
+  users_aggregate: Users_Aggregate;
+  /** fetch data from the table: "users" using primary key columns */
+  users_by_pk?: Maybe<Users>;
 };
 
 
-export type Query_RootAction_LogsArgs = {
-  distinct_on?: InputMaybe<Array<Action_Logs_Select_Column>>;
+export type Query_RootAudit_FlagsArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Flags_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Action_Logs_Order_By>>;
-  where?: InputMaybe<Action_Logs_Bool_Exp>;
+  order_by?: InputMaybe<Array<Audit_Flags_Order_By>>;
+  where?: InputMaybe<Audit_Flags_Bool_Exp>;
 };
 
 
-export type Query_RootAction_Logs_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Action_Logs_Select_Column>>;
+export type Query_RootAudit_Flags_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Flags_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Action_Logs_Order_By>>;
-  where?: InputMaybe<Action_Logs_Bool_Exp>;
+  order_by?: InputMaybe<Array<Audit_Flags_Order_By>>;
+  where?: InputMaybe<Audit_Flags_Bool_Exp>;
 };
 
 
-export type Query_RootAction_Logs_By_PkArgs = {
+export type Query_RootAudit_Flags_By_PkArgs = {
   id: Scalars['uuid']['input'];
 };
 
 
-export type Query_RootAction_TypeArgs = {
-  distinct_on?: InputMaybe<Array<Action_Type_Select_Column>>;
+export type Query_RootAudit_TrailArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Trail_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Action_Type_Order_By>>;
-  where?: InputMaybe<Action_Type_Bool_Exp>;
+  order_by?: InputMaybe<Array<Audit_Trail_Order_By>>;
+  where?: InputMaybe<Audit_Trail_Bool_Exp>;
 };
 
 
-export type Query_RootAction_Type_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Action_Type_Select_Column>>;
+export type Query_RootAudit_Trail_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Trail_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Action_Type_Order_By>>;
-  where?: InputMaybe<Action_Type_Bool_Exp>;
+  order_by?: InputMaybe<Array<Audit_Trail_Order_By>>;
+  where?: InputMaybe<Audit_Trail_Bool_Exp>;
 };
 
 
-export type Query_RootAction_Type_By_PkArgs = {
-  value: Scalars['String']['input'];
-};
-
-
-export type Query_RootElation_PatientsArgs = {
-  distinct_on?: InputMaybe<Array<Elation_Patients_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Elation_Patients_Order_By>>;
-  where?: InputMaybe<Elation_Patients_Bool_Exp>;
-};
-
-
-export type Query_RootElation_Patients_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Elation_Patients_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Elation_Patients_Order_By>>;
-  where?: InputMaybe<Elation_Patients_Bool_Exp>;
-};
-
-
-export type Query_RootElation_Patients_By_PkArgs = {
-  id: Scalars['bigint']['input'];
-};
-
-
-export type Query_RootHint_PatientsArgs = {
-  distinct_on?: InputMaybe<Array<Hint_Patients_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Hint_Patients_Order_By>>;
-  where?: InputMaybe<Hint_Patients_Bool_Exp>;
-};
-
-
-export type Query_RootHint_Patients_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Hint_Patients_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Hint_Patients_Order_By>>;
-  where?: InputMaybe<Hint_Patients_Bool_Exp>;
-};
-
-
-export type Query_RootHint_Patients_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type Query_RootProfilesArgs = {
-  distinct_on?: InputMaybe<Array<Profiles_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Profiles_Order_By>>;
-  where?: InputMaybe<Profiles_Bool_Exp>;
-};
-
-
-export type Query_RootProfiles_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Profiles_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Profiles_Order_By>>;
-  where?: InputMaybe<Profiles_Bool_Exp>;
-};
-
-
-export type Query_RootProfiles_By_PkArgs = {
+export type Query_RootAudit_Trail_By_PkArgs = {
   id: Scalars['uuid']['input'];
 };
 
 
-export type Query_RootProvidersArgs = {
-  distinct_on?: InputMaybe<Array<Providers_Select_Column>>;
+export type Query_RootCredit_CardsArgs = {
+  distinct_on?: InputMaybe<Array<Credit_Cards_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Providers_Order_By>>;
-  where?: InputMaybe<Providers_Bool_Exp>;
+  order_by?: InputMaybe<Array<Credit_Cards_Order_By>>;
+  where?: InputMaybe<Credit_Cards_Bool_Exp>;
 };
 
 
-export type Query_RootProviders_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Providers_Select_Column>>;
+export type Query_RootCredit_Cards_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Credit_Cards_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Providers_Order_By>>;
-  where?: InputMaybe<Providers_Bool_Exp>;
+  order_by?: InputMaybe<Array<Credit_Cards_Order_By>>;
+  where?: InputMaybe<Credit_Cards_Bool_Exp>;
 };
 
 
-export type Query_RootProviders_By_PkArgs = {
-  value: Scalars['String']['input'];
+export type Query_RootCredit_Cards_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootTransactionsArgs = {
+  distinct_on?: InputMaybe<Array<Transactions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Transactions_Order_By>>;
+  where?: InputMaybe<Transactions_Bool_Exp>;
+};
+
+
+export type Query_RootTransactions_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Transactions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Transactions_Order_By>>;
+  where?: InputMaybe<Transactions_Bool_Exp>;
+};
+
+
+export type Query_RootTransactions_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootUsersArgs = {
+  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Users_Order_By>>;
+  where?: InputMaybe<Users_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Users_Order_By>>;
+  where?: InputMaybe<Users_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_By_PkArgs = {
+  id: Scalars['uuid']['input'];
 };
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
-  /** fetch data from the table: "action_logs" */
-  action_logs: Array<Action_Logs>;
-  /** fetch aggregated fields from the table: "action_logs" */
-  action_logs_aggregate: Action_Logs_Aggregate;
-  /** fetch data from the table: "action_logs" using primary key columns */
-  action_logs_by_pk?: Maybe<Action_Logs>;
-  /** fetch data from the table in a streaming manner: "action_logs" */
-  action_logs_stream: Array<Action_Logs>;
-  /** fetch data from the table: "action_type" */
-  action_type: Array<Action_Type>;
-  /** fetch aggregated fields from the table: "action_type" */
-  action_type_aggregate: Action_Type_Aggregate;
-  /** fetch data from the table: "action_type" using primary key columns */
-  action_type_by_pk?: Maybe<Action_Type>;
-  /** fetch data from the table in a streaming manner: "action_type" */
-  action_type_stream: Array<Action_Type>;
-  /** fetch data from the table: "elation_patients" */
-  elation_patients: Array<Elation_Patients>;
-  /** fetch aggregated fields from the table: "elation_patients" */
-  elation_patients_aggregate: Elation_Patients_Aggregate;
-  /** fetch data from the table: "elation_patients" using primary key columns */
-  elation_patients_by_pk?: Maybe<Elation_Patients>;
-  /** fetch data from the table in a streaming manner: "elation_patients" */
-  elation_patients_stream: Array<Elation_Patients>;
-  /** fetch data from the table: "hint_patients" */
-  hint_patients: Array<Hint_Patients>;
-  /** fetch aggregated fields from the table: "hint_patients" */
-  hint_patients_aggregate: Hint_Patients_Aggregate;
-  /** fetch data from the table: "hint_patients" using primary key columns */
-  hint_patients_by_pk?: Maybe<Hint_Patients>;
-  /** fetch data from the table in a streaming manner: "hint_patients" */
-  hint_patients_stream: Array<Hint_Patients>;
-  /** fetch data from the table: "profiles" */
-  profiles: Array<Profiles>;
-  /** fetch aggregated fields from the table: "profiles" */
-  profiles_aggregate: Profiles_Aggregate;
-  /** fetch data from the table: "profiles" using primary key columns */
-  profiles_by_pk?: Maybe<Profiles>;
-  /** fetch data from the table in a streaming manner: "profiles" */
-  profiles_stream: Array<Profiles>;
-  /** fetch data from the table: "providers" */
-  providers: Array<Providers>;
-  /** fetch aggregated fields from the table: "providers" */
-  providers_aggregate: Providers_Aggregate;
-  /** fetch data from the table: "providers" using primary key columns */
-  providers_by_pk?: Maybe<Providers>;
-  /** fetch data from the table in a streaming manner: "providers" */
-  providers_stream: Array<Providers>;
+  /** An array relationship */
+  audit_flags: Array<Audit_Flags>;
+  /** An aggregate relationship */
+  audit_flags_aggregate: Audit_Flags_Aggregate;
+  /** fetch data from the table: "audit_flags" using primary key columns */
+  audit_flags_by_pk?: Maybe<Audit_Flags>;
+  /** fetch data from the table in a streaming manner: "audit_flags" */
+  audit_flags_stream: Array<Audit_Flags>;
+  /** fetch data from the table: "audit_trail" */
+  audit_trail: Array<Audit_Trail>;
+  /** fetch aggregated fields from the table: "audit_trail" */
+  audit_trail_aggregate: Audit_Trail_Aggregate;
+  /** fetch data from the table: "audit_trail" using primary key columns */
+  audit_trail_by_pk?: Maybe<Audit_Trail>;
+  /** fetch data from the table in a streaming manner: "audit_trail" */
+  audit_trail_stream: Array<Audit_Trail>;
+  /** An array relationship */
+  credit_cards: Array<Credit_Cards>;
+  /** An aggregate relationship */
+  credit_cards_aggregate: Credit_Cards_Aggregate;
+  /** fetch data from the table: "credit_cards" using primary key columns */
+  credit_cards_by_pk?: Maybe<Credit_Cards>;
+  /** fetch data from the table in a streaming manner: "credit_cards" */
+  credit_cards_stream: Array<Credit_Cards>;
+  /** An array relationship */
+  transactions: Array<Transactions>;
+  /** An aggregate relationship */
+  transactions_aggregate: Transactions_Aggregate;
+  /** fetch data from the table: "transactions" using primary key columns */
+  transactions_by_pk?: Maybe<Transactions>;
+  /** fetch data from the table in a streaming manner: "transactions" */
+  transactions_stream: Array<Transactions>;
+  /** fetch data from the table: "users" */
+  users: Array<Users>;
+  /** fetch aggregated fields from the table: "users" */
+  users_aggregate: Users_Aggregate;
+  /** fetch data from the table: "users" using primary key columns */
+  users_by_pk?: Maybe<Users>;
+  /** fetch data from the table in a streaming manner: "users" */
+  users_stream: Array<Users>;
 };
 
 
-export type Subscription_RootAction_LogsArgs = {
-  distinct_on?: InputMaybe<Array<Action_Logs_Select_Column>>;
+export type Subscription_RootAudit_FlagsArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Flags_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Action_Logs_Order_By>>;
-  where?: InputMaybe<Action_Logs_Bool_Exp>;
+  order_by?: InputMaybe<Array<Audit_Flags_Order_By>>;
+  where?: InputMaybe<Audit_Flags_Bool_Exp>;
 };
 
 
-export type Subscription_RootAction_Logs_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Action_Logs_Select_Column>>;
+export type Subscription_RootAudit_Flags_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Flags_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Action_Logs_Order_By>>;
-  where?: InputMaybe<Action_Logs_Bool_Exp>;
+  order_by?: InputMaybe<Array<Audit_Flags_Order_By>>;
+  where?: InputMaybe<Audit_Flags_Bool_Exp>;
 };
 
 
-export type Subscription_RootAction_Logs_By_PkArgs = {
+export type Subscription_RootAudit_Flags_By_PkArgs = {
   id: Scalars['uuid']['input'];
 };
 
 
-export type Subscription_RootAction_Logs_StreamArgs = {
+export type Subscription_RootAudit_Flags_StreamArgs = {
   batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Action_Logs_Stream_Cursor_Input>>;
-  where?: InputMaybe<Action_Logs_Bool_Exp>;
+  cursor: Array<InputMaybe<Audit_Flags_Stream_Cursor_Input>>;
+  where?: InputMaybe<Audit_Flags_Bool_Exp>;
 };
 
 
-export type Subscription_RootAction_TypeArgs = {
-  distinct_on?: InputMaybe<Array<Action_Type_Select_Column>>;
+export type Subscription_RootAudit_TrailArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Trail_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Action_Type_Order_By>>;
-  where?: InputMaybe<Action_Type_Bool_Exp>;
+  order_by?: InputMaybe<Array<Audit_Trail_Order_By>>;
+  where?: InputMaybe<Audit_Trail_Bool_Exp>;
 };
 
 
-export type Subscription_RootAction_Type_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Action_Type_Select_Column>>;
+export type Subscription_RootAudit_Trail_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Trail_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Action_Type_Order_By>>;
-  where?: InputMaybe<Action_Type_Bool_Exp>;
+  order_by?: InputMaybe<Array<Audit_Trail_Order_By>>;
+  where?: InputMaybe<Audit_Trail_Bool_Exp>;
 };
 
 
-export type Subscription_RootAction_Type_By_PkArgs = {
-  value: Scalars['String']['input'];
-};
-
-
-export type Subscription_RootAction_Type_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Action_Type_Stream_Cursor_Input>>;
-  where?: InputMaybe<Action_Type_Bool_Exp>;
-};
-
-
-export type Subscription_RootElation_PatientsArgs = {
-  distinct_on?: InputMaybe<Array<Elation_Patients_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Elation_Patients_Order_By>>;
-  where?: InputMaybe<Elation_Patients_Bool_Exp>;
-};
-
-
-export type Subscription_RootElation_Patients_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Elation_Patients_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Elation_Patients_Order_By>>;
-  where?: InputMaybe<Elation_Patients_Bool_Exp>;
-};
-
-
-export type Subscription_RootElation_Patients_By_PkArgs = {
-  id: Scalars['bigint']['input'];
-};
-
-
-export type Subscription_RootElation_Patients_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Elation_Patients_Stream_Cursor_Input>>;
-  where?: InputMaybe<Elation_Patients_Bool_Exp>;
-};
-
-
-export type Subscription_RootHint_PatientsArgs = {
-  distinct_on?: InputMaybe<Array<Hint_Patients_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Hint_Patients_Order_By>>;
-  where?: InputMaybe<Hint_Patients_Bool_Exp>;
-};
-
-
-export type Subscription_RootHint_Patients_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Hint_Patients_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Hint_Patients_Order_By>>;
-  where?: InputMaybe<Hint_Patients_Bool_Exp>;
-};
-
-
-export type Subscription_RootHint_Patients_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type Subscription_RootHint_Patients_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Hint_Patients_Stream_Cursor_Input>>;
-  where?: InputMaybe<Hint_Patients_Bool_Exp>;
-};
-
-
-export type Subscription_RootProfilesArgs = {
-  distinct_on?: InputMaybe<Array<Profiles_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Profiles_Order_By>>;
-  where?: InputMaybe<Profiles_Bool_Exp>;
-};
-
-
-export type Subscription_RootProfiles_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Profiles_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Profiles_Order_By>>;
-  where?: InputMaybe<Profiles_Bool_Exp>;
-};
-
-
-export type Subscription_RootProfiles_By_PkArgs = {
+export type Subscription_RootAudit_Trail_By_PkArgs = {
   id: Scalars['uuid']['input'];
 };
 
 
-export type Subscription_RootProfiles_StreamArgs = {
+export type Subscription_RootAudit_Trail_StreamArgs = {
   batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Profiles_Stream_Cursor_Input>>;
-  where?: InputMaybe<Profiles_Bool_Exp>;
+  cursor: Array<InputMaybe<Audit_Trail_Stream_Cursor_Input>>;
+  where?: InputMaybe<Audit_Trail_Bool_Exp>;
 };
 
 
-export type Subscription_RootProvidersArgs = {
-  distinct_on?: InputMaybe<Array<Providers_Select_Column>>;
+export type Subscription_RootCredit_CardsArgs = {
+  distinct_on?: InputMaybe<Array<Credit_Cards_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Providers_Order_By>>;
-  where?: InputMaybe<Providers_Bool_Exp>;
+  order_by?: InputMaybe<Array<Credit_Cards_Order_By>>;
+  where?: InputMaybe<Credit_Cards_Bool_Exp>;
 };
 
 
-export type Subscription_RootProviders_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Providers_Select_Column>>;
+export type Subscription_RootCredit_Cards_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Credit_Cards_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Providers_Order_By>>;
-  where?: InputMaybe<Providers_Bool_Exp>;
+  order_by?: InputMaybe<Array<Credit_Cards_Order_By>>;
+  where?: InputMaybe<Credit_Cards_Bool_Exp>;
 };
 
 
-export type Subscription_RootProviders_By_PkArgs = {
-  value: Scalars['String']['input'];
+export type Subscription_RootCredit_Cards_By_PkArgs = {
+  id: Scalars['uuid']['input'];
 };
 
 
-export type Subscription_RootProviders_StreamArgs = {
+export type Subscription_RootCredit_Cards_StreamArgs = {
   batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Providers_Stream_Cursor_Input>>;
-  where?: InputMaybe<Providers_Bool_Exp>;
+  cursor: Array<InputMaybe<Credit_Cards_Stream_Cursor_Input>>;
+  where?: InputMaybe<Credit_Cards_Bool_Exp>;
+};
+
+
+export type Subscription_RootTransactionsArgs = {
+  distinct_on?: InputMaybe<Array<Transactions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Transactions_Order_By>>;
+  where?: InputMaybe<Transactions_Bool_Exp>;
+};
+
+
+export type Subscription_RootTransactions_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Transactions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Transactions_Order_By>>;
+  where?: InputMaybe<Transactions_Bool_Exp>;
+};
+
+
+export type Subscription_RootTransactions_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootTransactions_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Transactions_Stream_Cursor_Input>>;
+  where?: InputMaybe<Transactions_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsersArgs = {
+  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Users_Order_By>>;
+  where?: InputMaybe<Users_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Users_Order_By>>;
+  where?: InputMaybe<Users_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootUsers_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Users_Stream_Cursor_Input>>;
+  where?: InputMaybe<Users_Bool_Exp>;
 };
 
 /** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
@@ -3928,6 +1913,785 @@ export type Timestamptz_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['timestamptz']['input']>>;
 };
 
+/** columns and relationships of "transactions" */
+export type Transactions = {
+  __typename?: 'transactions';
+  amount: Scalars['numeric']['output'];
+  /** An array relationship */
+  audit_flags: Array<Audit_Flags>;
+  /** An aggregate relationship */
+  audit_flags_aggregate: Audit_Flags_Aggregate;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  /** An object relationship */
+  credit_card: Credit_Cards;
+  credit_card_id: Scalars['uuid']['output'];
+  currency: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  id: Scalars['uuid']['output'];
+  merchant_category?: Maybe<Scalars['String']['output']>;
+  merchant_name?: Maybe<Scalars['String']['output']>;
+  posted_date?: Maybe<Scalars['timestamptz']['output']>;
+  status: Scalars['String']['output'];
+  transaction_date: Scalars['timestamptz']['output'];
+  transaction_id?: Maybe<Scalars['String']['output']>;
+  transaction_type: Scalars['String']['output'];
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+
+/** columns and relationships of "transactions" */
+export type TransactionsAudit_FlagsArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Flags_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Audit_Flags_Order_By>>;
+  where?: InputMaybe<Audit_Flags_Bool_Exp>;
+};
+
+
+/** columns and relationships of "transactions" */
+export type TransactionsAudit_Flags_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Flags_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Audit_Flags_Order_By>>;
+  where?: InputMaybe<Audit_Flags_Bool_Exp>;
+};
+
+/** aggregated selection of "transactions" */
+export type Transactions_Aggregate = {
+  __typename?: 'transactions_aggregate';
+  aggregate?: Maybe<Transactions_Aggregate_Fields>;
+  nodes: Array<Transactions>;
+};
+
+export type Transactions_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Transactions_Aggregate_Bool_Exp_Count>;
+};
+
+export type Transactions_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Transactions_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Transactions_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "transactions" */
+export type Transactions_Aggregate_Fields = {
+  __typename?: 'transactions_aggregate_fields';
+  avg?: Maybe<Transactions_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Transactions_Max_Fields>;
+  min?: Maybe<Transactions_Min_Fields>;
+  stddev?: Maybe<Transactions_Stddev_Fields>;
+  stddev_pop?: Maybe<Transactions_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Transactions_Stddev_Samp_Fields>;
+  sum?: Maybe<Transactions_Sum_Fields>;
+  var_pop?: Maybe<Transactions_Var_Pop_Fields>;
+  var_samp?: Maybe<Transactions_Var_Samp_Fields>;
+  variance?: Maybe<Transactions_Variance_Fields>;
+};
+
+
+/** aggregate fields of "transactions" */
+export type Transactions_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Transactions_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "transactions" */
+export type Transactions_Aggregate_Order_By = {
+  avg?: InputMaybe<Transactions_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Transactions_Max_Order_By>;
+  min?: InputMaybe<Transactions_Min_Order_By>;
+  stddev?: InputMaybe<Transactions_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Transactions_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Transactions_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Transactions_Sum_Order_By>;
+  var_pop?: InputMaybe<Transactions_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Transactions_Var_Samp_Order_By>;
+  variance?: InputMaybe<Transactions_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "transactions" */
+export type Transactions_Arr_Rel_Insert_Input = {
+  data: Array<Transactions_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Transactions_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Transactions_Avg_Fields = {
+  __typename?: 'transactions_avg_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "transactions" */
+export type Transactions_Avg_Order_By = {
+  amount?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "transactions". All fields are combined with a logical 'AND'. */
+export type Transactions_Bool_Exp = {
+  _and?: InputMaybe<Array<Transactions_Bool_Exp>>;
+  _not?: InputMaybe<Transactions_Bool_Exp>;
+  _or?: InputMaybe<Array<Transactions_Bool_Exp>>;
+  amount?: InputMaybe<Numeric_Comparison_Exp>;
+  audit_flags?: InputMaybe<Audit_Flags_Bool_Exp>;
+  audit_flags_aggregate?: InputMaybe<Audit_Flags_Aggregate_Bool_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  credit_card?: InputMaybe<Credit_Cards_Bool_Exp>;
+  credit_card_id?: InputMaybe<Uuid_Comparison_Exp>;
+  currency?: InputMaybe<String_Comparison_Exp>;
+  description?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  merchant_category?: InputMaybe<String_Comparison_Exp>;
+  merchant_name?: InputMaybe<String_Comparison_Exp>;
+  posted_date?: InputMaybe<Timestamptz_Comparison_Exp>;
+  status?: InputMaybe<String_Comparison_Exp>;
+  transaction_date?: InputMaybe<Timestamptz_Comparison_Exp>;
+  transaction_id?: InputMaybe<String_Comparison_Exp>;
+  transaction_type?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "transactions" */
+export enum Transactions_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  TransactionsPkey = 'transactions_pkey',
+  /** unique or primary key constraint on columns "transaction_id" */
+  TransactionsTransactionIdKey = 'transactions_transaction_id_key'
+}
+
+/** input type for incrementing numeric columns in table "transactions" */
+export type Transactions_Inc_Input = {
+  amount?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** input type for inserting data into table "transactions" */
+export type Transactions_Insert_Input = {
+  amount?: InputMaybe<Scalars['numeric']['input']>;
+  audit_flags?: InputMaybe<Audit_Flags_Arr_Rel_Insert_Input>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  credit_card?: InputMaybe<Credit_Cards_Obj_Rel_Insert_Input>;
+  credit_card_id?: InputMaybe<Scalars['uuid']['input']>;
+  currency?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  merchant_category?: InputMaybe<Scalars['String']['input']>;
+  merchant_name?: InputMaybe<Scalars['String']['input']>;
+  posted_date?: InputMaybe<Scalars['timestamptz']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  transaction_date?: InputMaybe<Scalars['timestamptz']['input']>;
+  transaction_id?: InputMaybe<Scalars['String']['input']>;
+  transaction_type?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate max on columns */
+export type Transactions_Max_Fields = {
+  __typename?: 'transactions_max_fields';
+  amount?: Maybe<Scalars['numeric']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  credit_card_id?: Maybe<Scalars['uuid']['output']>;
+  currency?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  merchant_category?: Maybe<Scalars['String']['output']>;
+  merchant_name?: Maybe<Scalars['String']['output']>;
+  posted_date?: Maybe<Scalars['timestamptz']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  transaction_date?: Maybe<Scalars['timestamptz']['output']>;
+  transaction_id?: Maybe<Scalars['String']['output']>;
+  transaction_type?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** order by max() on columns of table "transactions" */
+export type Transactions_Max_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  credit_card_id?: InputMaybe<Order_By>;
+  currency?: InputMaybe<Order_By>;
+  description?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  merchant_category?: InputMaybe<Order_By>;
+  merchant_name?: InputMaybe<Order_By>;
+  posted_date?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  transaction_date?: InputMaybe<Order_By>;
+  transaction_id?: InputMaybe<Order_By>;
+  transaction_type?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Transactions_Min_Fields = {
+  __typename?: 'transactions_min_fields';
+  amount?: Maybe<Scalars['numeric']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  credit_card_id?: Maybe<Scalars['uuid']['output']>;
+  currency?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  merchant_category?: Maybe<Scalars['String']['output']>;
+  merchant_name?: Maybe<Scalars['String']['output']>;
+  posted_date?: Maybe<Scalars['timestamptz']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+  transaction_date?: Maybe<Scalars['timestamptz']['output']>;
+  transaction_id?: Maybe<Scalars['String']['output']>;
+  transaction_type?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** order by min() on columns of table "transactions" */
+export type Transactions_Min_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  credit_card_id?: InputMaybe<Order_By>;
+  currency?: InputMaybe<Order_By>;
+  description?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  merchant_category?: InputMaybe<Order_By>;
+  merchant_name?: InputMaybe<Order_By>;
+  posted_date?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  transaction_date?: InputMaybe<Order_By>;
+  transaction_id?: InputMaybe<Order_By>;
+  transaction_type?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "transactions" */
+export type Transactions_Mutation_Response = {
+  __typename?: 'transactions_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Transactions>;
+};
+
+/** input type for inserting object relation for remote table "transactions" */
+export type Transactions_Obj_Rel_Insert_Input = {
+  data: Transactions_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Transactions_On_Conflict>;
+};
+
+/** on_conflict condition type for table "transactions" */
+export type Transactions_On_Conflict = {
+  constraint: Transactions_Constraint;
+  update_columns?: Array<Transactions_Update_Column>;
+  where?: InputMaybe<Transactions_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "transactions". */
+export type Transactions_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  audit_flags_aggregate?: InputMaybe<Audit_Flags_Aggregate_Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  credit_card?: InputMaybe<Credit_Cards_Order_By>;
+  credit_card_id?: InputMaybe<Order_By>;
+  currency?: InputMaybe<Order_By>;
+  description?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  merchant_category?: InputMaybe<Order_By>;
+  merchant_name?: InputMaybe<Order_By>;
+  posted_date?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  transaction_date?: InputMaybe<Order_By>;
+  transaction_id?: InputMaybe<Order_By>;
+  transaction_type?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: transactions */
+export type Transactions_Pk_Columns_Input = {
+  id: Scalars['uuid']['input'];
+};
+
+/** select columns of table "transactions" */
+export enum Transactions_Select_Column {
+  /** column name */
+  Amount = 'amount',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CreditCardId = 'credit_card_id',
+  /** column name */
+  Currency = 'currency',
+  /** column name */
+  Description = 'description',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  MerchantCategory = 'merchant_category',
+  /** column name */
+  MerchantName = 'merchant_name',
+  /** column name */
+  PostedDate = 'posted_date',
+  /** column name */
+  Status = 'status',
+  /** column name */
+  TransactionDate = 'transaction_date',
+  /** column name */
+  TransactionId = 'transaction_id',
+  /** column name */
+  TransactionType = 'transaction_type',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "transactions" */
+export type Transactions_Set_Input = {
+  amount?: InputMaybe<Scalars['numeric']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  credit_card_id?: InputMaybe<Scalars['uuid']['input']>;
+  currency?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  merchant_category?: InputMaybe<Scalars['String']['input']>;
+  merchant_name?: InputMaybe<Scalars['String']['input']>;
+  posted_date?: InputMaybe<Scalars['timestamptz']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  transaction_date?: InputMaybe<Scalars['timestamptz']['input']>;
+  transaction_id?: InputMaybe<Scalars['String']['input']>;
+  transaction_type?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type Transactions_Stddev_Fields = {
+  __typename?: 'transactions_stddev_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "transactions" */
+export type Transactions_Stddev_Order_By = {
+  amount?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Transactions_Stddev_Pop_Fields = {
+  __typename?: 'transactions_stddev_pop_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_pop() on columns of table "transactions" */
+export type Transactions_Stddev_Pop_Order_By = {
+  amount?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Transactions_Stddev_Samp_Fields = {
+  __typename?: 'transactions_stddev_samp_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_samp() on columns of table "transactions" */
+export type Transactions_Stddev_Samp_Order_By = {
+  amount?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "transactions" */
+export type Transactions_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Transactions_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Transactions_Stream_Cursor_Value_Input = {
+  amount?: InputMaybe<Scalars['numeric']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  credit_card_id?: InputMaybe<Scalars['uuid']['input']>;
+  currency?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  merchant_category?: InputMaybe<Scalars['String']['input']>;
+  merchant_name?: InputMaybe<Scalars['String']['input']>;
+  posted_date?: InputMaybe<Scalars['timestamptz']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  transaction_date?: InputMaybe<Scalars['timestamptz']['input']>;
+  transaction_id?: InputMaybe<Scalars['String']['input']>;
+  transaction_type?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Transactions_Sum_Fields = {
+  __typename?: 'transactions_sum_fields';
+  amount?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** order by sum() on columns of table "transactions" */
+export type Transactions_Sum_Order_By = {
+  amount?: InputMaybe<Order_By>;
+};
+
+/** update columns of table "transactions" */
+export enum Transactions_Update_Column {
+  /** column name */
+  Amount = 'amount',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CreditCardId = 'credit_card_id',
+  /** column name */
+  Currency = 'currency',
+  /** column name */
+  Description = 'description',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  MerchantCategory = 'merchant_category',
+  /** column name */
+  MerchantName = 'merchant_name',
+  /** column name */
+  PostedDate = 'posted_date',
+  /** column name */
+  Status = 'status',
+  /** column name */
+  TransactionDate = 'transaction_date',
+  /** column name */
+  TransactionId = 'transaction_id',
+  /** column name */
+  TransactionType = 'transaction_type',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type Transactions_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Transactions_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Transactions_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Transactions_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Transactions_Var_Pop_Fields = {
+  __typename?: 'transactions_var_pop_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_pop() on columns of table "transactions" */
+export type Transactions_Var_Pop_Order_By = {
+  amount?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Transactions_Var_Samp_Fields = {
+  __typename?: 'transactions_var_samp_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_samp() on columns of table "transactions" */
+export type Transactions_Var_Samp_Order_By = {
+  amount?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Transactions_Variance_Fields = {
+  __typename?: 'transactions_variance_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "transactions" */
+export type Transactions_Variance_Order_By = {
+  amount?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "users" */
+export type Users = {
+  __typename?: 'users';
+  /** An array relationship */
+  audit_flags: Array<Audit_Flags>;
+  /** An aggregate relationship */
+  audit_flags_aggregate: Audit_Flags_Aggregate;
+  /** An array relationship */
+  audit_trail_entries: Array<Audit_Trail>;
+  /** An aggregate relationship */
+  audit_trail_entries_aggregate: Audit_Trail_Aggregate;
+  clerk_user_id: Scalars['String']['output'];
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  /** An array relationship */
+  credit_cards: Array<Credit_Cards>;
+  /** An aggregate relationship */
+  credit_cards_aggregate: Credit_Cards_Aggregate;
+  email: Scalars['String']['output'];
+  full_name?: Maybe<Scalars['String']['output']>;
+  id: Scalars['uuid']['output'];
+  role: Scalars['String']['output'];
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersAudit_FlagsArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Flags_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Audit_Flags_Order_By>>;
+  where?: InputMaybe<Audit_Flags_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersAudit_Flags_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Flags_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Audit_Flags_Order_By>>;
+  where?: InputMaybe<Audit_Flags_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersAudit_Trail_EntriesArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Trail_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Audit_Trail_Order_By>>;
+  where?: InputMaybe<Audit_Trail_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersAudit_Trail_Entries_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Audit_Trail_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Audit_Trail_Order_By>>;
+  where?: InputMaybe<Audit_Trail_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersCredit_CardsArgs = {
+  distinct_on?: InputMaybe<Array<Credit_Cards_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Credit_Cards_Order_By>>;
+  where?: InputMaybe<Credit_Cards_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersCredit_Cards_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Credit_Cards_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Credit_Cards_Order_By>>;
+  where?: InputMaybe<Credit_Cards_Bool_Exp>;
+};
+
+/** aggregated selection of "users" */
+export type Users_Aggregate = {
+  __typename?: 'users_aggregate';
+  aggregate?: Maybe<Users_Aggregate_Fields>;
+  nodes: Array<Users>;
+};
+
+/** aggregate fields of "users" */
+export type Users_Aggregate_Fields = {
+  __typename?: 'users_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Users_Max_Fields>;
+  min?: Maybe<Users_Min_Fields>;
+};
+
+
+/** aggregate fields of "users" */
+export type Users_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Users_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
+export type Users_Bool_Exp = {
+  _and?: InputMaybe<Array<Users_Bool_Exp>>;
+  _not?: InputMaybe<Users_Bool_Exp>;
+  _or?: InputMaybe<Array<Users_Bool_Exp>>;
+  audit_flags?: InputMaybe<Audit_Flags_Bool_Exp>;
+  audit_flags_aggregate?: InputMaybe<Audit_Flags_Aggregate_Bool_Exp>;
+  audit_trail_entries?: InputMaybe<Audit_Trail_Bool_Exp>;
+  audit_trail_entries_aggregate?: InputMaybe<Audit_Trail_Aggregate_Bool_Exp>;
+  clerk_user_id?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  credit_cards?: InputMaybe<Credit_Cards_Bool_Exp>;
+  credit_cards_aggregate?: InputMaybe<Credit_Cards_Aggregate_Bool_Exp>;
+  email?: InputMaybe<String_Comparison_Exp>;
+  full_name?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  role?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "users" */
+export enum Users_Constraint {
+  /** unique or primary key constraint on columns "clerk_user_id" */
+  UsersClerkUserIdKey = 'users_clerk_user_id_key',
+  /** unique or primary key constraint on columns "id" */
+  UsersPkey = 'users_pkey'
+}
+
+/** input type for inserting data into table "users" */
+export type Users_Insert_Input = {
+  audit_flags?: InputMaybe<Audit_Flags_Arr_Rel_Insert_Input>;
+  audit_trail_entries?: InputMaybe<Audit_Trail_Arr_Rel_Insert_Input>;
+  clerk_user_id?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  credit_cards?: InputMaybe<Credit_Cards_Arr_Rel_Insert_Input>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  full_name?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  role?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate max on columns */
+export type Users_Max_Fields = {
+  __typename?: 'users_max_fields';
+  clerk_user_id?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  full_name?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  role?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** aggregate min on columns */
+export type Users_Min_Fields = {
+  __typename?: 'users_min_fields';
+  clerk_user_id?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  full_name?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  role?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** response of any mutation on the table "users" */
+export type Users_Mutation_Response = {
+  __typename?: 'users_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Users>;
+};
+
+/** input type for inserting object relation for remote table "users" */
+export type Users_Obj_Rel_Insert_Input = {
+  data: Users_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Users_On_Conflict>;
+};
+
+/** on_conflict condition type for table "users" */
+export type Users_On_Conflict = {
+  constraint: Users_Constraint;
+  update_columns?: Array<Users_Update_Column>;
+  where?: InputMaybe<Users_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "users". */
+export type Users_Order_By = {
+  audit_flags_aggregate?: InputMaybe<Audit_Flags_Aggregate_Order_By>;
+  audit_trail_entries_aggregate?: InputMaybe<Audit_Trail_Aggregate_Order_By>;
+  clerk_user_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  credit_cards_aggregate?: InputMaybe<Credit_Cards_Aggregate_Order_By>;
+  email?: InputMaybe<Order_By>;
+  full_name?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  role?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: users */
+export type Users_Pk_Columns_Input = {
+  id: Scalars['uuid']['input'];
+};
+
+/** select columns of table "users" */
+export enum Users_Select_Column {
+  /** column name */
+  ClerkUserId = 'clerk_user_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Email = 'email',
+  /** column name */
+  FullName = 'full_name',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Role = 'role',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "users" */
+export type Users_Set_Input = {
+  clerk_user_id?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  full_name?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  role?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** Streaming cursor of the table "users" */
+export type Users_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Users_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Users_Stream_Cursor_Value_Input = {
+  clerk_user_id?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  full_name?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  role?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** update columns of table "users" */
+export enum Users_Update_Column {
+  /** column name */
+  ClerkUserId = 'clerk_user_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Email = 'email',
+  /** column name */
+  FullName = 'full_name',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Role = 'role',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type Users_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Users_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Users_Bool_Exp;
+};
+
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
 export type Uuid_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['uuid']['input']>;
@@ -3941,295 +2705,336 @@ export type Uuid_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['uuid']['input']>>;
 };
 
-export type GetActionLogsSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type InsertAuditFlagMutationVariables = Exact<{
+  object: Audit_Flags_Insert_Input;
+}>;
 
 
-export type GetActionLogsSubscription = { __typename?: 'subscription_root', action_logs: Array<{ __typename?: 'action_logs', id: any, type: Action_Type_Enum, date: Date, provider: Providers_Enum, extra_data?: any | null }> };
+export type InsertAuditFlagMutation = { __typename?: 'mutation_root', insert_audit_flags_one?: { __typename?: 'audit_flags', id: any, flag_type: string, notes?: string | null, severity: string, status: string, created_at?: Date | null } | null };
 
-export type GetActionLogsOnceQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetActionLogsOnceQuery = { __typename?: 'query_root', action_logs: Array<{ __typename?: 'action_logs', id: any, type: Action_Type_Enum, date: Date, provider: Providers_Enum, extra_data?: any | null }> };
-
-export type GetProfilesSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type UpdateAuditFlagMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  updates: Audit_Flags_Set_Input;
+}>;
 
 
-export type GetProfilesSubscription = { __typename?: 'subscription_root', profiles: Array<{ __typename?: 'profiles', id: any, first_name: string, last_name: string, middle_name?: string | null, phone_numbers?: Array<string> | null, emails?: Array<string> | null, gender?: string | null, address_line_1?: string | null, address_line_2?: string | null, city?: string | null, state?: string | null, zip_code?: string | null, last_updated_from?: Providers_Enum | null, elation_patient_id?: string | null, hint_patient_id?: string | null, deleted?: boolean | null }> };
+export type UpdateAuditFlagMutation = { __typename?: 'mutation_root', update_audit_flags_by_pk?: { __typename?: 'audit_flags', id: any, flag_type: string, notes?: string | null, severity: string, status: string, updated_at?: Date | null } | null };
 
-export type GetProfilesOnceQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetProfilesOnceQuery = { __typename?: 'query_root', profiles: Array<{ __typename?: 'profiles', id: any, first_name: string, last_name: string, middle_name?: string | null, phone_numbers?: Array<string> | null, emails?: Array<string> | null, gender?: string | null, address_line_1?: string | null, address_line_2?: string | null, city?: string | null, state?: string | null, zip_code?: string | null, last_updated_from?: Providers_Enum | null, elation_patient_id?: string | null, hint_patient_id?: string | null, deleted?: boolean | null }> };
-
-export type GetHintPatientsSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type GetAuditorCreditCardsWithTransactionsQueryVariables = Exact<{
+  currentMonth: Scalars['timestamptz']['input'];
+  nextMonth: Scalars['timestamptz']['input'];
+}>;
 
 
-export type GetHintPatientsSubscription = { __typename?: 'subscription_root', hint_patients: Array<{ __typename?: 'hint_patients', id: string, first_name?: string | null, last_name?: string | null, middle_name?: string | null, name?: string | null, dob?: any | null, gender?: string | null, email?: string | null, phones?: any | null, address_line1?: string | null, address_line2?: string | null, address_city?: string | null, address_state?: string | null, address_zip?: string | null, updated_at: Date, created_at: Date }> };
+export type GetAuditorCreditCardsWithTransactionsQuery = { __typename?: 'query_root', credit_cards: Array<{ __typename?: 'credit_cards', id: any, card_name: string, card_brand: string, last_four_digits: string, card_holder_name: string, expiry_month: number, expiry_year: number, is_active?: boolean | null, created_at?: Date | null, updated_at?: Date | null, user: { __typename?: 'users', id: any, clerk_user_id: string, email: string, full_name?: string | null, role: string }, transactions: Array<{ __typename?: 'transactions', id: any, transaction_id?: string | null, amount: any, currency: string, description: string, merchant_name?: string | null, merchant_category?: string | null, transaction_date: Date, posted_date?: Date | null, transaction_type: string, status: string, created_at?: Date | null, updated_at?: Date | null, audit_flags: Array<{ __typename?: 'audit_flags', id: any, flag_type: string, notes?: string | null, severity: string, status: string, created_at?: Date | null, auditor: { __typename?: 'users', full_name?: string | null, email: string } }> }> }> };
 
-export type GetElationPatientsSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetElationPatientsSubscription = { __typename?: 'subscription_root', elation_patients: Array<{ __typename?: 'elation_patients', id: number, first_name: string, last_name: string, middle_name?: string | null, dob: any, sex: string, emails?: any | null, phones?: any | null, address_line1?: string | null, address_line2?: string | null, city?: string | null, state?: string | null, zip?: string | null, created_date: Date, last_modified?: Date | null }> };
+export type GetCreditCardsWithTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export const GetActionLogsDocument = gql`
-    subscription GetActionLogs {
-  action_logs(order_by: {date: desc}, limit: 60) {
+export type GetCreditCardsWithTransactionsQuery = { __typename?: 'query_root', credit_cards: Array<{ __typename?: 'credit_cards', id: any, card_name: string, card_brand: string, last_four_digits: string, card_holder_name: string, user: { __typename?: 'users', id: any, full_name?: string | null, email: string }, transactions: Array<{ __typename?: 'transactions', id: any, transaction_id?: string | null, amount: any, currency: string, description: string, merchant_name?: string | null, merchant_category?: string | null, transaction_date: Date, posted_date?: Date | null, transaction_type: string, status: string, audit_flags: Array<{ __typename?: 'audit_flags', id: any, flag_type: string, notes?: string | null, severity: string, status: string, created_at?: Date | null, auditor: { __typename?: 'users', full_name?: string | null } }> }> }> };
+
+export type TransactionsSubscriptionSubscriptionVariables = Exact<{
+  where?: InputMaybe<Transactions_Bool_Exp>;
+}>;
+
+
+export type TransactionsSubscriptionSubscription = { __typename?: 'subscription_root', transactions: Array<{ __typename?: 'transactions', id: any, transaction_id?: string | null, amount: any, currency: string, description: string, merchant_name?: string | null, merchant_category?: string | null, transaction_date: Date, posted_date?: Date | null, transaction_type: string, status: string, credit_card: { __typename?: 'credit_cards', id: any, card_name: string, card_brand: string, last_four_digits: string, user: { __typename?: 'users', full_name?: string | null, email: string } }, audit_flags: Array<{ __typename?: 'audit_flags', id: any, flag_type: string, notes?: string | null, severity: string, status: string, created_at?: Date | null, auditor: { __typename?: 'users', full_name?: string | null } }> }> };
+
+
+export const InsertAuditFlagDocument = gql`
+    mutation InsertAuditFlag($object: audit_flags_insert_input!) {
+  insert_audit_flags_one(object: $object) {
     id
-    type
-    date
-    provider
-    extra_data
-  }
-}
-    `;
-
-/**
- * __useGetActionLogsSubscription__
- *
- * To run a query within a React component, call `useGetActionLogsSubscription` and pass it any options that fit your needs.
- * When your component renders, `useGetActionLogsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetActionLogsSubscription({
- *   variables: {
- *   },
- * });
- */
-export function useGetActionLogsSubscription(baseOptions?: Apollo.SubscriptionHookOptions<GetActionLogsSubscription, GetActionLogsSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<GetActionLogsSubscription, GetActionLogsSubscriptionVariables>(GetActionLogsDocument, options);
-      }
-export type GetActionLogsSubscriptionHookResult = ReturnType<typeof useGetActionLogsSubscription>;
-export type GetActionLogsSubscriptionResult = Apollo.SubscriptionResult<GetActionLogsSubscription>;
-export const GetActionLogsOnceDocument = gql`
-    query GetActionLogsOnce {
-  action_logs(order_by: {date: desc}, limit: 60) {
-    id
-    type
-    date
-    provider
-    extra_data
-  }
-}
-    `;
-
-/**
- * __useGetActionLogsOnceQuery__
- *
- * To run a query within a React component, call `useGetActionLogsOnceQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetActionLogsOnceQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetActionLogsOnceQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetActionLogsOnceQuery(baseOptions?: Apollo.QueryHookOptions<GetActionLogsOnceQuery, GetActionLogsOnceQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetActionLogsOnceQuery, GetActionLogsOnceQueryVariables>(GetActionLogsOnceDocument, options);
-      }
-export function useGetActionLogsOnceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetActionLogsOnceQuery, GetActionLogsOnceQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetActionLogsOnceQuery, GetActionLogsOnceQueryVariables>(GetActionLogsOnceDocument, options);
-        }
-export function useGetActionLogsOnceSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetActionLogsOnceQuery, GetActionLogsOnceQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetActionLogsOnceQuery, GetActionLogsOnceQueryVariables>(GetActionLogsOnceDocument, options);
-        }
-export type GetActionLogsOnceQueryHookResult = ReturnType<typeof useGetActionLogsOnceQuery>;
-export type GetActionLogsOnceLazyQueryHookResult = ReturnType<typeof useGetActionLogsOnceLazyQuery>;
-export type GetActionLogsOnceSuspenseQueryHookResult = ReturnType<typeof useGetActionLogsOnceSuspenseQuery>;
-export type GetActionLogsOnceQueryResult = Apollo.QueryResult<GetActionLogsOnceQuery, GetActionLogsOnceQueryVariables>;
-export const GetProfilesDocument = gql`
-    subscription GetProfiles {
-  profiles(order_by: {last_updated_from: desc}) {
-    id
-    first_name
-    last_name
-    middle_name
-    phone_numbers
-    emails
-    gender
-    address_line_1
-    address_line_2
-    city
-    state
-    zip_code
-    last_updated_from
-    elation_patient_id
-    hint_patient_id
-    deleted
-  }
-}
-    `;
-
-/**
- * __useGetProfilesSubscription__
- *
- * To run a query within a React component, call `useGetProfilesSubscription` and pass it any options that fit your needs.
- * When your component renders, `useGetProfilesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProfilesSubscription({
- *   variables: {
- *   },
- * });
- */
-export function useGetProfilesSubscription(baseOptions?: Apollo.SubscriptionHookOptions<GetProfilesSubscription, GetProfilesSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<GetProfilesSubscription, GetProfilesSubscriptionVariables>(GetProfilesDocument, options);
-      }
-export type GetProfilesSubscriptionHookResult = ReturnType<typeof useGetProfilesSubscription>;
-export type GetProfilesSubscriptionResult = Apollo.SubscriptionResult<GetProfilesSubscription>;
-export const GetProfilesOnceDocument = gql`
-    query GetProfilesOnce {
-  profiles(order_by: {last_updated_from: desc}) {
-    id
-    first_name
-    last_name
-    middle_name
-    phone_numbers
-    emails
-    gender
-    address_line_1
-    address_line_2
-    city
-    state
-    zip_code
-    last_updated_from
-    elation_patient_id
-    hint_patient_id
-    deleted
-  }
-}
-    `;
-
-/**
- * __useGetProfilesOnceQuery__
- *
- * To run a query within a React component, call `useGetProfilesOnceQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProfilesOnceQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProfilesOnceQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetProfilesOnceQuery(baseOptions?: Apollo.QueryHookOptions<GetProfilesOnceQuery, GetProfilesOnceQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProfilesOnceQuery, GetProfilesOnceQueryVariables>(GetProfilesOnceDocument, options);
-      }
-export function useGetProfilesOnceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProfilesOnceQuery, GetProfilesOnceQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProfilesOnceQuery, GetProfilesOnceQueryVariables>(GetProfilesOnceDocument, options);
-        }
-export function useGetProfilesOnceSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetProfilesOnceQuery, GetProfilesOnceQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetProfilesOnceQuery, GetProfilesOnceQueryVariables>(GetProfilesOnceDocument, options);
-        }
-export type GetProfilesOnceQueryHookResult = ReturnType<typeof useGetProfilesOnceQuery>;
-export type GetProfilesOnceLazyQueryHookResult = ReturnType<typeof useGetProfilesOnceLazyQuery>;
-export type GetProfilesOnceSuspenseQueryHookResult = ReturnType<typeof useGetProfilesOnceSuspenseQuery>;
-export type GetProfilesOnceQueryResult = Apollo.QueryResult<GetProfilesOnceQuery, GetProfilesOnceQueryVariables>;
-export const GetHintPatientsDocument = gql`
-    subscription GetHintPatients {
-  hint_patients {
-    id
-    first_name
-    last_name
-    middle_name
-    name
-    dob
-    gender
-    email
-    phones
-    address_line1
-    address_line2
-    address_city
-    address_state
-    address_zip
-    updated_at
+    flag_type
+    notes
+    severity
+    status
     created_at
   }
 }
     `;
+export type InsertAuditFlagMutationFn = Apollo.MutationFunction<InsertAuditFlagMutation, InsertAuditFlagMutationVariables>;
 
 /**
- * __useGetHintPatientsSubscription__
+ * __useInsertAuditFlagMutation__
  *
- * To run a query within a React component, call `useGetHintPatientsSubscription` and pass it any options that fit your needs.
- * When your component renders, `useGetHintPatientsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useInsertAuditFlagMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInsertAuditFlagMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useGetHintPatientsSubscription({
+ * const [insertAuditFlagMutation, { data, loading, error }] = useInsertAuditFlagMutation({
  *   variables: {
+ *      object: // value for 'object'
  *   },
  * });
  */
-export function useGetHintPatientsSubscription(baseOptions?: Apollo.SubscriptionHookOptions<GetHintPatientsSubscription, GetHintPatientsSubscriptionVariables>) {
+export function useInsertAuditFlagMutation(baseOptions?: Apollo.MutationHookOptions<InsertAuditFlagMutation, InsertAuditFlagMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<GetHintPatientsSubscription, GetHintPatientsSubscriptionVariables>(GetHintPatientsDocument, options);
+        return Apollo.useMutation<InsertAuditFlagMutation, InsertAuditFlagMutationVariables>(InsertAuditFlagDocument, options);
       }
-export type GetHintPatientsSubscriptionHookResult = ReturnType<typeof useGetHintPatientsSubscription>;
-export type GetHintPatientsSubscriptionResult = Apollo.SubscriptionResult<GetHintPatientsSubscription>;
-export const GetElationPatientsDocument = gql`
-    subscription GetElationPatients {
-  elation_patients {
+export type InsertAuditFlagMutationHookResult = ReturnType<typeof useInsertAuditFlagMutation>;
+export type InsertAuditFlagMutationResult = Apollo.MutationResult<InsertAuditFlagMutation>;
+export type InsertAuditFlagMutationOptions = Apollo.BaseMutationOptions<InsertAuditFlagMutation, InsertAuditFlagMutationVariables>;
+export const UpdateAuditFlagDocument = gql`
+    mutation UpdateAuditFlag($id: uuid!, $updates: audit_flags_set_input!) {
+  update_audit_flags_by_pk(pk_columns: {id: $id}, _set: $updates) {
     id
-    first_name
-    last_name
-    middle_name
-    dob
-    sex
-    emails
-    phones
-    address_line1
-    address_line2
-    city
-    state
-    zip
-    created_date
-    last_modified
+    flag_type
+    notes
+    severity
+    status
+    updated_at
+  }
+}
+    `;
+export type UpdateAuditFlagMutationFn = Apollo.MutationFunction<UpdateAuditFlagMutation, UpdateAuditFlagMutationVariables>;
+
+/**
+ * __useUpdateAuditFlagMutation__
+ *
+ * To run a mutation, you first call `useUpdateAuditFlagMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAuditFlagMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAuditFlagMutation, { data, loading, error }] = useUpdateAuditFlagMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      updates: // value for 'updates'
+ *   },
+ * });
+ */
+export function useUpdateAuditFlagMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAuditFlagMutation, UpdateAuditFlagMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAuditFlagMutation, UpdateAuditFlagMutationVariables>(UpdateAuditFlagDocument, options);
+      }
+export type UpdateAuditFlagMutationHookResult = ReturnType<typeof useUpdateAuditFlagMutation>;
+export type UpdateAuditFlagMutationResult = Apollo.MutationResult<UpdateAuditFlagMutation>;
+export type UpdateAuditFlagMutationOptions = Apollo.BaseMutationOptions<UpdateAuditFlagMutation, UpdateAuditFlagMutationVariables>;
+export const GetAuditorCreditCardsWithTransactionsDocument = gql`
+    query GetAuditorCreditCardsWithTransactions($currentMonth: timestamptz!, $nextMonth: timestamptz!) {
+  credit_cards {
+    id
+    card_name
+    card_brand
+    last_four_digits
+    card_holder_name
+    expiry_month
+    expiry_year
+    is_active
+    created_at
+    updated_at
+    user {
+      id
+      clerk_user_id
+      email
+      full_name
+      role
+    }
+    transactions(
+      where: {transaction_date: {_gte: $currentMonth, _lt: $nextMonth}}
+      order_by: {transaction_date: desc}
+    ) {
+      id
+      transaction_id
+      amount
+      currency
+      description
+      merchant_name
+      merchant_category
+      transaction_date
+      posted_date
+      transaction_type
+      status
+      created_at
+      updated_at
+      audit_flags {
+        id
+        flag_type
+        notes
+        severity
+        status
+        created_at
+        auditor {
+          full_name
+          email
+        }
+      }
+    }
   }
 }
     `;
 
 /**
- * __useGetElationPatientsSubscription__
+ * __useGetAuditorCreditCardsWithTransactionsQuery__
  *
- * To run a query within a React component, call `useGetElationPatientsSubscription` and pass it any options that fit your needs.
- * When your component renders, `useGetElationPatientsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAuditorCreditCardsWithTransactionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAuditorCreditCardsWithTransactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAuditorCreditCardsWithTransactionsQuery({
+ *   variables: {
+ *      currentMonth: // value for 'currentMonth'
+ *      nextMonth: // value for 'nextMonth'
+ *   },
+ * });
+ */
+export function useGetAuditorCreditCardsWithTransactionsQuery(baseOptions: Apollo.QueryHookOptions<GetAuditorCreditCardsWithTransactionsQuery, GetAuditorCreditCardsWithTransactionsQueryVariables> & ({ variables: GetAuditorCreditCardsWithTransactionsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAuditorCreditCardsWithTransactionsQuery, GetAuditorCreditCardsWithTransactionsQueryVariables>(GetAuditorCreditCardsWithTransactionsDocument, options);
+      }
+export function useGetAuditorCreditCardsWithTransactionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAuditorCreditCardsWithTransactionsQuery, GetAuditorCreditCardsWithTransactionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAuditorCreditCardsWithTransactionsQuery, GetAuditorCreditCardsWithTransactionsQueryVariables>(GetAuditorCreditCardsWithTransactionsDocument, options);
+        }
+export function useGetAuditorCreditCardsWithTransactionsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAuditorCreditCardsWithTransactionsQuery, GetAuditorCreditCardsWithTransactionsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAuditorCreditCardsWithTransactionsQuery, GetAuditorCreditCardsWithTransactionsQueryVariables>(GetAuditorCreditCardsWithTransactionsDocument, options);
+        }
+export type GetAuditorCreditCardsWithTransactionsQueryHookResult = ReturnType<typeof useGetAuditorCreditCardsWithTransactionsQuery>;
+export type GetAuditorCreditCardsWithTransactionsLazyQueryHookResult = ReturnType<typeof useGetAuditorCreditCardsWithTransactionsLazyQuery>;
+export type GetAuditorCreditCardsWithTransactionsSuspenseQueryHookResult = ReturnType<typeof useGetAuditorCreditCardsWithTransactionsSuspenseQuery>;
+export type GetAuditorCreditCardsWithTransactionsQueryResult = Apollo.QueryResult<GetAuditorCreditCardsWithTransactionsQuery, GetAuditorCreditCardsWithTransactionsQueryVariables>;
+export const GetCreditCardsWithTransactionsDocument = gql`
+    query GetCreditCardsWithTransactions {
+  credit_cards(order_by: {created_at: asc}) {
+    id
+    card_name
+    card_brand
+    last_four_digits
+    card_holder_name
+    user {
+      id
+      full_name
+      email
+    }
+    transactions(order_by: {transaction_date: desc}) {
+      id
+      transaction_id
+      amount
+      currency
+      description
+      merchant_name
+      merchant_category
+      transaction_date
+      posted_date
+      transaction_type
+      status
+      audit_flags {
+        id
+        flag_type
+        notes
+        severity
+        status
+        created_at
+        auditor {
+          full_name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCreditCardsWithTransactionsQuery__
+ *
+ * To run a query within a React component, call `useGetCreditCardsWithTransactionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCreditCardsWithTransactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCreditCardsWithTransactionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCreditCardsWithTransactionsQuery(baseOptions?: Apollo.QueryHookOptions<GetCreditCardsWithTransactionsQuery, GetCreditCardsWithTransactionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCreditCardsWithTransactionsQuery, GetCreditCardsWithTransactionsQueryVariables>(GetCreditCardsWithTransactionsDocument, options);
+      }
+export function useGetCreditCardsWithTransactionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCreditCardsWithTransactionsQuery, GetCreditCardsWithTransactionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCreditCardsWithTransactionsQuery, GetCreditCardsWithTransactionsQueryVariables>(GetCreditCardsWithTransactionsDocument, options);
+        }
+export function useGetCreditCardsWithTransactionsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCreditCardsWithTransactionsQuery, GetCreditCardsWithTransactionsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCreditCardsWithTransactionsQuery, GetCreditCardsWithTransactionsQueryVariables>(GetCreditCardsWithTransactionsDocument, options);
+        }
+export type GetCreditCardsWithTransactionsQueryHookResult = ReturnType<typeof useGetCreditCardsWithTransactionsQuery>;
+export type GetCreditCardsWithTransactionsLazyQueryHookResult = ReturnType<typeof useGetCreditCardsWithTransactionsLazyQuery>;
+export type GetCreditCardsWithTransactionsSuspenseQueryHookResult = ReturnType<typeof useGetCreditCardsWithTransactionsSuspenseQuery>;
+export type GetCreditCardsWithTransactionsQueryResult = Apollo.QueryResult<GetCreditCardsWithTransactionsQuery, GetCreditCardsWithTransactionsQueryVariables>;
+export const TransactionsSubscriptionDocument = gql`
+    subscription TransactionsSubscription($where: transactions_bool_exp) {
+  transactions(where: $where, order_by: {transaction_date: desc}) {
+    id
+    transaction_id
+    amount
+    currency
+    description
+    merchant_name
+    merchant_category
+    transaction_date
+    posted_date
+    transaction_type
+    status
+    credit_card {
+      id
+      card_name
+      card_brand
+      last_four_digits
+      user {
+        full_name
+        email
+      }
+    }
+    audit_flags {
+      id
+      flag_type
+      notes
+      severity
+      status
+      created_at
+      auditor {
+        full_name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useTransactionsSubscriptionSubscription__
+ *
+ * To run a query within a React component, call `useTransactionsSubscriptionSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useTransactionsSubscriptionSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetElationPatientsSubscription({
+ * const { data, loading, error } = useTransactionsSubscriptionSubscription({
  *   variables: {
+ *      where: // value for 'where'
  *   },
  * });
  */
-export function useGetElationPatientsSubscription(baseOptions?: Apollo.SubscriptionHookOptions<GetElationPatientsSubscription, GetElationPatientsSubscriptionVariables>) {
+export function useTransactionsSubscriptionSubscription(baseOptions?: Apollo.SubscriptionHookOptions<TransactionsSubscriptionSubscription, TransactionsSubscriptionSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<GetElationPatientsSubscription, GetElationPatientsSubscriptionVariables>(GetElationPatientsDocument, options);
+        return Apollo.useSubscription<TransactionsSubscriptionSubscription, TransactionsSubscriptionSubscriptionVariables>(TransactionsSubscriptionDocument, options);
       }
-export type GetElationPatientsSubscriptionHookResult = ReturnType<typeof useGetElationPatientsSubscription>;
-export type GetElationPatientsSubscriptionResult = Apollo.SubscriptionResult<GetElationPatientsSubscription>;
+export type TransactionsSubscriptionSubscriptionHookResult = ReturnType<typeof useTransactionsSubscriptionSubscription>;
+export type TransactionsSubscriptionSubscriptionResult = Apollo.SubscriptionResult<TransactionsSubscriptionSubscription>;

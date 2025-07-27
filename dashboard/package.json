@@ -14,9 +14,11 @@
   "dependencies": {
     "@apollo/client": "^3.13.8",
     "@clerk/clerk-react": "^5.37.0",
+    "@types/react-datepicker": "^6.2.0",
     "graphql": "^16.11.0",
     "graphql-ws": "^6.0.6",
     "react": "^19.1.0",
+    "react-datepicker": "^8.4.0",
     "react-dom": "^19.1.0",
     "react-google-charts": "^5.2.1",
     "react-hot-toast": "^2.5.2"

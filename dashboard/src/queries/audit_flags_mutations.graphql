@@ -1,0 +1,21 @@
+mutation InsertAuditFlag($object: audit_flags_insert_input!) {
+  insert_audit_flags_one(object: $object) {
+    id
+    flag_type
+    notes
+    severity
+    status
+    created_at
+  }
+}
+
+mutation UpdateAuditFlag($id: uuid!, $updates: audit_flags_set_input!) {
+  update_audit_flags_by_pk(pk_columns: { id: $id }, _set: $updates) {
+    id
+    flag_type
+    notes
+    severity
+    status
+    updated_at
+  }
+}

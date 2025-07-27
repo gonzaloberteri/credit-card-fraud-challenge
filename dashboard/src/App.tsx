@@ -1,162 +1,94 @@
-import { ApolloClient, InMemoryCache, ApolloProvider, split, createHttpLink } from '@apollo/client';
+import { useAuth } from '@clerk/clerk-react';
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-import { createClient } from 'graphql-ws';
-import { getMainDefinition } from '@apollo/client/utilities';
-import { SignIn, SignedIn, SignedOut, UserButton, useAuth } from '@clerk/clerk-react';
-import { ProviderTables } from './components/ProviderTables';
-import { Toaster } from 'react-hot-toast';
-import './App.css';
+import { RealAuditorDashboard } from './components/RealAuditorDashboard';
+import { useMemo } from 'react';
+import './App.css'
 
+// Apollo Client component that uses Clerk auth
 function ApolloWrapper({ children }: { children: React.ReactNode }) {
-  const { getToken } = useAuth();
+  const { getToken, isLoaded } = useAuth();
 
-  // HTTP link for queries and mutations
-  const httpLink = createHttpLink({
-    uri: import.meta.env.VITE_HASURA_GRAPHQL_ENDPOINT,
-  });
+  // Create Apollo Client with memoization to prevent recreation on every render
+  const client = useMemo(() => {
+    // Create HTTP link to Hasura GraphQL endpoint
+    const httpLink = createHttpLink({
+      uri: 'http://localhost:8080/v1/graphql',
+    });
 
-  // Auth link to add JWT token to headers
-  const authLink = setContext(async (_, { headers }) => {
-    const token = await getToken({ template: 'hasura' });
-    
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : '',
-      },
-    };
-  });
+    // Add authorization header with Clerk JWT token
+    const authLink = setContext(async (_, { headers }) => {
+      // Only try to get token if Clerk is loaded
+      if (!isLoaded) {
+        return { headers };
+      }
 
-  // WebSocket link for subscriptions
-  const wsLink = new GraphQLWsLink(
-    createClient({
-      url: import.meta.env.VITE_HASURA_WEBSOCKET_ENDPOINT,
-      connectionParams: async () => {
-        const token = await getToken({ template: 'hasura' });
-        console.log('WebSocket connection params:', {
-          url: import.meta.env.VITE_HASURA_WEBSOCKET_ENDPOINT,
-          hasToken: !!token,
-          tokenPreview: token ? token.substring(0, 50) + '...' : 'no token'
-        });
+      try {
+        // Get the JWT token from Clerk using the 'auditor' template
+        const token = await getToken({ template: 'auditor' });
+        
+        // Debug: Log the token to see what claims it contains
+        if (token) {
+          try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            console.log('JWT payload:', payload);
+            console.log('Hasura claims:', payload['https://hasura.io/jwt/claims']);
+          } catch (e) {
+            console.log('Could not decode JWT for debugging');
+          }
+        }
+        
         return {
           headers: {
-            authorization: token ? `Bearer ${token}` : '',
-          },
+            ...headers,
+            authorization: token ? `Bearer ${token}` : "",
+            // Temporary fallback for debugging - remove this in production
+            'x-hasura-admin-secret': 'myadminsecretkey',
+          }
         };
-      },
-      on: {
-        error: (error) => {
-          console.error('WebSocket connection error:', error);
-        },
-        closed: (event) => {
-          console.log('WebSocket connection closed:', event);
-        },
-        connected: () => {
-          console.log('WebSocket connected successfully');
-        }
+      } catch (error) {
+        console.warn('Failed to get auth token:', error);
+        return { headers };
       }
-    })
+    });
+
+    // Create Apollo Client
+    return new ApolloClient({
+      link: authLink.concat(httpLink),
+      cache: new InMemoryCache(),
+    });
+  }, [getToken, isLoaded]);
+
+  // Don't render Apollo Provider until Clerk is loaded
+  if (!isLoaded) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        backgroundColor: '#0f172a',
+        color: '#f1f5f9',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif'
+      }}>
+        Loading authentication...
+      </div>
+    );
+  }
+
+  return (
+    <ApolloProvider client={client}>
+      {children}
+    </ApolloProvider>
   );
-
-  // Split link based on operation type
-  const splitLink = split(
-    ({ query }) => {
-      const definition = getMainDefinition(query);
-      return (
-        definition.kind === 'OperationDefinition' &&
-        definition.operation === 'subscription'
-      );
-    },
-    wsLink,
-    authLink.concat(httpLink)
-  );
-
-  // Apollo Client instance
-  const client = new ApolloClient({
-    link: splitLink,
-    cache: new InMemoryCache(),
-  });
-
-  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }
 
 function App() {
   return (
-    <div className="app">
-      <SignedOut>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          height: '100vh',
-          background: '#0f172a'
-        }}>
-          <SignIn />
-        </div>
-      </SignedOut>
-      <SignedIn>
-        <ApolloWrapper>
-          <div style={{
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            zIndex: 1000
-          }}>
-            <UserButton />
-          </div>
-          <ProviderTables />
-        </ApolloWrapper>
-      </SignedIn>
-      <Toaster 
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: '#1e293b',
-            color: '#f1f5f9',
-            border: '1px solid #334155',
-          },
-          success: {
-            iconTheme: {
-              primary: '#22c55e',
-              secondary: '#f1f5f9',
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#f1f5f9',
-            },
-          },
-        }}
-      />
-      <style>{`
-        .app {
-          min-height: 100vh;
-          background: #0f172a;
-          width: 100%;
-          max-width: 100vw;
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-          overflow-x: hidden;
-        }
-
-        * {
-          box-sizing: border-box;
-        }
-
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-      `}</style>
-    </div>
-  );
+    <ApolloWrapper>
+      <RealAuditorDashboard />
+    </ApolloWrapper>
+  )
 }
 
 export default App;

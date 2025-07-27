@@ -1,0 +1,38 @@
+query GetCreditCardsWithTransactions {
+  credit_cards(order_by: { created_at: asc }) {
+    id
+    card_name
+    card_brand
+    last_four_digits
+    card_holder_name
+    user {
+      id
+      full_name
+      email
+    }
+    transactions(order_by: { transaction_date: desc }) {
+      id
+      transaction_id
+      amount
+      currency
+      description
+      merchant_name
+      merchant_category
+      transaction_date
+      posted_date
+      transaction_type
+      status
+      audit_flags {
+        id
+        flag_type
+        notes
+        severity
+        status
+        created_at
+        auditor {
+          full_name
+        }
+      }
+    }
+  }
+}
