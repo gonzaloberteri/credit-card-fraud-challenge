@@ -1,0 +1,33 @@
+overwrite: true
+schema:
+  - "http://localhost:8080/v1/graphql":
+      headers:
+        x-hasura-admin-secret: "myadminsecretkey"
+documents:
+  - "src/**/*.graphql"
+  - "src/**/*.ts"
+  - "src/**/*.tsx"
+config:
+  scalars:
+    UUID: string
+    timestamptz: Date
+    jsonb: any
+    json: any
+    bigint: number
+  skipTypename: false
+  exportFragmentSpreadSubTypes: true
+  dedupeFragments: true
+  preResolveTypes: true
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+    config:
+      withHooks: true
+      withHOC: false
+      withComponent: false
+hooks:
+  afterOneFileWrite:
+    - prettier --write

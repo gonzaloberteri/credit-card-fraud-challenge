@@ -1,0 +1,39 @@
+subscription TransactionsSubscription($where: transactions_bool_exp) {
+  transactions(
+    where: $where
+    order_by: { transaction_date: desc }
+  ) {
+    id
+    transaction_id
+    amount
+    currency
+    description
+    merchant_name
+    merchant_category
+    transaction_date
+    posted_date
+    transaction_type
+    status
+    credit_card {
+      id
+      card_name
+      card_brand
+      last_four_digits
+      user {
+        full_name
+        email
+      }
+    }
+    audit_flags {
+      id
+      flag_type
+      notes
+      severity
+      status
+      created_at
+      auditor {
+        full_name
+      }
+    }
+  }
+}

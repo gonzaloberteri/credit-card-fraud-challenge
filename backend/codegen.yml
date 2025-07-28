@@ -1,0 +1,38 @@
+overwrite: true
+schema:
+  - "http://localhost:8080/v1/graphql":
+      headers:
+        x-hasura-admin-secret: "myadminsecretkey"
+documents:
+  - "src/queries/**/*.graphql"
+  - "src/mutations/**/*.graphql"
+  - "src/clients/**/*.ts"
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-graphql-request"
+      - add:
+          content: '/* eslint-disable */'
+    config:
+      gqlImport: 'graphql-request#gql'
+      avoidOptionals:
+        object: true
+        field: true
+        inputValue: false
+      namingConvention:
+        typeNames: 'change-case-all#pascalCase'
+        enumValues: 'change-case-all#upperCase'
+        transformUnderscore: true
+      scalars:
+        uuid: string
+        date: string
+        jsonb: 'Record<string, any>'
+        timestamptz: string
+        timestamp: string
+        citext: string
+        numeric: number
+hooks:
+  afterOneFileWrite:
+    - prettier --write

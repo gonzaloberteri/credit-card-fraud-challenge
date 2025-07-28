@@ -1,0 +1,53 @@
+query GetAuditorCreditCardsWithTransactions($currentMonth: timestamptz!, $nextMonth: timestamptz!) {
+  credit_cards {
+    id
+    card_name
+    card_brand
+    last_four_digits
+    card_holder_name
+    expiry_month
+    expiry_year
+    is_active
+    created_at
+    updated_at
+    user {
+      id
+      clerk_user_id
+      email
+      full_name
+      role
+    }
+    transactions(
+      where: {
+        transaction_date: { _gte: $currentMonth, _lt: $nextMonth }
+      }
+      order_by: { transaction_date: desc }
+    ) {
+      id
+      transaction_id
+      amount
+      currency
+      description
+      merchant_name
+      merchant_category
+      transaction_date
+      posted_date
+      transaction_type
+      status
+      created_at
+      updated_at
+      audit_flags {
+        id
+        flag_type
+        notes
+        severity
+        status
+        created_at
+        auditor {
+          full_name
+          email
+        }
+      }
+    }
+  }
+}

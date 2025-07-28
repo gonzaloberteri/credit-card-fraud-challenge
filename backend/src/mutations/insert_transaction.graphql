@@ -1,0 +1,14 @@
+mutation InsertTransaction($input: transactions_insert_input!) {
+  insert_transactions_one(object: $input) {
+    id
+    amount
+    description
+    merchant_name
+    merchant_category
+    transaction_type
+    transaction_date
+    credit_card_id
+    status
+    currency
+  }
+}

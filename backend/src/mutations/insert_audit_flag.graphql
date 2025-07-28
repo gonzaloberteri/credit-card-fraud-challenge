@@ -1,0 +1,11 @@
+mutation InsertAuditFlag($input: audit_flags_insert_input!) {
+  insert_audit_flags_one(object: $input) {
+    id
+    transaction_id
+    flag_type
+    notes
+    severity
+    status
+    created_at
+  }
+}
