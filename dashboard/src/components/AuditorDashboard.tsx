@@ -22,7 +22,7 @@ export const AuditorDashboard = () => {
   const [newTransactionIds, setNewTransactionIds] = useState<Set<string>>(new Set());
   const previousTransactionIds = useRef<Set<string>>(new Set());
 
-  // Build GraphQL where condition for filtering
+  // Build GraphQL where condition for filtering (only date range and search go to GraphQL)
   const whereCondition = useMemo(() => {
     const conditions: any = {};
     
@@ -49,12 +49,8 @@ export const AuditorDashboard = () => {
       ];
     }
     
-    if (showFlaggedOnly) {
-      conditions.audit_flags = {};
-    }
-    
     return Object.keys(conditions).length > 0 ? conditions : undefined;
-  }, [fromDate, toDate, searchTerm, showFlaggedOnly]);
+  }, [fromDate, toDate, searchTerm]);
 
   // Always call the GraphQL hooks, but skip if not signed in
   const { data: creditCardsData, error: creditCardsError } = useGetCreditCardsQuery({
@@ -99,13 +95,19 @@ export const AuditorDashboard = () => {
 
 
 
-  // Combine credit cards with their transactions from subscription
+  // Combine credit cards with their transactions from subscription and apply client-side filtering
   const creditCards = useMemo(() => {
     if (!creditCardsData?.credit_cards || !transactionsData?.transactions) {
       return [];
     }
 
-    const transactionsByCardId = transactionsData.transactions.reduce((acc, transaction) => {
+    // Apply client-side flagged filter
+    let filteredTransactions = transactionsData.transactions;
+    if (showFlaggedOnly) {
+      filteredTransactions = transactionsData.transactions.filter(t => t.audit_flags.length > 0);
+    }
+
+    const transactionsByCardId = filteredTransactions.reduce((acc, transaction) => {
       const cardId = transaction.credit_card.id;
       if (!acc[cardId]) {
         acc[cardId] = [];
@@ -118,7 +120,7 @@ export const AuditorDashboard = () => {
       ...card,
       transactions: transactionsByCardId[card.id] || [],
     })).filter(card => card.transactions.length > 0);
-  }, [creditCardsData, transactionsData]);
+  }, [creditCardsData, transactionsData, showFlaggedOnly]);
 
   // Show sign-in if user is not authenticated
   if (!isSignedIn) {
@@ -255,7 +257,6 @@ export const AuditorDashboard = () => {
                   checked={showFlaggedOnly}
                   onChange={(e) => {
                     setShowFlaggedOnly(e.target.checked);
-                    setActiveTab(null);
                   }}
                   className="w-4 h-4 text-blue-600 bg-slate-800 border-slate-600 rounded focus:ring-blue-500 focus:ring-2"
                 />
