@@ -1,31 +1,74 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useAuth, SignInButton, UserButton } from '@clerk/clerk-react';
-import { useGetAuditorCreditCardsWithTransactionsQuery, GetAuditorCreditCardsWithTransactionsQuery } from '../generated/graphql';
+import { 
+  useGetCreditCardsQuery, 
+  useTransactionsSubscriptionSubscription,
+  TransactionsSubscriptionSubscription
+} from '../generated/graphql';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-type CreditCard = GetAuditorCreditCardsWithTransactionsQuery['credit_cards'][0];
-type Transaction = CreditCard['transactions'][0];
+type Transaction = TransactionsSubscriptionSubscription['transactions'][0];
 
 export const RealAuditorDashboard = () => {
-  const { isSignedIn, isLoaded } = useAuth();
+  const { isSignedIn } = useAuth();
   
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [newTransactionIds, setNewTransactionIds] = useState<Set<string>>(new Set());
+  const previousTransactionIds = useRef<Set<string>>(new Set());
 
   // Calculate month range for GraphQL query
   const currentMonth = selectedDate ? new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1) : new Date();
   const nextMonth = selectedDate ? new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1) : new Date();
 
-  // Always call the GraphQL hook, but skip if not signed in
-  const { data, loading, error } = useGetAuditorCreditCardsWithTransactionsQuery({
-    variables: {
-      currentMonth: currentMonth.toISOString(),
-      nextMonth: nextMonth.toISOString(),
-    },
+  // Always call the GraphQL hooks, but skip if not signed in
+  const { data: creditCardsData, loading: creditCardsLoading, error: creditCardsError } = useGetCreditCardsQuery({
     skip: !isSignedIn, // Skip query if not authenticated
   });
+
+  const { data: transactionsData, loading: transactionsLoading, error: transactionsError } = useTransactionsSubscriptionSubscription({
+    variables: {
+      where: {
+        transaction_date: {
+          _gte: currentMonth,
+          _lt: nextMonth,
+        },
+      },
+    },
+    skip: !isSignedIn, // Skip subscription if not authenticated
+  });
+
+  const loading = creditCardsLoading || transactionsLoading;
+  const error = creditCardsError || transactionsError;
+
+  // Track new transactions for animation
+  useEffect(() => {
+    if (transactionsData?.transactions) {
+      const currentTransactionIds = new Set(transactionsData.transactions.map(t => t.id));
+      const newIds = new Set<string>();
+      
+      // Find transactions that are new (not in previous set)
+      currentTransactionIds.forEach(id => {
+        if (!previousTransactionIds.current.has(id)) {
+          newIds.add(id);
+        }
+      });
+      
+      if (newIds.size > 0) {
+        setNewTransactionIds(newIds);
+        
+        // Remove animation class after animation completes
+        setTimeout(() => {
+          setNewTransactionIds(new Set());
+        }, 1000);
+      }
+      
+      // Update previous transaction IDs for next comparison
+      previousTransactionIds.current = currentTransactionIds;
+    }
+  }, [transactionsData?.transactions]);
 
   // Show sign-in if user is not authenticated
   if (!isSignedIn) {
@@ -42,7 +85,26 @@ export const RealAuditorDashboard = () => {
     );
   }
 
-  const creditCards = data?.credit_cards || [];
+  // Combine credit cards with their transactions from subscription
+  const creditCards = useMemo(() => {
+    if (!creditCardsData?.credit_cards || !transactionsData?.transactions) {
+      return [];
+    }
+
+    const transactionsByCardId = transactionsData.transactions.reduce((acc, transaction) => {
+      const cardId = transaction.credit_card.id;
+      if (!acc[cardId]) {
+        acc[cardId] = [];
+      }
+      acc[cardId].push(transaction);
+      return acc;
+    }, {} as Record<string, Transaction[]>);
+
+    return creditCardsData.credit_cards.map(card => ({
+      ...card,
+      transactions: transactionsByCardId[card.id] || [],
+    }));
+  }, [creditCardsData, transactionsData]);
 
   // Filter cards that have transactions in the selected month
   const cardsWithTransactions = creditCards.filter(card => card.transactions.length > 0);
@@ -224,7 +286,14 @@ export const RealAuditorDashboard = () => {
                     {activeCard.transactions.map((transaction) => {
                       const amount = parseFloat(transaction.amount.toString());
                       return (
-                        <tr key={transaction.id} className="hover:bg-slate-700">
+                        <tr 
+                          key={transaction.id} 
+                          className={`hover:bg-slate-700 transition-all duration-300 ${
+                            newTransactionIds.has(transaction.id) 
+                              ? 'animate-slide-in-new bg-blue-500/10 ring-1 ring-blue-500/20' 
+                              : ''
+                          }`}
+                        >
                           <td className="px-4 py-3 border-b border-slate-600 align-top min-w-24 font-mono text-sm text-slate-300">
                             {formatDate(transaction.transaction_date)}
                           </td>

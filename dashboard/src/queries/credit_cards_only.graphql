@@ -1,0 +1,14 @@
+query GetCreditCards {
+  credit_cards(order_by: { created_at: asc }) {
+    id
+    card_name
+    card_brand
+    last_four_digits
+    card_holder_name
+    user {
+      id
+      full_name
+      email
+    }
+  }
+}

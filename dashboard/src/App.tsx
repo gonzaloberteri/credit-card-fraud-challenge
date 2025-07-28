@@ -1,6 +1,9 @@
 import { useAuth } from '@clerk/clerk-react';
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink, split } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { RealAuditorDashboard } from './components/RealAuditorDashboard';
 import { useMemo } from 'react';
 import './App.css'
@@ -15,6 +18,30 @@ function ApolloWrapper({ children }: { children: React.ReactNode }) {
     const httpLink = createHttpLink({
       uri: 'http://localhost:8080/v1/graphql',
     });
+
+    // Create WebSocket link for subscriptions
+    const wsLink = new GraphQLWsLink(createClient({
+      url: 'ws://localhost:8080/v1/graphql',
+      connectionParams: async () => {
+        try {
+          const token = await getToken({ template: 'auditor' });
+          return {
+            headers: {
+              authorization: token ? `Bearer ${token}` : "",
+              // Temporary fallback for debugging - remove this in production
+              'x-hasura-admin-secret': 'myadminsecretkey',
+            }
+          };
+        } catch (error) {
+          console.warn('Failed to get auth token for WebSocket:', error);
+          return {
+            headers: {
+              'x-hasura-admin-secret': 'myadminsecretkey',
+            }
+          };
+        }
+      },
+    }));
 
     // Add authorization header with Clerk JWT token
     const authLink = setContext(async (_, { headers }) => {
@@ -52,9 +79,22 @@ function ApolloWrapper({ children }: { children: React.ReactNode }) {
       }
     });
 
+    // Split link based on operation type
+    const splitLink = split(
+      ({ query }) => {
+        const definition = getMainDefinition(query);
+        return (
+          definition.kind === 'OperationDefinition' &&
+          definition.operation === 'subscription'
+        );
+      },
+      wsLink,
+      authLink.concat(httpLink),
+    );
+
     // Create Apollo Client
     return new ApolloClient({
-      link: authLink.concat(httpLink),
+      link: splitLink,
       cache: new InMemoryCache(),
     });
   }, [getToken, isLoaded]);

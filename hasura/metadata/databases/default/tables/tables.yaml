@@ -174,6 +174,20 @@
         table:
           name: audit_flags
           schema: public
+  event_triggers:
+  - name: fraud_detection_trigger
+    definition:
+      enable_manual: false
+      insert:
+        columns: "*"
+    retry_conf:
+      interval_sec: 10
+      num_retries: 3
+      timeout_sec: 60
+    webhook: http://backend:3000/fraud-detection/analyze-transaction
+    headers:
+    - name: x-hasura-actions-secret
+      value_from_env: HASURA_ACTIONS_SECRET
   select_permissions:
   - role: auditor
     permission:

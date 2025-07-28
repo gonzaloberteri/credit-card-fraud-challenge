@@ -2728,6 +2728,11 @@ export type GetAuditorCreditCardsWithTransactionsQueryVariables = Exact<{
 
 export type GetAuditorCreditCardsWithTransactionsQuery = { __typename?: 'query_root', credit_cards: Array<{ __typename?: 'credit_cards', id: any, card_name: string, card_brand: string, last_four_digits: string, card_holder_name: string, expiry_month: number, expiry_year: number, is_active?: boolean | null, created_at?: Date | null, updated_at?: Date | null, user: { __typename?: 'users', id: any, clerk_user_id: string, email: string, full_name?: string | null, role: string }, transactions: Array<{ __typename?: 'transactions', id: any, transaction_id?: string | null, amount: any, currency: string, description: string, merchant_name?: string | null, merchant_category?: string | null, transaction_date: Date, posted_date?: Date | null, transaction_type: string, status: string, created_at?: Date | null, updated_at?: Date | null, audit_flags: Array<{ __typename?: 'audit_flags', id: any, flag_type: string, notes?: string | null, severity: string, status: string, created_at?: Date | null, auditor: { __typename?: 'users', full_name?: string | null, email: string } }> }> }> };
 
+export type GetCreditCardsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCreditCardsQuery = { __typename?: 'query_root', credit_cards: Array<{ __typename?: 'credit_cards', id: any, card_name: string, card_brand: string, last_four_digits: string, card_holder_name: string, user: { __typename?: 'users', id: any, full_name?: string | null, email: string } }> };
+
 export type GetCreditCardsWithTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2905,6 +2910,54 @@ export type GetAuditorCreditCardsWithTransactionsQueryHookResult = ReturnType<ty
 export type GetAuditorCreditCardsWithTransactionsLazyQueryHookResult = ReturnType<typeof useGetAuditorCreditCardsWithTransactionsLazyQuery>;
 export type GetAuditorCreditCardsWithTransactionsSuspenseQueryHookResult = ReturnType<typeof useGetAuditorCreditCardsWithTransactionsSuspenseQuery>;
 export type GetAuditorCreditCardsWithTransactionsQueryResult = Apollo.QueryResult<GetAuditorCreditCardsWithTransactionsQuery, GetAuditorCreditCardsWithTransactionsQueryVariables>;
+export const GetCreditCardsDocument = gql`
+    query GetCreditCards {
+  credit_cards(order_by: {created_at: asc}) {
+    id
+    card_name
+    card_brand
+    last_four_digits
+    card_holder_name
+    user {
+      id
+      full_name
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCreditCardsQuery__
+ *
+ * To run a query within a React component, call `useGetCreditCardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCreditCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCreditCardsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCreditCardsQuery(baseOptions?: Apollo.QueryHookOptions<GetCreditCardsQuery, GetCreditCardsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCreditCardsQuery, GetCreditCardsQueryVariables>(GetCreditCardsDocument, options);
+      }
+export function useGetCreditCardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCreditCardsQuery, GetCreditCardsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCreditCardsQuery, GetCreditCardsQueryVariables>(GetCreditCardsDocument, options);
+        }
+export function useGetCreditCardsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCreditCardsQuery, GetCreditCardsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCreditCardsQuery, GetCreditCardsQueryVariables>(GetCreditCardsDocument, options);
+        }
+export type GetCreditCardsQueryHookResult = ReturnType<typeof useGetCreditCardsQuery>;
+export type GetCreditCardsLazyQueryHookResult = ReturnType<typeof useGetCreditCardsLazyQuery>;
+export type GetCreditCardsSuspenseQueryHookResult = ReturnType<typeof useGetCreditCardsSuspenseQuery>;
+export type GetCreditCardsQueryResult = Apollo.QueryResult<GetCreditCardsQuery, GetCreditCardsQueryVariables>;
 export const GetCreditCardsWithTransactionsDocument = gql`
     query GetCreditCardsWithTransactions {
   credit_cards(order_by: {created_at: asc}) {
