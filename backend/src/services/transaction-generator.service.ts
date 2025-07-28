@@ -88,7 +88,7 @@ export class TransactionGeneratorService
       this.REGULAR_MERCHANTS[
         Math.floor(Math.random() * this.REGULAR_MERCHANTS.length)
       ];
-    const amount = Math.round((Math.random() * 200 + 10) * 100) / 100; // $10-$210
+    const amount = -Math.round((Math.random() * 200 + 10) * 100) / 100; // $10-$210
 
     return {
       id: randomUUID(),
@@ -109,7 +109,7 @@ export class TransactionGeneratorService
       this.FRAUDULENT_MERCHANTS[
         Math.floor(Math.random() * this.FRAUDULENT_MERCHANTS.length)
       ];
-    const amount = Math.round((Math.random() * 2000 + 500) * 100) / 100; // $500-$2500 (suspicious amounts)
+    const amount = -Math.round((Math.random() * 2000 + 500) * 100) / 100; // $500-$2500 (suspicious amounts)
 
     return {
       id: randomUUID(),

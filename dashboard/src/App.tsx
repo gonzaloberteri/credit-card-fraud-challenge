@@ -60,8 +60,8 @@ function ApolloWrapper({ children }: { children: React.ReactNode }) {
             const payload = JSON.parse(atob(token.split('.')[1]));
             console.log('JWT payload:', payload);
             console.log('Hasura claims:', payload['https://hasura.io/jwt/claims']);
-          } catch (_e) {
-            console.log('Could not decode JWT for debugging');
+          } catch (e) {
+            console.log('Could not decode JWT for debugging', e);
           }
         }
         

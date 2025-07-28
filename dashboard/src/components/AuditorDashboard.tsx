@@ -7,6 +7,7 @@ import {
 } from '../generated/graphql';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { generateCSVReport } from '../utils/exportUtils';
 
 type Transaction = TransactionsSubscriptionSubscription['transactions'][0];
 
@@ -24,7 +25,7 @@ export const AuditorDashboard = () => {
 
   // Build GraphQL where condition for filtering (only date range and search go to GraphQL)
   const whereCondition = useMemo(() => {
-    const conditions: any = {};
+    const conditions: Record<string, unknown> = {};
     
     if (fromDate && toDate) {
       conditions.transaction_date = {
@@ -142,7 +143,7 @@ export const AuditorDashboard = () => {
     setActiveTab(creditCards[0].id);
   }
 
-  const formatCurrency = (amount: any, currency: string = 'USD') => {
+  const formatCurrency = (amount: number | string, currency: string = 'USD') => {
     const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -179,6 +180,31 @@ export const AuditorDashboard = () => {
     }
   };
 
+  const handleCSVExport = () => {
+    if (creditCards.length === 0) return;
+
+    const allTransactions = creditCards.flatMap(card => 
+      card.transactions.map(transaction => ({
+        ...transaction,
+        card_name: card.card_name,
+        card_brand: card.card_brand,
+        last_four_digits: card.last_four_digits,
+        card_holder_name: card.card_holder_name,
+        user_name: card.user.full_name || card.user.email,
+      }))
+    );
+
+    const filters = {
+      fromDate,
+      toDate,
+      searchTerm,
+      showFlaggedOnly
+    };
+
+    generateCSVReport(allTransactions, filters);
+  };
+
+
   const getCardIcon = (cardBrand: string) => {
     const brand = cardBrand.toLowerCase();
     switch (brand) {
@@ -199,8 +225,6 @@ export const AuditorDashboard = () => {
       </div>
     );
   }
-  
-  console.log(creditCards)
 
   const activeCard = creditCards.find(card => card.id === activeTab);
 
@@ -288,7 +312,7 @@ export const AuditorDashboard = () => {
                   <img 
                     src={getCardIcon(card.card_brand)} 
                     alt={`${card.card_brand} card`}
-                    className="w-12 h-8 rounded-md object-cover flex-shrink-0"
+                    className="w-12 h-8 rounded-sm object-cover flex-shrink-0"
                   />
                   <div className="flex flex-col gap-1 flex-1">
                     <div className="font-semibold text-sm">{card.card_name}</div>
@@ -308,7 +332,19 @@ export const AuditorDashboard = () => {
           {activeCard && (
             <div className="p-6">
               <div className="mb-6">
-                <h2 className="m-0 mb-4 text-slate-100 text-xl font-semibold">Transactions for {activeCard.card_name}</h2>
+                <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4 gap-4">
+                  <h2 className="m-0 text-slate-100 text-xl font-semibold">Transactions for {activeCard.card_name}</h2>
+                  <button
+                    onClick={handleCSVExport}
+                    disabled={creditCards.length === 0}
+                    className="p-2 bg-green-600 text-white border-none rounded-lg cursor-pointer transition-colors duration-200 hover:bg-green-700 disabled:bg-slate-600 disabled:cursor-not-allowed disabled:text-slate-400 flex items-center justify-center"
+                    title="Export filtered transactions to CSV"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </button>
+                </div>
                 <div className="flex flex-col md:flex-row gap-3 md:gap-6">
                   <div className="flex flex-col gap-1">
                     <span className="text-xs text-slate-400 uppercase tracking-wider">Total Transactions:</span>
