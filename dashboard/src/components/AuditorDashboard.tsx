@@ -1,46 +1,156 @@
-import { useState } from 'react';
-import { useGetAuditorCreditCardsWithTransactionsQuery, GetAuditorCreditCardsWithTransactionsQuery } from '../generated/graphql';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { useAuth, SignInButton, UserButton } from '@clerk/clerk-react';
+import { 
+  useGetCreditCardsQuery, 
+  useTransactionsSubscriptionSubscription,
+  TransactionsSubscriptionSubscription
+} from '../generated/graphql';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-type CreditCard = GetAuditorCreditCardsWithTransactionsQuery['credit_cards'][0];
-type Transaction = CreditCard['transactions'][0];
+type Transaction = TransactionsSubscriptionSubscription['transactions'][0];
 
 export const AuditorDashboard = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const { isSignedIn } = useAuth();
+  
+  const [fromDate, setFromDate] = useState<Date | null>(null);
+  const [toDate, setToDate] = useState<Date | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
 
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [newTransactionIds, setNewTransactionIds] = useState<Set<string>>(new Set());
+  const previousTransactionIds = useRef<Set<string>>(new Set());
 
-  // Calculate month range for GraphQL query
-  const currentMonth = selectedDate ? new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1) : new Date();
-  const nextMonth = selectedDate ? new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1) : new Date();
+  // Build GraphQL where condition for filtering
+  const whereCondition = useMemo(() => {
+    const conditions: any = {};
+    
+    if (fromDate && toDate) {
+      conditions.transaction_date = {
+        _gte: fromDate.toISOString(),
+        _lte: toDate.toISOString(),
+      };
+    } else if (fromDate) {
+      conditions.transaction_date = {
+        _gte: fromDate.toISOString(),
+      };
+    } else if (toDate) {
+      conditions.transaction_date = {
+        _lte: toDate.toISOString(),
+      };
+    }
+    
+    if (searchTerm) {
+      conditions._or = [
+        { description: { _ilike: `%${searchTerm}%` } },
+        { merchant_name: { _ilike: `%${searchTerm}%` } },
+        { transaction_id: { _ilike: `%${searchTerm}%` } },
+      ];
+    }
+    
+    if (showFlaggedOnly) {
+      conditions.audit_flags = {};
+    }
+    
+    return Object.keys(conditions).length > 0 ? conditions : undefined;
+  }, [fromDate, toDate, searchTerm, showFlaggedOnly]);
 
-  const { data, loading, error } = useGetAuditorCreditCardsWithTransactionsQuery({
-    variables: {
-      currentMonth: currentMonth.toISOString(),
-      nextMonth: nextMonth.toISOString(),
-    },
+  // Always call the GraphQL hooks, but skip if not signed in
+  const { data: creditCardsData, error: creditCardsError } = useGetCreditCardsQuery({
+    skip: !isSignedIn, // Skip query if not authenticated
   });
 
-  const creditCards = data?.credit_cards || [];
+  const { data: transactionsData, error: transactionsError } = useTransactionsSubscriptionSubscription({
+    variables: {
+      where: whereCondition,
+    },
+    skip: !isSignedIn, // Skip subscription if not authenticated
+  });
 
-  // Filter cards that have transactions in the selected month
-  const cardsWithTransactions = creditCards.filter(card => card.transactions.length > 0);
+  const error = creditCardsError || transactionsError;
 
-  // Set initial active tab when data loads
-  if (activeTab === null && cardsWithTransactions.length > 0) {
-    setActiveTab(cardsWithTransactions[0].id);
+  // Track new transactions for animation
+  useEffect(() => {
+    if (transactionsData?.transactions) {
+      const currentTransactionIds = new Set(transactionsData.transactions.map(t => t.id));
+      const newIds = new Set<string>();
+      
+      // Find transactions that are new (not in previous set)
+      currentTransactionIds.forEach(id => {
+        if (!previousTransactionIds.current.has(id)) {
+          newIds.add(id);
+        }
+      });
+      
+      if (newIds.size > 0) {
+        setNewTransactionIds(newIds);
+        
+        // Remove animation class after animation completes
+        setTimeout(() => {
+          setNewTransactionIds(new Set());
+        }, 1000);
+      }
+      
+      // Update previous transaction IDs for next comparison
+      previousTransactionIds.current = currentTransactionIds;
+    }
+  }, [transactionsData?.transactions]);
+
+
+
+  // Combine credit cards with their transactions from subscription
+  const creditCards = useMemo(() => {
+    if (!creditCardsData?.credit_cards || !transactionsData?.transactions) {
+      return [];
+    }
+
+    const transactionsByCardId = transactionsData.transactions.reduce((acc, transaction) => {
+      const cardId = transaction.credit_card.id;
+      if (!acc[cardId]) {
+        acc[cardId] = [];
+      }
+      acc[cardId].push(transaction);
+      return acc;
+    }, {} as Record<string, Transaction[]>);
+
+    return creditCardsData.credit_cards.map(card => ({
+      ...card,
+      transactions: transactionsByCardId[card.id] || [],
+    })).filter(card => card.transactions.length > 0);
+  }, [creditCardsData, transactionsData]);
+
+  // Show sign-in if user is not authenticated
+  if (!isSignedIn) {
+    return (
+      <div className="p-6 bg-slate-900 min-h-screen text-slate-100 font-sans">
+        <div className="flex flex-col items-center justify-center h-96 text-center gap-6">
+          <h1 className="text-slate-100 text-4xl font-semibold m-0">Financial Audit Dashboard</h1>
+          <p className="text-slate-400 text-lg m-0">Please sign in to access the auditor dashboard</p>
+          <SignInButton mode="modal">
+            <button className="px-6 py-3 bg-blue-600 text-white border-none rounded-lg text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-blue-700">Sign In</button>
+          </SignInButton>
+        </div>
+      </div>
+    );
   }
 
-  const formatCurrency = (amount: number, currency: string = 'USD') => {
+  // Set initial active tab when data loads
+  if (activeTab === null && creditCards.length > 0) {
+    setActiveTab(creditCards[0].id);
+  }
+
+  const formatCurrency = (amount: any, currency: string = 'USD') => {
+    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency,
-    }).format(amount);
+    }).format(Math.abs(numAmount));
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
@@ -67,66 +177,127 @@ export const AuditorDashboard = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="auditor-dashboard">
-        <div className="loading">Loading auditor dashboard...</div>
-      </div>
-    );
-  }
+  const getCardIcon = (cardBrand: string) => {
+    const brand = cardBrand.toLowerCase();
+    switch (brand) {
+      case 'american express':
+      case 'amex':
+        return '/amex-gold.avif';
+      case 'capital one':
+        return '/capital-one.avif';
+      default:
+        return '/mastercard.png';
+    }
+  };
 
   if (error) {
     return (
-      <div className="auditor-dashboard">
-        <div className="error">Error loading data: {error.message}</div>
+      <div className="p-6 bg-slate-900 min-h-screen text-slate-100 font-sans">
+        <div className="flex justify-center items-center h-96 text-red-400 text-lg">Error loading data: {error.message}</div>
       </div>
     );
   }
+  
+  console.log(creditCards)
 
-  const activeCard = cardsWithTransactions.find(card => card.id === activeTab);
+  const activeCard = creditCards.find(card => card.id === activeTab);
 
   return (
-    <div className="auditor-dashboard">
-      <div className="dashboard-header">
-        <h1>Auditor Dashboard</h1>
-        <div className="month-selector">
-          <label>Month:</label>
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date: Date | null) => {
-              if (date) {
-                setSelectedDate(date);
-                setActiveTab(null); // Reset active tab when month changes
-              }
-            }}
-            dateFormat="MM/yyyy"
-            showMonthYearPicker
-            className="month-picker"
-          />
+    <div className="p-4 md:p-6 bg-slate-900 min-h-screen text-slate-100 font-sans">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8 p-4 md:p-6 bg-slate-800 rounded-xl shadow-lg border border-slate-700 gap-4 md:gap-0">
+        <h1 className="m-0 text-slate-100 text-2xl md:text-3xl font-semibold">Auditor Dashboard</h1>
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4 lg:gap-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <label className="text-slate-300 font-medium text-sm">From:</label>
+              <DatePicker
+                selected={fromDate}
+                onChange={(date: Date | null) => {
+                  setFromDate(date);
+                  setActiveTab(null);
+                }}
+                dateFormat="MM/dd/yyyy"
+                className="px-2 py-1 border border-slate-600 rounded-md bg-slate-800 text-slate-100 text-sm w-32"
+                placeholderText="Start date"
+                maxDate={toDate || undefined}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="text-slate-300 font-medium text-sm">To:</label>
+              <DatePicker
+                selected={toDate}
+                onChange={(date: Date | null) => {
+                  setToDate(date);
+                  setActiveTab(null);
+                }}
+                dateFormat="MM/dd/yyyy"
+                className="px-2 py-1 border border-slate-600 rounded-md bg-slate-800 text-slate-100 text-sm w-32"
+                placeholderText="End date"
+                minDate={fromDate || undefined}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                placeholder="Search transactions..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setActiveTab(null);
+                }}
+                className="px-3 py-2 border border-slate-600 rounded-md bg-slate-800 text-slate-100 text-sm w-48 placeholder-slate-400"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="flex items-center gap-2 text-slate-300 font-medium text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showFlaggedOnly}
+                  onChange={(e) => {
+                    setShowFlaggedOnly(e.target.checked);
+                    setActiveTab(null);
+                  }}
+                  className="w-4 h-4 text-blue-600 bg-slate-800 border-slate-600 rounded focus:ring-blue-500 focus:ring-2"
+                />
+                Flagged only
+              </label>
+            </div>
+          </div>
+          <UserButton afterSignOutUrl="/" />
         </div>
       </div>
+      
 
-      {cardsWithTransactions.length === 0 ? (
-        <div className="no-data">
-          <p>No credit cards with transactions found for {selectedDate?.toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) || 'selected month'}</p>
+      {creditCards.length === 0 ? (
+        <div className="flex justify-center items-center h-96 text-slate-400 text-lg">
+          <p>No transactions found matching your filters</p>
         </div>
       ) : (
-        <div className="cards-container">
-          <div className="tabs-header">
-            {cardsWithTransactions.map((card) => (
+        <div className="bg-slate-800 rounded-xl overflow-hidden border border-slate-600">
+          <div className="flex flex-wrap border-b border-slate-600 bg-slate-900">
+            {creditCards.map((card) => (
               <button
                 key={card.id}
-                className={`tab-button ${activeTab === card.id ? 'active' : ''}`}
+                className={`p-4 border-none bg-transparent text-slate-400 cursor-pointer transition-all duration-200 border-b-4 border-transparent min-w-0 md:min-w-52 flex-1 md:flex-none text-left hover:bg-slate-800 hover:text-slate-100 ${
+                  activeTab === card.id ? 'bg-slate-800 text-slate-100 border-b-blue-500' : ''
+                }`}
                 onClick={() => setActiveTab(card.id)}
               >
-                <div className="card-info">
-                  <div className="card-name">{card.card_name}</div>
-                  <div className="card-details">
-                    {card.card_brand.toUpperCase()} •••• {card.last_four_digits}
-                  </div>
-                  <div className="cardholder-name">{card.user.full_name || card.user.email}</div>
-                  <div className="transaction-count">
-                    {card.transactions.length} transaction{card.transactions.length !== 1 ? 's' : ''}
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={getCardIcon(card.card_brand)} 
+                    alt={`${card.card_brand} card`}
+                    className="w-12 h-8 rounded-md object-cover flex-shrink-0"
+                  />
+                  <div className="flex flex-col gap-1 flex-1">
+                    <div className="font-semibold text-sm">{card.card_name}</div>
+                    <div className="text-xs text-slate-500 font-mono">
+                      {card.card_brand.toUpperCase()} •••• {card.last_four_digits}
+                    </div>
+                    <div className="text-xs text-slate-300">{card.user.full_name || card.user.email}</div>
+                    <div className="text-xs text-slate-500">
+                      {card.transactions.length} transaction{card.transactions.length !== 1 ? 's' : ''}
+                    </div>
                   </div>
                 </div>
               </button>
@@ -134,122 +305,140 @@ export const AuditorDashboard = () => {
           </div>
 
           {activeCard && (
-            <div className="transactions-content">
-              <div className="card-summary">
-                <h2>Transactions for {activeCard.card_name}</h2>
-                <div className="summary-stats">
-                  <div className="stat">
-                    <span className="stat-label">Total Transactions:</span>
-                    <span className="stat-value">{activeCard.transactions.length}</span>
+            <div className="p-6">
+              <div className="mb-6">
+                <h2 className="m-0 mb-4 text-slate-100 text-xl font-semibold">Transactions for {activeCard.card_name}</h2>
+                <div className="flex flex-col md:flex-row gap-3 md:gap-6">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-slate-400 uppercase tracking-wider">Total Transactions:</span>
+                    <span className="text-lg font-semibold text-slate-100">{activeCard.transactions.length}</span>
                   </div>
-                  <div className="stat">
-                    <span className="stat-label">Total Amount:</span>
-                    <span className="stat-value">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-slate-400 uppercase tracking-wider">Total Amount:</span>
+                    <span className="text-lg font-semibold text-slate-100">
                       {formatCurrency(
-                        activeCard.transactions.reduce((sum, t) => sum + t.amount, 0),
+                        activeCard.transactions.reduce((sum, t) => sum + Math.abs(parseFloat(t.amount.toString())), 0),
                         activeCard.transactions[0]?.currency || 'USD'
                       )}
                     </span>
                   </div>
-                  <div className="stat">
-                    <span className="stat-label">Flagged Transactions:</span>
-                    <span className="stat-value">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-slate-400 uppercase tracking-wider">Flagged Transactions:</span>
+                    <span className="text-lg font-semibold text-slate-100">
                       {activeCard.transactions.filter(t => t.audit_flags.length > 0).length}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="transactions-table">
-                <table>
+              <div className="overflow-x-auto rounded-lg border border-slate-600 text-xs md:text-sm">
+                <table className="w-full border-collapse bg-slate-800">
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Description</th>
-                      <th>Merchant</th>
-                      <th>Amount</th>
-                      <th>Type</th>
-                      <th>Status</th>
-                      <th>Flags</th>
+                      <th className="px-4 py-3 text-left font-semibold text-slate-300 text-xs uppercase tracking-wider border-b border-slate-600 bg-slate-900">Date</th>
+                      <th className="px-4 py-3 text-left font-semibold text-slate-300 text-xs uppercase tracking-wider border-b border-slate-600 bg-slate-900">Description</th>
+                      <th className="px-4 py-3 text-left font-semibold text-slate-300 text-xs uppercase tracking-wider border-b border-slate-600 bg-slate-900">Merchant</th>
+                      <th className="px-4 py-3 text-left font-semibold text-slate-300 text-xs uppercase tracking-wider border-b border-slate-600 bg-slate-900">Amount</th>
+                      <th className="px-4 py-3 text-left font-semibold text-slate-300 text-xs uppercase tracking-wider border-b border-slate-600 bg-slate-900">Type</th>
+                      <th className="px-4 py-3 text-left font-semibold text-slate-300 text-xs uppercase tracking-wider border-b border-slate-600 bg-slate-900">Status</th>
+                      <th className="px-4 py-3 text-left font-semibold text-slate-300 text-xs uppercase tracking-wider border-b border-slate-600 bg-slate-900">Flags</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {activeCard.transactions.map((transaction) => (
-                      <tr key={transaction.id} className="transaction-row">
-                        <td className="date-cell">
-                          {formatDate(transaction.transaction_date)}
-                        </td>
-                        <td className="description-cell">
-                          <div className="transaction-description">
-                            {transaction.description}
-                          </div>
-                          {transaction.transaction_id && (
-                            <div className="transaction-id">
-                              ID: {transaction.transaction_id}
+                    {activeCard.transactions.map((transaction) => {
+                      const amount = parseFloat(transaction.amount.toString());
+                      return (
+                        <tr 
+                          key={transaction.id} 
+                          className={`hover:bg-slate-700 transition-all duration-300 ${
+                            newTransactionIds.has(transaction.id) 
+                              ? 'animate-slide-in-new bg-blue-500/10 ring-1 ring-blue-500/20' 
+                              : ''
+                          }`}
+                        >
+                          <td className="px-4 py-3 border-b border-slate-600 align-top min-w-24 font-mono text-sm text-slate-300">
+                            {formatDate(transaction.transaction_date)}
+                          </td>
+                          <td className="px-4 py-3 border-b border-slate-600 align-top min-w-48">
+                            <div className="font-medium text-slate-100 mb-1">
+                              {transaction.description}
                             </div>
-                          )}
-                        </td>
-                        <td className="merchant-cell">
-                          <div className="merchant-name">
-                            {transaction.merchant_name || 'N/A'}
-                          </div>
-                          {transaction.merchant_category && (
-                            <div className="merchant-category">
-                              {transaction.merchant_category}
+                            {transaction.transaction_id && (
+                              <div className="text-xs text-slate-500 font-mono">
+                                ID: {transaction.transaction_id}
+                              </div>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 border-b border-slate-600 align-top min-w-36">
+                            <div className="text-slate-100 mb-1">
+                              {transaction.merchant_name || 'N/A'}
                             </div>
-                          )}
-                        </td>
-                        <td className="amount-cell">
-                          <span 
-                            className="amount"
-                            style={{ 
-                              color: transaction.amount < 0 ? '#22c55e' : '#ef4444' 
-                            }}
-                          >
-                            {formatCurrency(transaction.amount, transaction.currency)}
-                          </span>
-                        </td>
-                        <td className="type-cell">
-                          <span 
-                            className="transaction-type"
-                            style={{ 
-                              color: getTransactionTypeColor(transaction.transaction_type) 
-                            }}
-                          >
-                            {transaction.transaction_type}
-                          </span>
-                        </td>
-                        <td className="status-cell">
-                          <span className={`status-badge status-${transaction.status.toLowerCase()}`}>
-                            {transaction.status}
-                          </span>
-                        </td>
-                        <td className="flags-cell">
-                          {transaction.audit_flags.length > 0 ? (
-                            <div className="flags-list">
-                              {transaction.audit_flags.map((flag) => (
-                                <div 
-                                  key={flag.id} 
-                                  className="flag-item"
-                                  style={{ 
-                                    borderLeftColor: getSeverityColor(flag.severity) 
-                                  }}
-                                >
-                                  <div className="flag-type">{flag.flag_type}</div>
-                                  <div className="flag-severity">{flag.severity}</div>
-                                  <div className="flag-status">{flag.status}</div>
-                                  {flag.notes && (
-                                    <div className="flag-notes">{flag.notes}</div>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="no-flags">No flags</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                            {transaction.merchant_category && (
+                              <div className="text-xs text-slate-400">
+                                {transaction.merchant_category}
+                              </div>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 border-b border-slate-600 align-top min-w-24 text-right">
+                            <span 
+                              className={`font-semibold font-mono text-sm ${amount < 0 ? 'text-red-400' : 'text-green-400'}`}
+                            >
+                              {amount < 0 ? '-' : '+'}
+                              {formatCurrency(amount, transaction.currency)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 border-b border-slate-600 align-top min-w-20">
+                            <span 
+                              className="font-medium capitalize text-sm"
+                              style={{ 
+                                color: getTransactionTypeColor(transaction.transaction_type) 
+                              }}
+                            >
+                              {transaction.transaction_type}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 border-b border-slate-600 align-top min-w-20">
+                            <span 
+                              className={`px-2 py-1 rounded text-xs font-medium uppercase tracking-wider ${
+                                transaction.status.toLowerCase() === 'posted' 
+                                  ? 'bg-green-900/20 text-green-400'
+                                  : transaction.status.toLowerCase() === 'pending'
+                                  ? 'bg-yellow-900/20 text-yellow-400'
+                                  : transaction.status.toLowerCase() === 'cancelled'
+                                  ? 'bg-red-900/20 text-red-400'
+                                  : 'bg-slate-700 text-slate-300'
+                              }`}
+                            >
+                              {transaction.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 border-b border-slate-600 align-top min-w-48">
+                            {transaction.audit_flags.length > 0 ? (
+                              <div className="flex flex-col gap-2">
+                                {transaction.audit_flags.map((flag) => (
+                                  <div 
+                                    key={flag.id} 
+                                    className="px-3 py-2 bg-blue-900/10 rounded border-l-4 text-xs"
+                                    style={{ 
+                                      borderLeftColor: getSeverityColor(flag.severity) 
+                                    }}
+                                  >
+                                    <div className="font-semibold text-slate-100 mb-0.5 capitalize">{flag.flag_type}</div>
+                                    <div className="text-slate-400 mb-0.5 uppercase tracking-wider">{flag.severity}</div>
+                                    <div className="text-slate-300 mb-1 capitalize">{flag.status}</div>
+                                    {flag.notes && (
+                                      <div className="text-slate-200 italic">{flag.notes}</div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="text-slate-500 text-xs">No flags</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -257,365 +446,6 @@ export const AuditorDashboard = () => {
           )}
         </div>
       )}
-
-      <style>{`
-        .auditor-dashboard {
-          padding: 24px;
-          background: #0f172a;
-          min-height: 100vh;
-          color: #f1f5f9;
-        }
-
-        .dashboard-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 32px;
-          padding: 24px;
-          background: #1e293b;
-          border-radius: 12px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-          border: 1px solid #334155;
-        }
-
-        .dashboard-header h1 {
-          margin: 0;
-          color: #f1f5f9;
-          font-size: 28px;
-          font-weight: 600;
-        }
-
-        .month-selector {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .month-selector label {
-          color: #cbd5e1;
-          font-weight: 500;
-        }
-
-        .month-selector input {
-          padding: 8px 12px;
-          border: 1px solid #334155;
-          border-radius: 6px;
-          background: #1e293b;
-          color: #f1f5f9;
-          font-size: 14px;
-        }
-
-        .loading, .error, .no-data {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 400px;
-          color: #94a3b8;
-          font-size: 18px;
-        }
-
-        .error {
-          color: #ef4444;
-        }
-
-        .cards-container {
-          background: #1e293b;
-          border-radius: 12px;
-          overflow: hidden;
-          border: 1px solid #334155;
-        }
-
-        .tabs-header {
-          display: flex;
-          flex-wrap: wrap;
-          border-bottom: 1px solid #334155;
-          background: #0f172a;
-        }
-
-        .tab-button {
-          padding: 16px 20px;
-          border: none;
-          background: transparent;
-          color: #94a3b8;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          border-bottom: 3px solid transparent;
-          min-width: 200px;
-          text-align: left;
-        }
-
-        .tab-button:hover {
-          background: #1e293b;
-          color: #f1f5f9;
-        }
-
-        .tab-button.active {
-          background: #1e293b;
-          color: #f1f5f9;
-          border-bottom-color: #3b82f6;
-        }
-
-        .card-info {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .card-name {
-          font-weight: 600;
-          font-size: 14px;
-        }
-
-        .card-details {
-          font-size: 12px;
-          color: #64748b;
-          font-family: monospace;
-        }
-
-        .cardholder-name {
-          font-size: 12px;
-          color: #cbd5e1;
-        }
-
-        .transaction-count {
-          font-size: 11px;
-          color: #64748b;
-        }
-
-        .transactions-content {
-          padding: 24px;
-        }
-
-        .card-summary {
-          margin-bottom: 24px;
-        }
-
-        .card-summary h2 {
-          margin: 0 0 16px 0;
-          color: #f1f5f9;
-          font-size: 20px;
-          font-weight: 600;
-        }
-
-        .summary-stats {
-          display: flex;
-          gap: 24px;
-          flex-wrap: wrap;
-        }
-
-        .stat {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .stat-label {
-          font-size: 12px;
-          color: #94a3b8;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-
-        .stat-value {
-          font-size: 18px;
-          font-weight: 600;
-          color: #f1f5f9;
-        }
-
-        .transactions-table {
-          overflow-x: auto;
-          border-radius: 8px;
-          border: 1px solid #334155;
-        }
-
-        .transactions-table table {
-          width: 100%;
-          border-collapse: collapse;
-          background: #1e293b;
-        }
-
-        .transactions-table th {
-          padding: 12px 16px;
-          text-align: left;
-          font-weight: 600;
-          color: #cbd5e1;
-          font-size: 12px;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          border-bottom: 1px solid #334155;
-          background: #0f172a;
-        }
-
-        .transactions-table td {
-          padding: 12px 16px;
-          border-bottom: 1px solid #334155;
-          vertical-align: top;
-        }
-
-        .transaction-row:hover {
-          background: #334155;
-        }
-
-        .date-cell {
-          min-width: 100px;
-          font-family: monospace;
-          font-size: 13px;
-          color: #cbd5e1;
-        }
-
-        .description-cell {
-          min-width: 200px;
-        }
-
-        .transaction-description {
-          font-weight: 500;
-          color: #f1f5f9;
-          margin-bottom: 4px;
-        }
-
-        .transaction-id {
-          font-size: 11px;
-          color: #64748b;
-          font-family: monospace;
-        }
-
-        .merchant-cell {
-          min-width: 150px;
-        }
-
-        .merchant-name {
-          color: #f1f5f9;
-          margin-bottom: 4px;
-        }
-
-        .merchant-category {
-          font-size: 11px;
-          color: #94a3b8;
-        }
-
-        .amount-cell {
-          min-width: 100px;
-          text-align: right;
-        }
-
-        .amount {
-          font-weight: 600;
-          font-family: monospace;
-          font-size: 14px;
-        }
-
-        .type-cell {
-          min-width: 80px;
-        }
-
-        .transaction-type {
-          font-weight: 500;
-          text-transform: capitalize;
-          font-size: 13px;
-        }
-
-        .status-cell {
-          min-width: 80px;
-        }
-
-        .status-badge {
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-size: 11px;
-          font-weight: 500;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-
-        .status-posted {
-          background: rgba(34, 197, 94, 0.1);
-          color: #22c55e;
-        }
-
-        .status-pending {
-          background: rgba(251, 191, 36, 0.1);
-          color: #fbbf24;
-        }
-
-        .status-cancelled {
-          background: rgba(239, 68, 68, 0.1);
-          color: #ef4444;
-        }
-
-        .flags-cell {
-          min-width: 200px;
-        }
-
-        .flags-list {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .flag-item {
-          padding: 8px 12px;
-          background: rgba(59, 130, 246, 0.05);
-          border-radius: 4px;
-          border-left: 3px solid;
-          font-size: 11px;
-        }
-
-        .flag-type {
-          font-weight: 600;
-          color: #f1f5f9;
-          margin-bottom: 2px;
-          text-transform: capitalize;
-        }
-
-        .flag-severity {
-          color: #94a3b8;
-          margin-bottom: 2px;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-
-        .flag-status {
-          color: #cbd5e1;
-          margin-bottom: 4px;
-          text-transform: capitalize;
-        }
-
-        .flag-notes {
-          color: #e2e8f0;
-          font-style: italic;
-        }
-
-        .no-flags {
-          color: #64748b;
-          font-size: 12px;
-        }
-
-        @media (max-width: 768px) {
-          .auditor-dashboard {
-            padding: 16px;
-          }
-
-          .dashboard-header {
-            flex-direction: column;
-            gap: 16px;
-            align-items: stretch;
-          }
-
-          .summary-stats {
-            flex-direction: column;
-            gap: 12px;
-          }
-
-          .transactions-table {
-            font-size: 12px;
-          }
-
-          .tab-button {
-            min-width: auto;
-            flex: 1;
-          }
-        }
-      `}</style>
     </div>
   );
 };

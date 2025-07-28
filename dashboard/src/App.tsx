@@ -4,7 +4,7 @@ import { setContext } from '@apollo/client/link/context';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
-import { RealAuditorDashboard } from './components/RealAuditorDashboard';
+import { AuditorDashboard } from './components/AuditorDashboard';
 import { useMemo } from 'react';
 import './App.css'
 
@@ -60,7 +60,7 @@ function ApolloWrapper({ children }: { children: React.ReactNode }) {
             const payload = JSON.parse(atob(token.split('.')[1]));
             console.log('JWT payload:', payload);
             console.log('Hasura claims:', payload['https://hasura.io/jwt/claims']);
-          } catch (e) {
+          } catch (_e) {
             console.log('Could not decode JWT for debugging');
           }
         }
@@ -126,7 +126,7 @@ function ApolloWrapper({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <ApolloWrapper>
-      <RealAuditorDashboard />
+      <AuditorDashboard />
     </ApolloWrapper>
   )
 }
